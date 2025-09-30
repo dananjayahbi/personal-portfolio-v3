@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 import { CldUploadWidget, type CloudinaryUploadWidgetResults } from "next-cloudinary";
@@ -16,8 +16,6 @@ type Props = {
 
 const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
-
 function extractUrl(result?: CloudinaryUploadWidgetResults | null) {
   if (!result || typeof result !== 'object') return undefined;
   const info = 'info' in result ? result.info : undefined;
@@ -31,18 +29,67 @@ function extractUrl(result?: CloudinaryUploadWidgetResults | null) {
   return undefined;
 }
 
+function extractPublicId(result?: CloudinaryUploadWidgetResults | null) {
+  if (!result || typeof result !== 'object') return undefined;
+  const info = 'info' in result ? result.info : undefined;
+  if (!info || typeof info !== 'object') return undefined;
+  if ('public_id' in info && typeof info.public_id === 'string') {
+    return info.public_id;
+  }
+  return undefined;
+}
+
+function derivePublicIdFromUrl(url?: string | null) {
+  if (!url) return undefined;
+  try {
+    const marker = '/upload/';
+    const index = url.indexOf(marker);
+    if (index === -1) return undefined;
+    const pathWithVersion = url.slice(index + marker.length);
+    const path = pathWithVersion.replace(/^v\d+\//, '');
+    const sanitized = path.split(/[?#]/)[0];
+    if (!sanitized) return undefined;
+    const lastDot = sanitized.lastIndexOf('.');
+    return lastDot === -1 ? sanitized : sanitized.slice(0, lastDot);
+  } catch (error) {
+    console.warn('Unable to derive Cloudinary public id from url', error);
+    return undefined;
+  }
+}
+
+function unlockScroll() {
+  if (typeof document === 'undefined') return;
+  const targets = [document.body, document.documentElement];
+  for (const target of targets) {
+    if (!target) continue;
+    target.style.removeProperty('overflow');
+    target.style.removeProperty('position');
+    target.style.removeProperty('width');
+  }
+  document.body?.classList.remove('cloudinary-upload-widget-open');
+}
+
 export function CloudinaryImageInput({ label, name, defaultValue, hint, error, folder }: Props) {
   const [value, setValue] = useState(defaultValue ?? "");
+  const [publicId, setPublicId] = useState<string | undefined>(() => derivePublicIdFromUrl(defaultValue));
+  const [isRemoving, setIsRemoving] = useState(false);
+  const [actionMessage, setActionMessage] = useState<{ type: 'info' | 'error'; text: string } | undefined>();
 
   useEffect(() => {
     setValue(defaultValue ?? "");
+    setPublicId(derivePublicIdFromUrl(defaultValue));
   }, [defaultValue]);
 
-  if (!uploadPreset || !cloudName || !apiKey) {
+  useEffect(() => {
+    return () => {
+      unlockScroll();
+    };
+  }, []);
+
+  if (!uploadPreset || !cloudName) {
     const missing: string[] = [];
     if (!cloudName) missing.push('NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME');
     if (!uploadPreset) missing.push('NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET');
-    if (!apiKey) missing.push('NEXT_PUBLIC_CLOUDINARY_API_KEY');
 
     return (
       <div className="flex flex-col gap-2 text-sm text-white/70">
@@ -60,6 +107,67 @@ export function CloudinaryImageInput({ label, name, defaultValue, hint, error, f
     );
   }
 
+  const widgetOptions = useMemo(() => {
+    const options: Record<string, unknown> = { cloudName };
+    if (folder) options.folder = folder;
+    return options;
+  }, [folder, cloudName]);
+
+  async function handleRemove() {
+    if (!value) return;
+    setActionMessage(undefined);
+    if (!publicId) {
+      setValue("");
+      setPublicId(undefined);
+      unlockScroll();
+      return;
+    }
+
+    setIsRemoving(true);
+    try {
+      const response = await fetch('/api/cloudinary-destroy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ publicId, invalidate: true }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed with status ${response.status}`);
+      }
+
+      const payload = (await response.json()) as { result?: { result?: string } };
+      const destroyResult = payload?.result?.result;
+      if (destroyResult && destroyResult !== 'ok' && destroyResult !== 'not found') {
+        throw new Error(`Unexpected destroy result: ${destroyResult}`);
+      }
+
+      setValue("");
+      setPublicId(undefined);
+      setActionMessage({ type: 'info', text: 'Image removed from Cloudinary.' });
+    } catch (err) {
+      console.error('Error removing Cloudinary asset', err);
+      setActionMessage({ type: 'error', text: 'Could not delete the image from Cloudinary. Please try again.' });
+    } finally {
+      setIsRemoving(false);
+      unlockScroll();
+    }
+  }
+
+  function handleUploadSuccess(result: CloudinaryUploadWidgetResults) {
+    const url = extractUrl(result);
+    const newPublicId = extractPublicId(result) ?? derivePublicIdFromUrl(url ?? undefined);
+    if (url) {
+      setValue(url);
+    }
+    setPublicId(newPublicId);
+    setActionMessage(undefined);
+    unlockScroll();
+  }
+
+  function handleUploadFailure() {
+    unlockScroll();
+  }
+
   return (
     <div className="flex flex-col gap-2 text-sm text-white/70">
       <span className="font-medium text-white">{label}</span>
@@ -70,6 +178,7 @@ export function CloudinaryImageInput({ label, name, defaultValue, hint, error, f
         )}
       >
         <input type="hidden" name={name} value={value} />
+        <input type="hidden" name={`${name}PublicId`} value={publicId ?? ""} />
         {value ? (
           <div className="flex items-center gap-4">
             <div className="relative h-20 w-20 overflow-hidden rounded-lg border border-white/10 bg-black/30">
@@ -81,11 +190,11 @@ export function CloudinaryImageInput({ label, name, defaultValue, hint, error, f
                 <CldUploadWidget
                   signatureEndpoint="/api/cloudinary-signature"
                   uploadPreset={uploadPreset}
-                  options={{ folder, cloudName, apiKey }}
-                  onSuccess={(result) => {
-                    const url = extractUrl(result);
-                    if (url) setValue(url);
-                  }}
+                  options={widgetOptions}
+                  onSuccess={handleUploadSuccess}
+                  onError={handleUploadFailure}
+                  onClose={unlockScroll}
+                  onQueuesEnd={unlockScroll}
                 >
                   {({ open }) => (
                     <button
@@ -99,10 +208,11 @@ export function CloudinaryImageInput({ label, name, defaultValue, hint, error, f
                 </CldUploadWidget>
                 <button
                   type="button"
-                  onClick={() => setValue("")}
-                  className="rounded-full border border-red-400/30 bg-red-500/10 px-4 py-2 text-xs font-medium text-red-200 transition hover:border-red-400/60"
+                  onClick={handleRemove}
+                  className="rounded-full border border-red-400/30 bg-red-500/10 px-4 py-2 text-xs font-medium text-red-200 transition hover:border-red-400/60 disabled:cursor-not-allowed disabled:opacity-70"
+                  disabled={isRemoving}
                 >
-                  Remove
+                  {isRemoving ? 'Removing…' : 'Remove'}
                 </button>
               </div>
             </div>
@@ -112,11 +222,11 @@ export function CloudinaryImageInput({ label, name, defaultValue, hint, error, f
             <CldUploadWidget
               signatureEndpoint="/api/cloudinary-signature"
               uploadPreset={uploadPreset}
-              options={{ folder, cloudName, apiKey }}
-              onSuccess={(result) => {
-                const url = extractUrl(result);
-                if (url) setValue(url);
-              }}
+              options={widgetOptions}
+              onSuccess={handleUploadSuccess}
+              onError={handleUploadFailure}
+              onClose={unlockScroll}
+              onQueuesEnd={unlockScroll}
             >
               {({ open }) => (
                 <button
@@ -135,6 +245,16 @@ export function CloudinaryImageInput({ label, name, defaultValue, hint, error, f
         )}
       </div>
       {hint && <span className="text-xs text-white/40">{hint}</span>}
+      {actionMessage && (
+        <span
+          className={clsx(
+            'text-xs',
+            actionMessage.type === 'info' ? 'text-emerald-300' : 'text-red-300'
+          )}
+        >
+          {actionMessage.text}
+        </span>
+      )}
       {error && <span className="text-xs text-red-300">{error}</span>}
     </div>
   );
