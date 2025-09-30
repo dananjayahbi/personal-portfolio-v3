@@ -1,13 +1,14 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useEffect, useState, useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import clsx from "clsx";
 import { createProject, initialProjectState } from "../actions";
+import { CloudinaryImageInput } from "@/components/common/cloudinary-image-input";
 
 function FieldGroup({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
+    <section className="rounded-2xl border border-white/10 bg-white/5 p-5 md:p-6">
       <header>
         <h2 className="text-lg font-semibold text-white">{title}</h2>
         {description && <p className="mt-1 text-sm text-white/60">{description}</p>}
@@ -93,7 +94,7 @@ function SelectField({
 function SubmitBar({ success }: { success?: string }) {
   const { pending } = useFormStatus();
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-6 py-4">
+  <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 md:px-6">
       <div className="text-sm text-white/70">
         {pending ? 'Publishing your project…' : success ?? 'Your new project will shine on the portfolio once saved.'}
       </div>
@@ -109,7 +110,7 @@ function SubmitBar({ success }: { success?: string }) {
 }
 
 export function ProjectForm() {
-  const [state, formAction] = useFormState(createProject, initialProjectState);
+  const [state, formAction] = useActionState(createProject, initialProjectState);
   const [success, setSuccess] = useState<string | undefined>();
 
   useEffect(() => {
@@ -144,12 +145,12 @@ export function ProjectForm() {
           placeholder="Transforming a traditional bank into an immersive digital experience."
           error={state.fieldErrors?.summary}
         />
-        <TextInput
-          label="Hero image URL"
+        <CloudinaryImageInput
+          label="Hero image"
           name="heroImage"
-          placeholder="https://images.cdn.com/aurora-cover.jpg"
+          hint="Upload or select a cover visual straight from your Cloudinary media library."
           error={state.fieldErrors?.heroImage}
-          type="url"
+          folder="portfolio/projects/heroes"
         />
         <SelectField
           label="Project status"

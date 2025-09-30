@@ -1,6 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import clsx from "clsx";
 import { loginAction } from "../actions";
 import { loginInitialState as initialState } from "../state";
@@ -47,7 +48,7 @@ function Field({ label, name, type = 'text', autoComplete, error }: FieldProps) 
 }
 
 export function LoginForm({ notice }: { notice?: string }) {
-  const [state, formAction] = useFormState(loginAction, initialState);
+  const [state, formAction] = useActionState(loginAction, initialState);
 
   return (
     <form

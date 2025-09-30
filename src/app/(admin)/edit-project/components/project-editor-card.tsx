@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useEffect, useState, useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import clsx from "clsx";
 import { deleteProject, initialUpdateState, updateProject } from "../actions";
+import { CloudinaryImageInput } from "@/components/common/cloudinary-image-input";
 
 type Project = {
   id: string;
@@ -146,8 +147,8 @@ function formatMetrics(metrics?: Project['metrics']) {
 }
 
 export function ProjectEditorCard({ project }: { project: Project }) {
-  const [state, formAction] = useFormState(updateProject, initialUpdateState);
-  const [deleteState, deleteAction] = useFormState(deleteProject, initialUpdateState);
+  const [state, formAction] = useActionState(updateProject, initialUpdateState);
+  const [deleteState, deleteAction] = useActionState(deleteProject, initialUpdateState);
   const [success, setSuccess] = useState<string | undefined>();
 
   useEffect(() => {
@@ -182,7 +183,7 @@ export function ProjectEditorCard({ project }: { project: Project }) {
       </summary>
 
       <div className="border-t border-white/10">
-        <form action={formAction} className="flex flex-col gap-6 px-6 py-6">
+        <form action={formAction} className="flex flex-col gap-6 px-5 py-6 md:px-6">
           <input type="hidden" name="projectId" value={project.id} />
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -217,12 +218,13 @@ export function ProjectEditorCard({ project }: { project: Project }) {
               type="number"
               error={state.fieldErrors?.featuredOrder}
             />
-            <TextInput
-              label="Hero image URL"
-              name="heroImage"
-              defaultValue={project.heroImage ?? undefined}
-              error={state.fieldErrors?.heroImage}
-            />
+              <CloudinaryImageInput
+                label="Hero image"
+                name="heroImage"
+                defaultValue={project.heroImage ?? undefined}
+                error={state.fieldErrors?.heroImage}
+                folder="portfolio/projects/heroes"
+              />
           </div>
 
           <TextInput
@@ -327,7 +329,7 @@ export function ProjectEditorCard({ project }: { project: Project }) {
           <FormFooter success={success} />
         </form>
 
-        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 px-6 py-4 text-xs text-white/40">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 px-5 py-4 text-xs text-white/40 md:px-6">
           <span>Project ID: {project.id}</span>
           <form action={deleteAction} className="flex items-center gap-3">
             <input type="hidden" name="projectId" value={project.id} />

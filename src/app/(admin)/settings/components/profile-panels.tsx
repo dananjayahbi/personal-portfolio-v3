@@ -1,14 +1,10 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useEffect, useState, useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import clsx from "clsx";
-import {
-  changePassword,
-  initialPasswordState,
-  initialProfileState,
-  updateProfile,
-} from "../actions";
+import { changePassword, initialPasswordState, initialProfileState, updateProfile } from "../actions";
+import { CloudinaryImageInput } from "@/components/common/cloudinary-image-input";
 
 type ProfileDefaults = {
   name: string;
@@ -91,8 +87,8 @@ function PasswordButton() {
 }
 
 export function ProfilePanels({ defaults }: { defaults: ProfileDefaults }) {
-  const [profileState, profileAction] = useFormState(updateProfile, initialProfileState);
-  const [passwordState, passwordAction] = useFormState(changePassword, initialPasswordState);
+  const [profileState, profileAction] = useActionState(updateProfile, initialProfileState);
+  const [passwordState, passwordAction] = useActionState(changePassword, initialPasswordState);
   const [profileSuccess, setProfileSuccess] = useState<string | undefined>();
 
   useEffect(() => {
@@ -108,7 +104,7 @@ export function ProfilePanels({ defaults }: { defaults: ProfileDefaults }) {
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
-      <section className="flex flex-col gap-6 rounded-2xl border border-white/10 bg-white/5 p-6">
+  <section className="flex flex-col gap-6 rounded-2xl border border-white/10 bg-white/5 p-5 md:p-6">
         <header className="space-y-2">
           <h2 className="text-lg font-semibold text-white">Profile identity</h2>
           <p className="text-sm text-white/60">
@@ -132,12 +128,13 @@ export function ProfilePanels({ defaults }: { defaults: ProfileDefaults }) {
             placeholder="ava@studio.com"
             type="email"
           />
-          <TextInput
-            label="Portrait / avatar URL"
+          <CloudinaryImageInput
+            label="Portrait / avatar"
             name="avatarUrl"
-            defaultValue={defaults.avatarUrl}
+            defaultValue={defaults.avatarUrl ?? undefined}
             error={profileState.fieldErrors?.avatarUrl}
-            placeholder="https://images.cdn.com/avatar.jpg"
+            hint="Square images work best."
+            folder="portfolio/admin/avatar"
           />
           <TextInput
             label="Bio"
@@ -163,7 +160,7 @@ export function ProfilePanels({ defaults }: { defaults: ProfileDefaults }) {
         </form>
       </section>
 
-      <section className="flex flex-col gap-5 rounded-2xl border border-white/10 bg-white/5 p-6">
+  <section className="flex flex-col gap-5 rounded-2xl border border-white/10 bg-white/5 p-5 md:p-6">
         <header className="space-y-2">
           <h2 className="text-lg font-semibold text-white">Security</h2>
           <p className="text-sm text-white/60">Reset your password. You’ll be asked to sign in again afterward.</p>

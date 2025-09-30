@@ -21,8 +21,8 @@ export default async function AdminLayout({ children }: Props) {
     <div className="relative min-h-screen bg-slate-950 text-white">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(34,197,94,0.16),_transparent_55%),radial-gradient(circle_at_15%_60%,_rgba(59,130,246,0.2),_transparent_60%),radial-gradient(circle_at_85%_35%,_rgba(147,51,234,0.18),_transparent_65%)]" />
       <div className="relative z-10 flex min-h-screen">
-        <aside className="hidden w-80 flex-shrink-0 flex-col border-r border-white/10 bg-slate-950/75 backdrop-blur-xl md:flex">
-          <div className="border-b border-white/10 p-6">
+        <aside className="hidden w-72 flex-shrink-0 flex-col border-r border-white/10 bg-slate-950/80 backdrop-blur-xl md:flex">
+          <div className="border-b border-white/10 px-6 py-7">
             <div className="flex items-center gap-4">
               <div className="relative h-12 w-12 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-indigo-500 via-purple-500 to-sky-500">
                 {admin.avatarUrl ? (
@@ -46,10 +46,6 @@ export default async function AdminLayout({ children }: Props) {
           </div>
 
           <div className="flex-1 overflow-y-auto px-6 py-8">
-            <p className="text-xs uppercase tracking-[0.35em] text-white/40">Navigation</p>
-            <p className="mt-2 text-xs text-white/50">
-              Sculpt every touchpoint of your portfolio with purpose-driven controls.
-            </p>
             <div className="mt-6">
               <AdminNav />
             </div>
@@ -94,12 +90,10 @@ export default async function AdminLayout({ children }: Props) {
             <AdminNav />
           </div>
 
-          <div className="flex-1 overflow-y-auto px-4 py-8 md:px-8">
-            <div className="mx-auto w-full max-w-6xl">
-              <section className="rounded-3xl border border-white/10 bg-slate-950/70 p-6 shadow-[0_30px_80px_-60px_rgba(79,70,229,0.5)] backdrop-blur-xl">
-                {children}
-              </section>
-            </div>
+          <div className="flex-1 overflow-y-auto px-4 py-8 md:px-10">
+            <section className="min-h-full rounded-3xl border border-white/10 bg-slate-950/70 p-5 shadow-[0_30px_70px_-50px_rgba(79,70,229,0.35)] backdrop-blur-xl md:p-8">
+              {children}
+            </section>
           </div>
         </main>
       </div>

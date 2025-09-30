@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useEffect, useState, useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import clsx from "clsx";
 import { initialContentState, saveDashboardContent } from "../actions";
 
@@ -22,7 +22,7 @@ export type DashboardContentDefaults = {
 
 function Fieldset({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
   return (
-    <fieldset className="rounded-2xl border border-white/10 bg-white/5 p-6">
+    <fieldset className="rounded-2xl border border-white/10 bg-white/5 p-5 md:p-6">
       <legend className="text-lg font-semibold text-white">{title}</legend>
       {description && <p className="mt-1 text-sm text-white/60">{description}</p>}
       <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -76,7 +76,7 @@ function TextField({
 function SubmitBar({ success }: { success?: string }) {
   const { pending } = useFormStatus();
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-6 py-4">
+  <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 md:px-6">
       <div className="text-sm text-white/70">
         {pending ? 'Saving your narrative…' : success ?? 'Every update reflects instantly on the live site.'}
       </div>
@@ -92,7 +92,7 @@ function SubmitBar({ success }: { success?: string }) {
 }
 
 export function DashboardContentForm({ defaults }: { defaults: DashboardContentDefaults }) {
-  const [state, formAction] = useFormState(saveDashboardContent, initialContentState);
+  const [state, formAction] = useActionState(saveDashboardContent, initialContentState);
   const [success, setSuccess] = useState<string | undefined>();
 
   useEffect(() => {

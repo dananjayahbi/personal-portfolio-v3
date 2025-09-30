@@ -49,6 +49,22 @@ npm run db:seed
 
 The seed script provisions an admin at **admin@test.com** with the password **admin**. Update the `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables if you prefer different credentials.
 
+### Cloudinary setup
+
+Image uploads rely on Cloudinary. Create the following variables in `.env.local`:
+
+```
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+CLOUDINARY_UPLOAD_PRESET=
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
+NEXT_PUBLIC_CLOUDINARY_API_KEY=
+NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=
+```
+
+The upload preset should allow signed uploads (mode: `Unsigned` disabled). The `NEXT_PUBLIC_` variants expose safe metadata (cloud name, API key, and preset) to the browser so the Cloudinary widget can initialize signed uploads.
+
 Available scripts:
 
 - `npm run dev` — start Next.js in development mode.
@@ -72,7 +88,8 @@ The Prisma client is instantiated in `src/lib/prisma.ts` with hot-reload safe ca
 
 - Admin login lives at [`/admin-login`](./src/app/(auth)/admin-login/page.tsx).
 - Upon signing in you will land on the new [`/admin-dashboard`](./src/app/(admin)/admin-dashboard/page.tsx) overview.
-- The left-hand navigation (defined in [`src/app/(admin)/components/admin-nav.tsx`](./src/app/(admin)/components/admin-nav.tsx)) exposes quick access to dashboard content, project management, site settings, and profile controls.
+- The left-hand navigation (defined in [`src/app/(admin)/components/admin-nav.tsx`](./src/app/(admin)/components/admin-nav.tsx)) now uses Lucide icons and keeps labels concise for a focused dashboard feel.
+- Project, site settings, and admin profile forms all ship with direct Cloudinary upload widgets so you can drop in imagery without leaving the console.
 
 ## Deployment
 

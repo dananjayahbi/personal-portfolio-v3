@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useEffect, useState, useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import clsx from "clsx";
 import { initialSettingsState, saveSiteSettings } from "../actions";
+import { CloudinaryImageInput } from "@/components/common/cloudinary-image-input";
 
 type SettingsDefaults = {
   contactEmail?: string;
@@ -27,7 +28,7 @@ type SettingsDefaults = {
 
 function Section({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
+    <section className="rounded-2xl border border-white/10 bg-white/5 p-5 md:p-6">
       <header>
         <h2 className="text-lg font-semibold text-white">{title}</h2>
         {description && <p className="mt-1 text-sm text-white/60">{description}</p>}
@@ -110,7 +111,7 @@ function SelectInput({
 function SubmitBar({ success }: { success?: string }) {
   const { pending } = useFormStatus();
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-6 py-4">
+  <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 md:px-6">
       <div className="text-sm text-white/70">
         {pending ? 'Saving configuration…' : success ?? 'Updates ship immediately to the live experience.'}
       </div>
@@ -126,7 +127,7 @@ function SubmitBar({ success }: { success?: string }) {
 }
 
 export function SiteSettingsForm({ defaults }: { defaults: SettingsDefaults }) {
-  const [state, formAction] = useFormState(saveSiteSettings, initialSettingsState);
+  const [state, formAction] = useActionState(saveSiteSettings, initialSettingsState);
   const [success, setSuccess] = useState<string | undefined>();
 
   useEffect(() => {
@@ -230,12 +231,13 @@ export function SiteSettingsForm({ defaults }: { defaults: SettingsDefaults }) {
           error={state.fieldErrors?.seoKeywords}
           placeholder="product design, design systems, storytelling"
         />
-        <TextInput
+        <CloudinaryImageInput
           label="Open Graph image"
           name="ogImage"
           defaultValue={defaults.seo?.image ?? undefined}
           error={state.fieldErrors?.ogImage}
-          placeholder="https://cdn.com/og-image.jpg"
+          hint="Upload a social sharing preview at 1200×630."
+          folder="portfolio/meta"
         />
       </Section>
 
