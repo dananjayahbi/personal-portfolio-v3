@@ -5,6 +5,7 @@ import type { ChangeEvent } from "react";
 import clsx from "clsx";
 import { createProject } from "../actions";
 import { initialProjectState } from "../project-state";
+import { RichTextEditor } from "@/components/common/rich-text-editor";
 
 type HeroAsset = {
   preview?: string;
@@ -44,6 +45,8 @@ function TextInput({
   type = 'text',
   rows,
   hint,
+  defaultValue,
+  disabled,
 }: {
   label: string;
   name: string;
@@ -52,9 +55,11 @@ function TextInput({
   type?: string;
   rows?: number;
   hint?: string;
+  defaultValue?: string;
+  disabled?: boolean;
 }) {
   const baseClass = clsx(
-    'w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white shadow-inner shadow-black/20 transition focus:border-white/30 focus:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/20',
+    'w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white shadow-inner shadow-black/20 transition focus:border-white/30 focus:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/20 disabled:cursor-not-allowed disabled:opacity-60',
     error && '!border-red-400/70 !bg-red-500/10 focus:ring-red-400/40'
   );
 
@@ -62,9 +67,23 @@ function TextInput({
     <label className="flex flex-col gap-2 text-sm text-white/70">
       <span className="font-medium text-white">{label}</span>
       {rows ? (
-        <textarea name={name} placeholder={placeholder} className={baseClass} rows={rows} />
+        <textarea
+          name={name}
+          placeholder={placeholder}
+          className={baseClass}
+          rows={rows}
+          defaultValue={defaultValue}
+          disabled={disabled}
+        />
       ) : (
-        <input name={name} placeholder={placeholder} className={baseClass} type={type} />
+        <input
+          name={name}
+          placeholder={placeholder}
+          className={baseClass}
+          type={type}
+          defaultValue={defaultValue}
+          disabled={disabled}
+        />
       )}
       {hint && <span className="text-xs text-white/40">{hint}</span>}
       {error && <span className="text-xs text-red-300">{error}</span>}
@@ -320,6 +339,8 @@ export function ProjectForm() {
   const [success, setSuccess] = useState<string | undefined>();
   const [heroAsset, setHeroAsset] = useState<HeroAsset | undefined>();
   const [galleryAssets, setGalleryAssets] = useState<GalleryAsset[]>([]);
+  const [isFeaturedChecked, setIsFeaturedChecked] = useState(false);
+  const [descriptionValue, setDescriptionValue] = useState("");
   const [isSubmitting, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
   const heroAssetRef = useRef<HeroAsset | undefined>(undefined);
@@ -343,6 +364,8 @@ export function ProjectForm() {
         });
         return [];
       });
+      setIsFeaturedChecked(false);
+      setDescriptionValue("");
       return () => clearTimeout(timeout);
     }
     if (state.status === 'error') {
@@ -425,11 +448,26 @@ export function ProjectForm() {
     });
   }, []);
 
+  const handleFeaturedToggle = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const checked = event.target.checked;
+      setIsFeaturedChecked(checked);
+      if (!checked && formRef.current) {
+        const featuredOrderField = formRef.current.elements.namedItem('featuredOrder');
+        if (featuredOrderField instanceof HTMLInputElement) {
+          featuredOrderField.value = '';
+        }
+      }
+    },
+    [formRef]
+  );
+
   const handleSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       const formData = new FormData(event.currentTarget);
 
+  formData.set('description', descriptionValue);
       formData.set('heroImageFolder', HERO_FOLDER);
       formData.set('galleryFolder', GALLERY_FOLDER);
 
@@ -444,11 +482,15 @@ export function ProjectForm() {
         }
       });
 
+      if (!isFeaturedChecked) {
+        formData.delete('featuredOrder');
+      }
+
       startTransition(() => {
         formAction(formData);
       });
     },
-    [formAction, heroAsset, galleryAssets, HERO_FOLDER, GALLERY_FOLDER, startTransition]
+    [formAction, heroAsset, galleryAssets, HERO_FOLDER, GALLERY_FOLDER, startTransition, isFeaturedChecked, descriptionValue]
   );
 
   const heroFieldError = state.fieldErrors?.heroImage;
@@ -464,18 +506,18 @@ export function ProjectForm() {
       >
         <TextInput label="Title" name="title" placeholder="Aurora – Immersive Banking" error={state.fieldErrors?.title} />
         <TextInput
-          label="Slug"
-          name="slug"
-          hint="This maps to the project URL slug, e.g., /projects/aurora"
-          placeholder="aurora-immersive-banking"
-          error={state.fieldErrors?.slug}
-        />
-        <TextInput
           label="Summary"
           name="summary"
           rows={3}
           placeholder="Transforming a traditional bank into an immersive digital experience."
           error={state.fieldErrors?.summary}
+        />
+        <TextInput
+          label="Slug"
+          name="slug"
+          hint="This maps to the project URL slug, e.g., /projects/aurora"
+          placeholder="aurora-immersive-banking"
+          error={state.fieldErrors?.slug}
         />
         <div className="md:col-span-2">
           <HeroImageField
@@ -499,7 +541,13 @@ export function ProjectForm() {
           error={state.fieldErrors?.status}
         />
         <label className="flex items-center gap-3 text-sm text-white/70">
-          <input type="checkbox" name="isFeatured" className="h-4 w-4 rounded border-white/20 bg-white/10" />
+          <input
+            type="checkbox"
+            name="isFeatured"
+            className="h-4 w-4 rounded border-white/20 bg-white/10"
+            checked={isFeaturedChecked}
+            onChange={handleFeaturedToggle}
+          />
           Highlight this project on the homepage hero carousel
         </label>
         <TextInput
@@ -507,30 +555,27 @@ export function ProjectForm() {
           name="featuredOrder"
           placeholder="1"
           error={state.fieldErrors?.featuredOrder}
-          hint="Lower numbers appear first in featured showcases"
+          hint="Lower numbers appear first in featured showcases. Enable highlighting to set this value."
           type="number"
+          disabled={!isFeaturedChecked}
         />
       </FieldGroup>
 
       <FieldGroup
-        title="Narrative"
-        description="Tell the story—challenges, craft, impact. Markdown supported on the public site."
+        title="Narrative & stack"
+        description="Craft the story and note the core technologies used."
       >
-        <TextInput
-          label="Long-form description"
-          name="description"
-          rows={10}
-          placeholder="Outline the brief, your approach, and the outcomes."
-          error={state.fieldErrors?.description}
-        />
-        <TextInput
-          label="Deliverables"
-          name="deliverables"
-          rows={6}
-          placeholder="Product strategy\nMotion prototypes\nDesign system"
-          hint="Separate each deliverable with a new line or comma"
-          error={state.fieldErrors?.deliverables}
-        />
+        <div className="md:col-span-2">
+          <RichTextEditor
+            name="description"
+            label="Long-form description"
+            value={descriptionValue}
+            onChange={setDescriptionValue}
+            placeholder="Outline the brief, your approach, and the outcomes."
+            error={state.fieldErrors?.description}
+            hint="Use the toolbar to add emphasis, lists, and structure."
+          />
+        </div>
         <TextInput
           label="Technologies"
           name="technologies"
@@ -550,11 +595,9 @@ export function ProjectForm() {
       </FieldGroup>
 
       <FieldGroup
-        title="Timeline & links"
-        description="Provide context for when the work happened and where to explore more."
+        title="Links & gallery"
+        description="Point to live experiences and supporting visuals."
       >
-        <TextInput label="Project start" name="startDate" type="date" error={state.fieldErrors?.startDate} />
-        <TextInput label="Project end" name="endDate" type="date" error={state.fieldErrors?.endDate} />
         <TextInput
           label="Live URL"
           name="liveUrl"
@@ -580,14 +623,6 @@ export function ProjectForm() {
             onRemove={handleRemoveGalleryItem}
           />
         </div>
-        <TextInput
-          label="Impact metrics"
-          name="metrics"
-          rows={6}
-          placeholder={"Conversion lift | +34%\nApp store rating | 4.9"}
-          hint="One metric per line using `Label | Value` format."
-          error={state.fieldErrors?.metrics}
-        />
       </FieldGroup>
 
       <FieldGroup

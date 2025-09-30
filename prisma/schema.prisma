@@ -57,7 +57,7 @@ model Project {
   title          String
   slug           String         @unique
   summary        String
-  description    String
+  description    String?
   heroImage      String?
   gallery        Json?
   technologies   String[]       @default([])
@@ -65,14 +65,8 @@ model Project {
   status         ProjectStatus  @default(DRAFT)
   isFeatured     Boolean        @default(false)
   featuredOrder  Int?
-  startDate      DateTime?
-  endDate        DateTime?
-  clientName     String?
-  deliverables   String[]       @default([])
   liveUrl        String?
   sourceUrl      String?
-  extraLinks     Json?
-  metrics        Json?
   seo            Json?
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt

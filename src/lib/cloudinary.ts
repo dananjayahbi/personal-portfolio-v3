@@ -52,6 +52,7 @@ type UploadOptions = {
   resourceType?: UploadApiOptions["resource_type"];
   overwrite?: boolean;
   invalidate?: boolean;
+  timeoutMs?: number;
 };
 
 export async function uploadFileToCloudinary(file: File, options: UploadOptions = {}) {
@@ -66,6 +67,7 @@ export async function uploadFileToCloudinary(file: File, options: UploadOptions 
     resource_type: options.resourceType ?? "image",
     overwrite: options.overwrite,
     invalidate: options.invalidate,
+    timeout: options.timeoutMs,
   };
 
   return new Promise<UploadApiResponse>((resolve, reject) => {
