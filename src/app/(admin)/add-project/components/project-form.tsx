@@ -1,10 +1,26 @@
 'use client';
 
-import { useEffect, useState, useActionState } from "react";
+import { useCallback, useEffect, useRef, useState, useActionState } from "react";
+import type { ChangeEvent } from "react";
 import { useFormStatus } from "react-dom";
 import clsx from "clsx";
 import { createProject, initialProjectState } from "../actions";
-import { CloudinaryImageInput } from "@/components/common/cloudinary-image-input";
+
+type HeroAsset = {
+  preview?: string;
+  file?: File;
+  name?: string;
+  fromFile?: boolean;
+};
+
+type GalleryAsset = {
+  id: string;
+  preview?: string;
+  file?: File;
+  name?: string;
+  caption?: string;
+  fromFile?: boolean;
+};
 
 function FieldGroup({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
   return (
@@ -109,14 +125,224 @@ function SubmitBar({ success }: { success?: string }) {
   );
 }
 
+function HeroImageField({
+  label,
+  hint,
+  asset,
+  error,
+  onSelect,
+  onRemove,
+}: {
+  label: string;
+  hint?: string;
+  asset?: HeroAsset;
+  error?: string;
+  onSelect: (file: File) => void;
+  onRemove: () => void;
+}) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      onSelect(file);
+      event.target.value = '';
+    },
+    [onSelect]
+  );
+
+  return (
+    <div className="flex flex-col gap-2 text-sm text-white/70">
+      <span className="font-medium text-white">{label}</span>
+      <div
+        className={clsx(
+          'flex flex-col gap-4 rounded-xl border border-dashed border-white/15 bg-white/5 p-4 text-sm text-white/60 shadow-inner shadow-black/20',
+          error && '!border-red-400/70 !bg-red-500/10'
+        )}
+      >
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+        {asset?.preview ? (
+          <div className="flex flex-col gap-4 md:flex-row md:items-center">
+            <div className="relative h-20 w-20 overflow-hidden rounded-lg border border-white/10 bg-black/40">
+              <img src={asset.preview} alt={`${label} preview`} className="h-full w-full object-cover" loading="lazy" />
+            </div>
+            <div className="flex flex-1 flex-col gap-2">
+              <span className="truncate text-white/80">{asset.name ?? 'Selected image'}</span>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-medium text-white/80 transition hover:border-white/30 hover:text-white"
+                >
+                  Replace image
+                </button>
+                <button
+                  type="button"
+                  onClick={onRemove}
+                  className="rounded-full border border-red-400/30 bg-red-500/10 px-4 py-2 text-xs font-medium text-red-200 transition hover:border-red-400/60"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center gap-3 py-6 text-center">
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="rounded-full bg-gradient-to-r from-emerald-500 via-sky-500 to-indigo-500 px-5 py-2 text-xs font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:shadow-indigo-500/40"
+            >
+              Select hero image
+            </button>
+            <p className="text-xs text-white/50">
+              Choose an image from your device. It will upload to Cloudinary when you publish the project.
+            </p>
+          </div>
+        )}
+      </div>
+      {hint && <span className="text-xs text-white/40">{hint}</span>}
+      {error && <span className="text-xs text-red-300">{error}</span>}
+    </div>
+  );
+}
+
+function GalleryImageField({
+  label,
+  hint,
+  items,
+  error,
+  onAdd,
+  onCaptionChange,
+  onRemove,
+}: {
+  label: string;
+  hint?: string;
+  items: GalleryAsset[];
+  error?: string;
+  onAdd: (files: FileList | null) => void;
+  onCaptionChange: (id: string, caption: string) => void;
+  onRemove: (id: string) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      onAdd(event.target.files);
+      event.target.value = '';
+    },
+    [onAdd]
+  );
+
+  return (
+    <div className="flex flex-col gap-2 text-sm text-white/70">
+      <span className="font-medium text-white">{label}</span>
+      <div
+        className={clsx(
+          'flex flex-col gap-4 rounded-xl border border-dashed border-white/15 bg-white/5 p-4 text-sm text-white/60 shadow-inner shadow-black/20',
+          error && '!border-red-400/70 !bg-red-500/10'
+        )}
+      >
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          className="hidden"
+          onChange={handleChange}
+        />
+
+        <div className="flex flex-col gap-3">
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            className="self-start rounded-full bg-gradient-to-r from-emerald-500 via-sky-500 to-indigo-500 px-5 py-2 text-xs font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:shadow-indigo-500/40"
+          >
+            Add gallery images
+          </button>
+          <p className="text-xs text-white/50">
+            Pick one or more images. They upload after you submit the project, keeping Cloudinary tidy.
+          </p>
+        </div>
+
+        {items.length > 0 && (
+          <ul className="grid gap-4 md:grid-cols-2">
+            {items.map((item) => (
+              <li key={item.id} className="flex flex-col gap-3 rounded-lg border border-white/10 bg-black/20 p-3">
+                <div className="relative h-32 w-full overflow-hidden rounded-md border border-white/10 bg-black/30">
+                  {item.preview ? (
+                    <img src={item.preview} alt={`${item.name ?? 'Gallery item'} preview`} className="h-full w-full object-cover" loading="lazy" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-xs text-white/40">
+                      Preview unavailable
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-col gap-2">
+                  <span className="truncate text-xs text-white/60">{item.name ?? 'Selected image'}</span>
+                  <label className="flex flex-col gap-2 text-xs text-white/70">
+                    <span className="font-medium text-white/80">Caption (optional)</span>
+                    <input
+                      type="text"
+                      value={item.caption ?? ''}
+                      onChange={(event) => onCaptionChange(item.id, event.target.value)}
+                      placeholder="Describe this shot"
+                      className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white shadow-inner shadow-black/20 transition focus:border-white/30 focus:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/20"
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => onRemove(item.id)}
+                    className="self-start rounded-full border border-red-400/30 bg-red-500/10 px-4 py-1.5 text-xs font-medium text-red-200 transition hover:border-red-400/60"
+                  >
+                    Remove from gallery
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      {hint && <span className="text-xs text-white/40">{hint}</span>}
+      {error && <span className="text-xs text-red-300">{error}</span>}
+    </div>
+  );
+}
+
 export function ProjectForm() {
   const [state, formAction] = useActionState(createProject, initialProjectState);
   const [success, setSuccess] = useState<string | undefined>();
+  const [heroAsset, setHeroAsset] = useState<HeroAsset | undefined>();
+  const [galleryAssets, setGalleryAssets] = useState<GalleryAsset[]>([]);
+  const formRef = useRef<HTMLFormElement>(null);
+  const heroAssetRef = useRef<HeroAsset | undefined>(undefined);
+  const galleryAssetsRef = useRef<GalleryAsset[]>([]);
+
+  const HERO_FOLDER = "portfolio/projects/heroes";
+  const GALLERY_FOLDER = "portfolio/projects/gallery";
 
   useEffect(() => {
     if (state.status === 'success' && state.message) {
       setSuccess(state.message);
       const timeout = setTimeout(() => setSuccess(undefined), 4000);
+      formRef.current?.reset();
+      setHeroAsset((current) => {
+        if (current?.fromFile && current.preview) URL.revokeObjectURL(current.preview);
+        return undefined;
+      });
+      setGalleryAssets((items) => {
+        items.forEach((item) => {
+          if (item.fromFile && item.preview) URL.revokeObjectURL(item.preview);
+        });
+        return [];
+      });
       return () => clearTimeout(timeout);
     }
     if (state.status === 'error') {
@@ -124,8 +350,112 @@ export function ProjectForm() {
     }
   }, [state]);
 
+  useEffect(() => {
+    heroAssetRef.current = heroAsset;
+  }, [heroAsset]);
+
+  useEffect(() => {
+    galleryAssetsRef.current = galleryAssets;
+  }, [galleryAssets]);
+
+  useEffect(() => {
+    return () => {
+      const asset = heroAssetRef.current;
+      if (asset?.fromFile && asset.preview) {
+        URL.revokeObjectURL(asset.preview);
+      }
+      galleryAssetsRef.current.forEach((item) => {
+        if (item.fromFile && item.preview) {
+          URL.revokeObjectURL(item.preview);
+        }
+      });
+    };
+  }, []);
+
+  const handleHeroSelect = useCallback((file: File) => {
+    setHeroAsset((current) => {
+      if (current?.fromFile && current.preview) {
+        URL.revokeObjectURL(current.preview);
+      }
+      const preview = URL.createObjectURL(file);
+      return {
+        file,
+        preview,
+        name: file.name,
+        fromFile: true,
+      };
+    });
+  }, []);
+
+  const handleHeroRemove = useCallback(() => {
+    setHeroAsset((current) => {
+      if (current?.fromFile && current.preview) {
+        URL.revokeObjectURL(current.preview);
+      }
+      return undefined;
+    });
+  }, []);
+
+  const handleAddGalleryFiles = useCallback((fileList: FileList | null) => {
+    if (!fileList || fileList.length === 0) return;
+    const additions: GalleryAsset[] = Array.from(fileList).map((file) => ({
+      id: (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`),
+      file,
+      preview: URL.createObjectURL(file),
+      name: file.name,
+      caption: '',
+      fromFile: true,
+    }));
+    setGalleryAssets((current) => [...current, ...additions]);
+  }, []);
+
+  const handleGalleryCaptionChange = useCallback((id: string, caption: string) => {
+    setGalleryAssets((current) =>
+      current.map((item) => (item.id === id ? { ...item, caption } : item))
+    );
+  }, []);
+
+  const handleRemoveGalleryItem = useCallback((id: string) => {
+    setGalleryAssets((current) => {
+      const target = current.find((item) => item.id === id);
+      if (target?.fromFile && target.preview) {
+        URL.revokeObjectURL(target.preview);
+      }
+      return current.filter((item) => item.id !== id);
+    });
+  }, []);
+
+  const handleSubmit = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      const formData = new FormData(event.currentTarget);
+
+      formData.set('heroImageFolder', HERO_FOLDER);
+      formData.set('galleryFolder', GALLERY_FOLDER);
+
+      if (heroAsset?.file) {
+        formData.append('heroImageFile', heroAsset.file);
+      }
+
+      galleryAssets.forEach((item) => {
+        if (item.file) {
+          formData.append('galleryImageFiles', item.file);
+          formData.append('galleryImageCaptions', item.caption ?? '');
+        }
+      });
+
+      formAction(formData);
+    },
+    [formAction, heroAsset, galleryAssets, HERO_FOLDER, GALLERY_FOLDER]
+  );
+
+  const heroFieldError = state.fieldErrors?.heroImage;
+  const galleryFieldError = state.fieldErrors?.gallery;
+
   return (
-    <form action={formAction} className="flex flex-col gap-8">
+    <form ref={formRef} action={formAction} onSubmit={handleSubmit} className="flex flex-col gap-8">
+      <input type="hidden" name="heroImageFolder" value={HERO_FOLDER} />
+      <input type="hidden" name="galleryFolder" value={GALLERY_FOLDER} />
       <FieldGroup
         title="Project identity"
         description="Foundational metadata that anchors this case study across the site."
@@ -145,13 +475,16 @@ export function ProjectForm() {
           placeholder="Transforming a traditional bank into an immersive digital experience."
           error={state.fieldErrors?.summary}
         />
-        <CloudinaryImageInput
-          label="Hero image"
-          name="heroImage"
-          hint="Upload or select a cover visual straight from your Cloudinary media library."
-          error={state.fieldErrors?.heroImage}
-          folder="portfolio/projects/heroes"
-        />
+        <div className="md:col-span-2">
+          <HeroImageField
+            label="Hero image"
+            hint="Upload a cover visual from your device. It will upload to Cloudinary once you save."
+            asset={heroAsset}
+            error={heroFieldError}
+            onSelect={handleHeroSelect}
+            onRemove={handleHeroRemove}
+          />
+        </div>
         <SelectField
           label="Project status"
           name="status"
@@ -234,14 +567,17 @@ export function ProjectForm() {
           error={state.fieldErrors?.sourceUrl}
           type="url"
         />
-        <TextInput
-          label="Gallery"
-          name="gallery"
-          rows={6}
-          placeholder={"https://cdn.com/aurora-1.jpg | Landing screen\nhttps://cdn.com/aurora-2.jpg | Conversion flow"}
-          hint="One entry per line. Add an optional caption after a pipe (|)."
-          error={state.fieldErrors?.gallery}
-        />
+        <div className="md:col-span-2">
+          <GalleryImageField
+            label="Gallery"
+            hint="Upload supporting visuals. Add captions to guide the story."
+            items={galleryAssets}
+            error={galleryFieldError}
+            onAdd={handleAddGalleryFiles}
+            onCaptionChange={handleGalleryCaptionChange}
+            onRemove={handleRemoveGalleryItem}
+          />
+        </div>
         <TextInput
           label="Impact metrics"
           name="metrics"

@@ -1,4 +1,6 @@
+import { Buffer } from "node:buffer";
 import { v2 as cloudinary } from "cloudinary";
+import type { UploadApiOptions, UploadApiResponse } from "cloudinary";
 
 type SignableValue = string | number | boolean | undefined | null;
 
@@ -42,6 +44,42 @@ export function getCloudinaryConfig() {
 }
 
 export const cloudinaryClient = cloudinary;
+
+type UploadOptions = {
+  folder?: string;
+  uploadPreset?: string;
+  publicId?: string;
+  resourceType?: UploadApiOptions["resource_type"];
+  overwrite?: boolean;
+  invalidate?: boolean;
+};
+
+export async function uploadFileToCloudinary(file: File, options: UploadOptions = {}) {
+  ensureCloudinaryEnv();
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+
+  const uploadOptions: UploadApiOptions = {
+    folder: options.folder,
+    upload_preset: options.uploadPreset ?? uploadPreset ?? undefined,
+    public_id: options.publicId,
+    resource_type: options.resourceType ?? "image",
+    overwrite: options.overwrite,
+    invalidate: options.invalidate,
+  };
+
+  return new Promise<UploadApiResponse>((resolve, reject) => {
+    const stream = cloudinaryClient.uploader.upload_stream(uploadOptions, (error, result) => {
+      if (error || !result) {
+        reject(error ?? new Error("Cloudinary upload failed"));
+      } else {
+        resolve(result);
+      }
+    });
+
+    stream.end(buffer);
+  });
+}
 
 function normalizeParams(params: Record<string, SignableValue>) {
   return Object.fromEntries(
