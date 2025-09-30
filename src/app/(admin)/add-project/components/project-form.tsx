@@ -1,10 +1,10 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState, useActionState } from "react";
+import { useActionState, useCallback, useEffect, useRef, useState, useTransition } from "react";
 import type { ChangeEvent } from "react";
-import { useFormStatus } from "react-dom";
 import clsx from "clsx";
-import { createProject, initialProjectState } from "../actions";
+import { createProject } from "../actions";
+import { initialProjectState } from "../project-state";
 
 type HeroAsset = {
   preview?: string;
@@ -107,10 +107,9 @@ function SelectField({
   );
 }
 
-function SubmitBar({ success }: { success?: string }) {
-  const { pending } = useFormStatus();
+function SubmitBar({ success, pending }: { success?: string; pending: boolean }) {
   return (
-  <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 md:px-6">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 md:px-6">
       <div className="text-sm text-white/70">
         {pending ? 'Publishing your project…' : success ?? 'Your new project will shine on the portfolio once saved.'}
       </div>
@@ -321,6 +320,7 @@ export function ProjectForm() {
   const [success, setSuccess] = useState<string | undefined>();
   const [heroAsset, setHeroAsset] = useState<HeroAsset | undefined>();
   const [galleryAssets, setGalleryAssets] = useState<GalleryAsset[]>([]);
+  const [isSubmitting, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
   const heroAssetRef = useRef<HeroAsset | undefined>(undefined);
   const galleryAssetsRef = useRef<GalleryAsset[]>([]);
@@ -434,26 +434,28 @@ export function ProjectForm() {
       formData.set('galleryFolder', GALLERY_FOLDER);
 
       if (heroAsset?.file) {
-        formData.append('heroImageFile', heroAsset.file);
+        formData.append('heroImageFile', heroAsset.file, heroAsset.file.name);
       }
 
       galleryAssets.forEach((item) => {
         if (item.file) {
-          formData.append('galleryImageFiles', item.file);
+          formData.append('galleryImageFiles', item.file, item.file.name);
           formData.append('galleryImageCaptions', item.caption ?? '');
         }
       });
 
-      formAction(formData);
+      startTransition(() => {
+        formAction(formData);
+      });
     },
-    [formAction, heroAsset, galleryAssets, HERO_FOLDER, GALLERY_FOLDER]
+    [formAction, heroAsset, galleryAssets, HERO_FOLDER, GALLERY_FOLDER, startTransition]
   );
 
   const heroFieldError = state.fieldErrors?.heroImage;
   const galleryFieldError = state.fieldErrors?.gallery;
 
   return (
-    <form ref={formRef} action={formAction} onSubmit={handleSubmit} className="flex flex-col gap-8">
+    <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-8">
       <input type="hidden" name="heroImageFolder" value={HERO_FOLDER} />
       <input type="hidden" name="galleryFolder" value={GALLERY_FOLDER} />
       <FieldGroup
@@ -613,7 +615,7 @@ export function ProjectForm() {
         </div>
       )}
 
-      <SubmitBar success={success} />
+      <SubmitBar success={success} pending={isSubmitting} />
     </form>
   );
 }

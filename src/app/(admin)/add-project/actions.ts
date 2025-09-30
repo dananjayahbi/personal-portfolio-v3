@@ -5,14 +5,7 @@ import type { UploadApiResponse } from "cloudinary";
 import prisma from "@/lib/prisma";
 import { buildProjectData, projectFormSchema, type ProjectFieldErrors } from "@/app/(admin)/projects/validation";
 import { uploadFileToCloudinary } from "@/lib/cloudinary";
-
-type ProjectState = {
-  status: 'idle' | 'success' | 'error';
-  message?: string;
-  fieldErrors?: ProjectFieldErrors;
-};
-
-export const initialProjectState: ProjectState = { status: 'idle' };
+import type { ProjectState } from "./project-state";
 
 export async function createProject(_: ProjectState, formData: FormData): Promise<ProjectState> {
   let heroImageUrl: string | undefined;
