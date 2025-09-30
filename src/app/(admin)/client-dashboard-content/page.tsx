@@ -1,11 +1,51 @@
-import React from 'react'
+import prisma from "@/lib/prisma";
+import { DashboardContentForm } from "./components/dashboard-content-form";
 
-type Props = {}
-
-const page = (props: Props) => {
-  return (
-    <div>page</div>
-  )
+function toText(value: unknown) {
+  return typeof value === 'string' ? value : '';
 }
 
-export default page
+function toStringArray(value: unknown) {
+  if (Array.isArray(value)) {
+    return value.filter((item): item is string => typeof item === 'string');
+  }
+  return [];
+}
+
+export default async function ClientDashboardContentPage() {
+  const content = await prisma.portfolioContent.findFirst();
+
+  const hero = (content?.hero as Record<string, unknown> | null) ?? null;
+  const ctas = (content?.callToActions as Record<string, unknown> | null) ?? null;
+  const about = (content?.about as Record<string, unknown> | null) ?? null;
+
+  const defaults = {
+    heroEyebrow: toText(hero?.eyebrow),
+    heroHeadline: toText(hero?.headline),
+    heroSubheadline: toText(hero?.subheadline),
+    highlights: toStringArray(hero?.highlights),
+    primaryCtaLabel: toText((ctas?.primary as Record<string, unknown> | null)?.label),
+    primaryCtaUrl: toText((ctas?.primary as Record<string, unknown> | null)?.url),
+    secondaryCtaLabel: toText((ctas?.secondary as Record<string, unknown> | null)?.label),
+    secondaryCtaUrl: toText((ctas?.secondary as Record<string, unknown> | null)?.url),
+    aboutTitle: toText(about?.title),
+    aboutSummary: toText(about?.summary),
+    aboutNarrative: toText(about?.narrative),
+    skills: toStringArray(content?.skills),
+  };
+
+  return (
+    <div className="space-y-10">
+      <header className="space-y-3">
+        <p className="text-xs uppercase tracking-[0.4em] text-white/40">Client-facing experience</p>
+        <h1 className="text-3xl font-semibold text-white">Dashboard storytelling</h1>
+        <p className="max-w-2xl text-sm text-white/60">
+          Shape the hero narrative, create powerful calls-to-action, and articulate your expertise. These updates sync
+          instantly with the public homepage experience.
+        </p>
+      </header>
+
+      <DashboardContentForm defaults={defaults} />
+    </div>
+  );
+}

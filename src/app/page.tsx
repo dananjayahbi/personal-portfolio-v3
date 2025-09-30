@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -52,6 +53,12 @@ export default function Home() {
         </div>
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
+        <Link
+          className="flex items-center gap-2 rounded-full border border-white/10 bg-black/5 px-4 py-2 text-sm font-semibold text-foreground transition hover:border-white/30 hover:bg-black/10"
+          href="/admin-login"
+        >
+          Admin portal
+        </Link>
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
           href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
