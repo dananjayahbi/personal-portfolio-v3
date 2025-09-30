@@ -41,6 +41,14 @@ Run the development server:
 npm run dev
 ```
 
+Seed the database with the default administrator account:
+
+```bash
+npm run db:seed
+```
+
+The seed script provisions an admin at **admin@test.com** with the password **admin**. Update the `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables if you prefer different credentials.
+
 Available scripts:
 
 - `npm run dev` — start Next.js in development mode.
@@ -48,6 +56,7 @@ Available scripts:
 - `npm run start` — serve the production build.
 - `npm run lint` — run ESLint.
 - `npm run prisma:generate` — wrapper for `prisma generate` (see below).
+- `npm run db:seed` — seed MongoDB with the default admin user.
 
 ## Prisma workflow
 
@@ -58,6 +67,12 @@ Prisma is configured for MongoDB (`prisma/schema.prisma`). Useful commands:
 - `npx prisma studio` — open the visual data browser.
 
 The Prisma client is instantiated in `src/lib/prisma.ts` with hot-reload safe caching for Next.js.
+
+## Admin experience
+
+- Admin login lives at [`/admin-login`](./src/app/(auth)/admin-login/page.tsx).
+- Upon signing in you will land on the new [`/admin-dashboard`](./src/app/(admin)/admin-dashboard/page.tsx) overview.
+- The left-hand navigation (defined in [`src/app/(admin)/components/admin-nav.tsx`](./src/app/(admin)/components/admin-nav.tsx)) exposes quick access to dashboard content, project management, site settings, and profile controls.
 
 ## Deployment
 

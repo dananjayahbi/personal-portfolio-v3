@@ -3,8 +3,8 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "admin@studio.dev";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "changeMe123!";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "admin@test.com";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "admin";
 const ADMIN_NAME = process.env.ADMIN_NAME ?? "Portfolio Admin";
 const ADMIN_AVATAR = process.env.ADMIN_AVATAR ?? null;
 const ADMIN_BIO = process.env.ADMIN_BIO ?? null;

@@ -13,7 +13,7 @@ const loginSchema = z.object({
     .email("Enter a valid email"),
   password: z
     .string({ required_error: "Password is required" })
-    .min(8, "Password must be at least 8 characters"),
+    .min(4, "Password must be at least 4 characters"),
 });
 
 export async function loginAction(_: LoginState, formData: FormData): Promise<LoginState> {
@@ -47,7 +47,7 @@ export async function loginAction(_: LoginState, formData: FormData): Promise<Lo
   }
 
   await createSession(admin.id);
-  redirect('/client-dashboard-content');
+  redirect('/admin-dashboard');
 }
 
 export async function logoutAction() {

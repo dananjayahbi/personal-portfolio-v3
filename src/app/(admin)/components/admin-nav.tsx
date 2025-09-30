@@ -12,6 +12,11 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   {
+    href: "/admin-dashboard",
+    label: "Admin Dashboard",
+    description: "Pulse of projects, content, and settings",
+  },
+  {
     href: "/client-dashboard-content",
     label: "Dashboard Content",
     description: "Hero, spotlight, and storytelling modules",

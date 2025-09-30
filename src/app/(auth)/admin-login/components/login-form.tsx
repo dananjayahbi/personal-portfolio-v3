@@ -89,6 +89,11 @@ export function LoginForm({ notice }: { notice?: string }) {
       )}
 
       <SubmitButton label="Sign in" />
+
+      <p className="text-center text-xs text-white/40">
+        Default access: <span className="font-mono text-white/70">admin@test.com</span> /
+        <span className="font-mono text-white/70"> admin</span>
+      </p>
     </form>
   );
 }
