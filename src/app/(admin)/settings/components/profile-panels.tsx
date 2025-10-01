@@ -3,8 +3,11 @@
 import { useEffect, useState, useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import clsx from "clsx";
-import { changePassword, initialPasswordState, initialProfileState, updateProfile } from "../actions";
+import { changePassword, updateProfile, type PasswordState, type ProfileState } from "../actions";
 import { CloudinaryImageInput } from "@/components/common/cloudinary-image-input";
+
+const initialProfileState: ProfileState = { status: 'idle' };
+const initialPasswordState: PasswordState = { status: 'idle' };
 
 type ProfileDefaults = {
   name: string;

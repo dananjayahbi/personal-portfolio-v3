@@ -3,8 +3,10 @@
 import { useEffect, useState, useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import clsx from "clsx";
-import { initialSettingsState, saveSiteSettings } from "../actions";
+import { saveSiteSettings, type SettingsState } from "../actions";
 import { CloudinaryImageInput } from "@/components/common/cloudinary-image-input";
+
+const initialSettingsState: SettingsState = { status: 'idle' };
 
 type SettingsDefaults = {
   contactEmail?: string;

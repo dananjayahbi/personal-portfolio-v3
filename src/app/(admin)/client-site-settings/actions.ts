@@ -30,13 +30,11 @@ const settingsSchema = z.object({
   footerNote: z.string().trim().optional(),
 });
 
-type SettingsState = {
+export type SettingsState = {
   status: 'idle' | 'success' | 'error';
   message?: string;
   fieldErrors?: Partial<Record<keyof z.infer<typeof settingsSchema>, string>>;
 };
-
-export const initialSettingsState: SettingsState = { status: 'idle' };
 
 function parseSocialLinks(value?: string | null) {
   if (!value) return [] as Array<{ platform: string; url: string }>;

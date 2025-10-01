@@ -30,21 +30,17 @@ const passwordSchema = z
     path: ['confirmPassword'],
   });
 
-type ProfileState = {
+export type ProfileState = {
   status: 'idle' | 'success' | 'error';
   message?: string;
   fieldErrors?: Partial<Record<keyof z.infer<typeof profileSchema>, string>>;
 };
 
-export const initialProfileState: ProfileState = { status: 'idle' };
-
-type PasswordState = {
+export type PasswordState = {
   status: 'idle' | 'success' | 'error';
   message?: string;
   fieldErrors?: Partial<Record<keyof z.infer<typeof passwordSchema>, string>>;
 };
-
-export const initialPasswordState: PasswordState = { status: 'idle' };
 
 export async function updateProfile(_: ProfileState, formData: FormData): Promise<ProfileState> {
   const admin = await getCurrentAdmin();

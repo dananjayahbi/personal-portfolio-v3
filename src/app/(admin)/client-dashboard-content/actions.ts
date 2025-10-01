@@ -26,13 +26,11 @@ const contentSchema = z.object({
   skills: z.string().trim().optional(),
 });
 
-type ContentState = {
+export type ContentState = {
   status: 'idle' | 'success' | 'error';
   message?: string;
   fieldErrors?: Partial<Record<keyof z.infer<typeof contentSchema>, string>>;
 };
-
-export const initialContentState: ContentState = { status: 'idle' };
 
 function parseList(value?: string | null) {
   if (!value) return [] as string[];

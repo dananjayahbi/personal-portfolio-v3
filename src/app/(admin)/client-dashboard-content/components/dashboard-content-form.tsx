@@ -3,7 +3,9 @@
 import { useEffect, useState, useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import clsx from "clsx";
-import { initialContentState, saveDashboardContent } from "../actions";
+import { saveDashboardContent, type ContentState } from "../actions";
+
+const initialContentState: ContentState = { status: 'idle' };
 
 export type DashboardContentDefaults = {
   heroEyebrow?: string;
