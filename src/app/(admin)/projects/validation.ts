@@ -37,12 +37,14 @@ export const projectFormSchema = z.object({
     .transform((value) => (value ? value : undefined))
     .pipe(z.string().url("Enter a valid URL").optional()),
   status: z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']).default('DRAFT'),
-  isFeatured: z.string().optional(),
+  isFeatured: z.union([z.string(), z.null(), z.undefined()]).optional(),
   featuredOrder: z
-    .string()
-    .trim()
-    .optional()
-    .refine((value) => !value || /^\d+$/.test(value), "Enter a valid number"),
+    .union([z.string(), z.null(), z.undefined()])
+    .transform((value) => {
+      if (!value || (typeof value === "string" && value.trim() === "")) return undefined;
+      return typeof value === "string" ? value.trim() : undefined;
+    })
+    .pipe(z.string().regex(/^\d+$/, "Enter a valid number").optional()),
   seoTitle: z.string().trim().optional(),
   seoDescription: z.string().trim().optional(),
 });

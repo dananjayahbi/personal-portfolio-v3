@@ -22,8 +22,9 @@ function parseSeo(value: unknown) {
 }
 
 export default async function ProjectEditPage({ params }: { params: { projectId: string } }) {
+  const { projectId } = await params;
   const project = await prisma.project.findUnique({
-    where: { id: params.projectId },
+    where: { id: projectId },
     select: {
       id: true,
       title: true,

@@ -19,13 +19,11 @@ const deleteSchema = z.object({
   projectId: z.string().trim().min(1, "Missing project id"),
 });
 
-type ProjectState = {
+export type ProjectState = {
   status: "idle" | "success" | "error";
   message?: string;
   fieldErrors?: ProjectFieldErrors & { projectId?: string };
 };
-
-export const initialUpdateState: ProjectState = { status: "idle" };
 
 function normalizeUpdatePayload(data: ReturnType<typeof buildProjectData>) {
   return {
@@ -103,16 +101,28 @@ export async function updateProject(_: ProjectState, formData: FormData): Promis
   });
 
   if (!parsed.success) {
+    console.log("❌ Validation failed!");
+    console.log("Full error object:", JSON.stringify(parsed.error, null, 2));
+    
     const { fieldErrors } = parsed.error.flatten();
+    console.log("Field errors extracted:", fieldErrors);
+    
     const errors: ProjectState["fieldErrors"] = {};
     for (const [key, value] of Object.entries(fieldErrors)) {
       if (value?.[0]) {
         (errors as Record<string, string>)[key] = value[0];
+        console.log(`Field "${key}" has error: ${value[0]}`);
       }
     }
+    
+    console.log("Final errors object:", errors);
+    console.log("Number of errors:", Object.keys(errors).length);
+    
     return {
       status: "error",
-      message: "Please review the highlighted fields before saving.",
+      message: Object.keys(errors).length > 0 
+        ? "Please review the highlighted fields before saving."
+        : "Validation error occurred. Please check your input.",
       fieldErrors: errors,
     };
   }

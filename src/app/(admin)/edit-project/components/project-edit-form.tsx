@@ -4,11 +4,13 @@ import { useActionState, useCallback, useEffect, useRef, useState, useTransition
 import type { ChangeEvent } from "react";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import { updateProject, initialUpdateState } from "../actions";
+import { updateProject, type ProjectState } from "../actions";
 import { RichTextEditor } from "@/components/common/rich-text-editor";
 
 const HERO_FOLDER = "portfolio/projects/heroes";
 const GALLERY_FOLDER = "portfolio/projects/gallery";
+
+const initialUpdateState: ProjectState = { status: "idle" };
 
 type HeroAsset = {
   preview?: string;
@@ -656,6 +658,9 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
       </FieldGroup>
 
       {state.status === "error" && state.message && (
+        !state.message.includes("highlighted fields") ||
+        (state.fieldErrors && Object.keys(state.fieldErrors).length > 0)
+      ) && (
         <div className="rounded-2xl border border-red-400/40 bg-red-500/10 px-6 py-4 text-sm text-red-200">{state.message}</div>
       )}
 
