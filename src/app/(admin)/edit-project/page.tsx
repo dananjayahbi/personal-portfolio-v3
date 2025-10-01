@@ -2,6 +2,9 @@ import prisma from "@/lib/prisma";
 import { ProjectStatus } from "@prisma/client";
 import { ProjectCard } from "./components/project-card";
 import { StatusFilter } from "./components/status-filter";
+import { Pagination } from "./components/pagination";
+
+const PROJECTS_PER_PAGE = 10;
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat('en', {
@@ -46,35 +49,45 @@ type ManageProject = {
 export default async function EditProjectPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; page?: string }>;
 }) {
-  const { status } = await searchParams;
+  const { status, page } = await searchParams;
+  const currentPage = page ? Math.max(1, parseInt(page, 10)) : 1;
   const statusFilter = status && ['DRAFT', 'PUBLISHED', 'ARCHIVED'].includes(status)
     ? (status as ProjectStatus)
     : undefined;
 
-  const projects = await prisma.project.findMany({
-    where: statusFilter ? { status: statusFilter } : undefined,
-    orderBy: { updatedAt: "desc" },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      summary: true,
-      heroImage: true,
-      status: true,
-      isFeatured: true,
-      featuredOrder: true,
-      technologies: true,
-      tags: true,
-      updatedAt: true,
-      createdAt: true,
-    },
-  });
+  const whereClause = statusFilter ? { status: statusFilter } : undefined;
+
+  const [projects, totalCount] = await Promise.all([
+    prisma.project.findMany({
+      where: whereClause,
+      orderBy: { updatedAt: "desc" },
+      skip: (currentPage - 1) * PROJECTS_PER_PAGE,
+      take: PROJECTS_PER_PAGE,
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        summary: true,
+        heroImage: true,
+        status: true,
+        isFeatured: true,
+        featuredOrder: true,
+        technologies: true,
+        tags: true,
+        updatedAt: true,
+        createdAt: true,
+      },
+    }),
+    prisma.project.count({ where: whereClause }),
+  ]);
+
+  const totalPages = Math.ceil(totalCount / PROJECTS_PER_PAGE);
 
   if (projects.length === 0) {
     return (
-      <div className="space-y-10">
+      <div className="space-y-8">
         <header className="space-y-3">
           <p className="text-xs uppercase tracking-[0.4em] text-white/40">Portfolio library</p>
           <h1 className="text-3xl font-semibold text-white">Curate existing projects</h1>
@@ -83,8 +96,13 @@ export default async function EditProjectPage({
           </p>
         </header>
 
+        <StatusFilter currentStatus={statusFilter} />
+
         <div className="rounded-3xl border border-dashed border-white/20 bg-white/5 p-10 text-center text-white/60">
-          No projects yet. Launch your first flagship case study from the &ldquo;Add Project&rdquo; tab.
+          {statusFilter 
+            ? `No ${statusFilter.toLowerCase()} projects yet.`
+            : "No projects yet. Launch your first flagship case study from the \"Add Project\" tab."
+          }
         </div>
       </div>
     );
@@ -118,6 +136,14 @@ export default async function EditProjectPage({
           <ProjectCard key={project.id} project={project} />
         ))}
       </section>
+
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          statusFilter={statusFilter}
+        />
+      )}
     </div>
   );
 }
