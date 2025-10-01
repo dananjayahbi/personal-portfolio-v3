@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { ProjectStatus } from "@prisma/client";
 import { ProjectCard } from "./components/project-card";
+import { StatusFilter } from "./components/status-filter";
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat('en', {
@@ -42,8 +43,18 @@ type ManageProject = {
   createdAt: Date;
 };
 
-export default async function EditProjectPage() {
+export default async function EditProjectPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>;
+}) {
+  const { status } = await searchParams;
+  const statusFilter = status && ['DRAFT', 'PUBLISHED', 'ARCHIVED'].includes(status)
+    ? (status as ProjectStatus)
+    : undefined;
+
   const projects = await prisma.project.findMany({
+    where: statusFilter ? { status: statusFilter } : undefined,
     orderBy: { updatedAt: "desc" },
     select: {
       id: true,
@@ -99,6 +110,8 @@ export default async function EditProjectPage() {
           Review all published work at a glance. Open any card to refine details, refresh visuals, or archive outdated case studies.
         </p>
       </header>
+
+      <StatusFilter currentStatus={statusFilter} />
 
       <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {cards.map((project) => (

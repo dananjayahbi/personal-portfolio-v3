@@ -353,7 +353,10 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
   useEffect(() => {
     if (state.status === "success") {
       setSuccess(state.message ?? "Project updated successfully.");
-      const timeout = setTimeout(() => setSuccess(undefined), 4000);
+      const timeout = setTimeout(() => {
+        setSuccess(undefined);
+        router.push("/edit-project");
+      }, 1500);
       router.refresh();
       return () => clearTimeout(timeout);
     }
