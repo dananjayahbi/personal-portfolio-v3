@@ -45,6 +45,24 @@ export function getCloudinaryConfig() {
 
 export const cloudinaryClient = cloudinary;
 
+export function derivePublicIdFromUrl(url?: string | null) {
+  if (!url) return undefined;
+  try {
+    const marker = "/upload/";
+    const index = url.indexOf(marker);
+    if (index === -1) return undefined;
+    const pathWithVersion = url.slice(index + marker.length);
+    const path = pathWithVersion.replace(/^v\d+\//, "");
+    const sanitized = path.split(/[?#]/)[0];
+    if (!sanitized) return undefined;
+    const lastDot = sanitized.lastIndexOf(".");
+    return lastDot === -1 ? sanitized : sanitized.slice(0, lastDot);
+  } catch (error) {
+    console.warn("Unable to derive Cloudinary public id from url", error);
+    return undefined;
+  }
+}
+
 type UploadOptions = {
   folder?: string;
   uploadPreset?: string;

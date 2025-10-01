@@ -1,11 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  buildProjectData,
-  parseGallery,
-  parseList,
-  parseMetrics,
-  projectFormSchema,
-} from "../validation";
+import { buildProjectData, parseGallery, parseList, projectFormSchema } from "../validation";
 
 describe("project validation helpers", () => {
   it("parses multiline lists into arrays", () => {
@@ -19,13 +13,6 @@ describe("project validation helpers", () => {
     ]);
   });
 
-  it("maps metrics entries into label/value pairs", () => {
-    expect(parseMetrics("Conversion | +34%\nActivation | 2x")).toEqual([
-      { label: "Conversion", metric: "+34%" },
-      { label: "Activation", metric: "2x" },
-    ]);
-  });
-
   it("builds project payload for prisma", () => {
     const input = projectFormSchema.parse({
       title: "Aurora",
@@ -36,15 +23,11 @@ describe("project validation helpers", () => {
       gallery: "https://cdn.com/hero.jpg | Hero",
       technologies: "Figma\nReact",
       tags: "Fintech, UX",
-      deliverables: "Strategy\nDesign",
       liveUrl: "https://aurora.app",
       sourceUrl: "https://behance.net/aurora",
       status: "PUBLISHED",
       isFeatured: "on",
       featuredOrder: "1",
-      startDate: "2024-01-10",
-      endDate: "2024-06-15",
-      metrics: "Activation | 2x",
       seoTitle: "Aurora case study",
       seoDescription: "Immersive banking redesign",
     });
@@ -56,7 +39,6 @@ describe("project validation helpers", () => {
     expect(payload.gallery).toHaveLength(1);
     expect(payload.isFeatured).toBe(true);
     expect(payload.featuredOrder).toBe(1);
-    expect(payload.startDate).toBeInstanceOf(Date);
     expect(payload.seo).toEqual({
       title: "Aurora case study",
       description: "Immersive banking redesign",
