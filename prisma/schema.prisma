@@ -1,0 +1,178 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum AdminRole {
+  OWNER
+}
+
+enum ProjectStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Admin {
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  email        String         @unique
+  passwordHash String
+  role         AdminRole      @default(OWNER)
+  avatarUrl    String?
+  bio          String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  sessions     AdminSession[]
+}
+
+model AdminSession {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  token      String   @unique
+  adminId    String   @db.ObjectId
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
+  userAgent  String?
+  ipAddress  String?
+
+  admin      Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId])
+  @@index([expiresAt])
+}
+
+model Project {
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  slug           String         @unique
+  summary        String
+  description    String?
+  heroImage      String?
+  gallery        Json?
+  technologies   String[]       @default([])
+  tags           String[]       @default([])
+  status         ProjectStatus  @default(DRAFT)
+  isFeatured     Boolean        @default(false)
+  featuredOrder  Int?
+  liveUrl        String?
+  sourceUrl      String?
+  seo            Json?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([isFeatured, featuredOrder])
+  @@index([status])
+}
+
+model Experiment {
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  slug           String         @unique
+  summary        String
+  description    String?
+  heroImage      String?
+  gallery        Json?
+  technologies   String[]       @default([])
+  tags           String[]       @default([])
+  status         ProjectStatus  @default(DRAFT)
+  isFeatured     Boolean        @default(false)
+  featuredOrder  Int?
+  liveUrl        String?
+  sourceUrl      String?
+  seo            Json?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([isFeatured, featuredOrder])
+  @@index([status])
+}
+
+model PortfolioContent {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  hero              Json?
+  about             Json?
+  personalDetails   Json?
+  services          Json?
+  experiences       Json?
+  testimonials      Json?
+  metrics           Json?
+  featuredProjectIds String[] @default([])
+  callToActions     Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Technology {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  icon      String?
+  category  String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category, order])
+}
+
+model SiteSettings {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  contactEmail  String?
+  contactPhone  String?
+  location      String?
+  availability  String?
+  resumeUrl     String?
+  socialLinks   Json?
+  seo           Json?
+  theme         Json?
+  notifications Json?
+  footerNote    String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String
+  subject   String?
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([read, createdAt])
+}
+
+model PageView {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  ip         String   @unique
+  userAgent  String?
+  country    String?
+  city       String?
+  visits     Int      @default(1)
+  firstVisit DateTime @default(now())
+  lastVisit  DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([lastVisit])
+}
+
+model IgnoredIP {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  ip          String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
