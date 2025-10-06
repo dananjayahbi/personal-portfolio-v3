@@ -75,14 +75,11 @@ function ProjectCard({ project }: { project: Project }) {
           <CardTitle className="text-white group-hover:text-cyan-400 transition-colors line-clamp-1">
             {project.title}
           </CardTitle>
-          <CardDescription className="text-slate-400 line-clamp-2">
-            {project.summary}
-          </CardDescription>
         </CardHeader>
 
         <CardContent>
           {/* Technologies */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mt-[-10px]">
             {project.technologies.slice(0, 4).map((tech) => (
               <Badge key={tech} variant="secondary" className="text-xs bg-slate-700/50 text-slate-300">
                 {tech}

@@ -39,9 +39,9 @@ export default async function ClientHomePage() {
   return (
     <div className="min-h-screen">
       <HeroSection content={heroContent} callToActions={callToActions} settings={siteSettings as any} />
-      <FeaturedProjects projects={featuredProjects} />
-      <SkillsSection />
       <AboutSection content={aboutContent} experiences={experiences} />
+      <SkillsSection />
+      <FeaturedProjects projects={featuredProjects} />
       <ContactSection settings={siteSettings as any} />
     </div>
   );

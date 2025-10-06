@@ -59,9 +59,9 @@ export function ProjectFilters({ technologies, tags, onFilterChange }: ProjectFi
   const hasActiveFilters = search || selectedTechnologies.length > 0 || selectedTags.length > 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Search Bar */}
-      <div className="flex gap-4">
+      <div className="flex gap-4 mt-[-30px]">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
           <input
@@ -75,7 +75,7 @@ export function ProjectFilters({ technologies, tags, onFilterChange }: ProjectFi
         <Button
           variant="outline"
           onClick={() => setShowFilters(!showFilters)}
-          className="border-slate-700 hover:border-cyan-500"
+          className="border-slate-700 hover:border-cyan-500 h-[50px]"
         >
           <Filter className="h-5 w-5 mr-2" />
           Filters

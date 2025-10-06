@@ -41,39 +41,42 @@ export function AboutSection({ content, experiences }: AboutSectionProps) {
           )}
         </div>
 
-        {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          {/* Left Column - Bio */}
+        {/* Content Stack */}
+        <div className="space-y-8 max-w-4xl mx-auto">
+          {/* Background Section */}
           {narrative && (
-            <div className="space-y-6">
-              <div className="p-8 rounded-xl bg-slate-800/50 border border-slate-700">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-400">
-                    <User className="h-6 w-6" />
-                  </div>
-                  <h3 className="text-2xl font-semibold text-white">Background</h3>
+            <div className="p-8 rounded-xl bg-slate-800/50 border border-slate-700">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-400">
+                  <User className="h-6 w-6" />
                 </div>
-                <p className="text-slate-300 leading-relaxed whitespace-pre-line">
-                  {narrative}
-                </p>
+                <h3 className="text-2xl font-semibold text-white">Background</h3>
               </div>
+              <p className="text-slate-300 leading-relaxed whitespace-pre-line">
+                {narrative}
+              </p>
             </div>
           )}
 
-          {/* Right Column - Experience */}
+          {/* Experience Section */}
           {experiences && experiences.length > 0 && (
-            <div className="space-y-6">
-              <div className="p-8 rounded-xl bg-slate-800/50 border border-slate-700">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-400">
-                    <Briefcase className="h-6 w-6" />
-                  </div>
-                  <h3 className="text-2xl font-semibold text-white">Experience</h3>
+            <div className="p-8 rounded-xl bg-slate-800/50 border border-slate-700">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-400">
+                  <Briefcase className="h-6 w-6" />
                 </div>
+                <h3 className="text-2xl font-semibold text-white">Experience</h3>
+              </div>
 
+              <div className="relative">
                 <div className="space-y-6">
-                  {experiences.map((exp, index) => (
-                    <div key={index} className="relative pl-6 border-l-2 border-slate-700">
+                  {experiences.slice(0, 3).map((exp, index) => (
+                    <div 
+                      key={index} 
+                      className={`relative pl-6 border-l-2 border-slate-700 transition-opacity ${
+                        index === 2 && experiences.length > 2 ? 'opacity-40' : 'opacity-100'
+                      }`}
+                    >
                       <div className={`absolute -left-[9px] top-0 w-4 h-4 rounded-full ${index === 0 ? 'bg-cyan-500' : 'bg-slate-600'}`} />
                       <div className="space-y-1">
                         <h4 className="text-lg font-semibold text-white">{exp.role}</h4>
@@ -86,6 +89,23 @@ export function AboutSection({ content, experiences }: AboutSectionProps) {
                     </div>
                   ))}
                 </div>
+
+                {/* Show "See Full" button if more than 2 experiences */}
+                {experiences.length > 2 && (
+                  <div className="mt-6 text-center">
+                    <Button 
+                      asChild 
+                      size="sm" 
+                      variant="outline" 
+                      className="group border-slate-700 hover:border-cyan-500"
+                    >
+                      <Link href="/about">
+                        See Full Experience
+                        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </Link>
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           )}

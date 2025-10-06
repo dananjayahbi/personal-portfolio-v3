@@ -48,7 +48,8 @@ export const getPublishedProjects = cache(async (filters?: ProjectFilters) => {
 });
 
 export const getFeaturedProjects = cache(async (limit: number = 6) => {
-  return await prisma.project.findMany({
+  // First, try to get featured projects
+  const featured = await prisma.project.findMany({
     where: {
       status: ProjectStatus.PUBLISHED,
       isFeatured: true,
@@ -56,6 +57,19 @@ export const getFeaturedProjects = cache(async (limit: number = 6) => {
     orderBy: [{ featuredOrder: "asc" }, { createdAt: "desc" }],
     take: limit,
   });
+
+  // If no featured projects, fallback to recent published projects
+  if (featured.length === 0) {
+    return await prisma.project.findMany({
+      where: {
+        status: ProjectStatus.PUBLISHED,
+      },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+    });
+  }
+
+  return featured;
 });
 
 export const getProjectBySlug = cache(async (slug: string) => {

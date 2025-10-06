@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Project } from "@prisma/client";
 import { ProjectFilters } from "./project-filters";
-import { formatDate } from "@/lib/utils";
 
 interface ProjectsGridProps {
   initialProjects: Project[];
@@ -109,14 +108,11 @@ function ProjectCard({ project }: { project: Project }) {
           <CardTitle className="text-white group-hover:text-cyan-400 transition-colors line-clamp-1">
             {project.title}
           </CardTitle>
-          <CardDescription className="text-slate-400 line-clamp-2">
-            {project.summary}
-          </CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-4">
           {/* Technologies */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mt-[-10px]">
             {project.technologies.slice(0, 4).map((tech) => (
               <Badge key={tech} variant="secondary" className="text-xs bg-slate-700/50 text-slate-300">
                 {tech}
@@ -127,12 +123,6 @@ function ProjectCard({ project }: { project: Project }) {
                 +{project.technologies.length - 4}
               </Badge>
             )}
-          </div>
-
-          {/* Date */}
-          <div className="flex items-center gap-2 text-xs text-slate-500">
-            <Calendar className="h-3 w-3" />
-            {formatDate(project.createdAt)}
           </div>
         </CardContent>
 
