@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getProjectBySlug, getRelatedProjects } from "@/services/project.service";
 import { formatDate } from "@/lib/utils";
+import { GallerySection } from "../components/gallery-section";
 
 export const revalidate = 60;
 
@@ -154,34 +155,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               )}
 
               {/* Gallery */}
-              {gallery && Array.isArray(gallery) && gallery.length > 0 && (
-                <div>
-                  <h2 className="text-3xl font-bold text-white mb-8 flex items-center gap-3">
-                    <div className="h-1 w-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"></div>
-                    Project Gallery
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {gallery.map((item: any, index: number) => (
-                      <div 
-                        key={index} 
-                        className="group relative aspect-video rounded-xl overflow-hidden bg-slate-800/50 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20"
-                      >
-                        <Image
-                          src={item.url}
-                          alt={item.alt || `${project.title} screenshot ${index + 1}`}
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-500"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <div className="absolute bottom-4 left-4 text-white font-medium">
-                            {item.alt || `Screenshot ${index + 1}`}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <GallerySection images={gallery || []} title={project.title} type="project" />
             </div>
 
             {/* Sidebar - Right */}
