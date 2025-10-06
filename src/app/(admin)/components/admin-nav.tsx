@@ -11,6 +11,7 @@ import {
   Folders,
   Settings2,
   UserRoundCog,
+  Zap,
 } from "lucide-react";
 
 type NavItem = {
@@ -39,6 +40,11 @@ const NAV_ITEMS: NavItem[] = [
     href: "/edit-project",
     label: "Manage projects",
     icon: Folders,
+  },
+  {
+    href: "/manage-technologies",
+    label: "Manage technologies",
+    icon: Zap,
   },
   {
     href: "/client-site-settings",

@@ -80,6 +80,7 @@ model PortfolioContent {
   hero              Json?
   about             Json?
   skills            String[] @default([])
+  personalDetails   Json?
   services          Json?
   experiences       Json?
   testimonials      Json?
@@ -88,6 +89,18 @@ model PortfolioContent {
   callToActions     Json?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+}
+
+model Technology {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  icon      String?
+  category  String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category, order])
 }
 
 model SiteSettings {

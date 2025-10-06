@@ -34,14 +34,13 @@ export default async function ClientHomePage() {
   const heroContent = portfolioContent?.hero as any;
   const callToActions = portfolioContent?.callToActions as any;
   const aboutContent = portfolioContent?.about as any;
-  const skills = portfolioContent?.skills || [];
   const experiences = portfolioContent?.experiences as any;
 
   return (
     <div className="min-h-screen">
       <HeroSection content={heroContent} callToActions={callToActions} settings={siteSettings as any} />
       <FeaturedProjects projects={featuredProjects} />
-      <SkillsSection skills={skills} />
+      <SkillsSection />
       <AboutSection content={aboutContent} experiences={experiences} />
       <ContactSection settings={siteSettings as any} />
     </div>

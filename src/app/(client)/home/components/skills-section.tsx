@@ -1,102 +1,95 @@
-import { Code2, Database, Cloud, Cpu, Palette, Zap } from "lucide-react";
+import { getAllTechnologies } from "@/services/technology.service";
+import Image from "next/image";
 
-interface SkillsSectionProps {
-  skills?: string[];
-}
+const CATEGORY_COLORS = {
+  Frontend: "from-cyan-500 to-blue-500",
+  Backend: "from-purple-500 to-indigo-500",
+  Database: "from-green-500 to-emerald-500",
+  "Version Control": "from-orange-500 to-red-500",
+  Others: "from-pink-500 to-rose-500",
+};
 
-const defaultSkillCategories = [
-  {
-    name: "Frontend",
-    icon: Palette,
-    skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Vue.js"],
-  },
-  {
-    name: "Backend",
-    icon: Database,
-    skills: ["Node.js", "Express", "Python", "FastAPI", "REST APIs"],
-  },
-  {
-    name: "Database",
-    icon: Database,
-    skills: ["MongoDB", "PostgreSQL", "Prisma", "Redis", "MySQL"],
-  },
-  {
-    name: "DevOps & Cloud",
-    icon: Cloud,
-    skills: ["AWS", "Docker", "Kubernetes", "CI/CD", "Vercel"],
-  },
-  {
-    name: "Tools & Others",
-    icon: Zap,
-    skills: ["Git", "VS Code", "Figma", "Postman", "Linux"],
-  },
-];
+export async function SkillsSection() {
+  const technologies = await getAllTechnologies();
 
-export function SkillsSection({ skills }: SkillsSectionProps) {
-  // If custom skills are provided, use them; otherwise use default categories
-  const displaySkills = skills && skills.length > 0 ? skills : null;
+  if (!technologies || technologies.length === 0) return null;
+
+  // Group technologies by category
+  const groupedTechnologies = technologies.reduce((acc, tech) => {
+    if (!acc[tech.category]) {
+      acc[tech.category] = [];
+    }
+    acc[tech.category].push(tech);
+    return acc;
+  }, {} as Record<string, typeof technologies>);
+
+  // Sort technologies within each category by order
+  Object.keys(groupedTechnologies).forEach(category => {
+    groupedTechnologies[category].sort((a, b) => a.order - b.order);
+  });
 
   return (
-    <section className="py-20 bg-slate-950">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 px-6">
+      <div className="max-w-6xl mx-auto">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-            Skills & Technologies
-          </h2>
-          <p className="text-lg text-slate-400">
-            Tools and technologies I work with to bring ideas to life
-          </p>
+        <div className="text-center mb-16">
+          <div className="inline-block">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-2xl">⚡</span>
+              <h2 className="text-4xl md:text-5xl font-bold">
+                <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                  Skills & Technologies
+                </span>
+              </h2>
+            </div>
+            <div className="h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 rounded-full"></div>
+          </div>
         </div>
 
-        {/* Skills Grid */}
-        {displaySkills ? (
-          // Custom skills list
-          <div className="max-w-4xl mx-auto">
-            <div className="flex flex-wrap justify-center gap-3">
-              {displaySkills.map((skill) => (
-                <div
-                  key={skill}
-                  className="px-6 py-3 rounded-lg bg-slate-800/50 border border-slate-700 hover:border-cyan-500/50 hover:bg-slate-800 transition-all"
-                >
-                  <span className="text-slate-300 font-medium">{skill}</span>
-                </div>
-              ))}
+        {/* Technologies Grid */}
+        <div className="space-y-12">
+          {Object.entries(groupedTechnologies).map(([category, techs]) => (
+            <div key={category} className="space-y-6">
+              {/* Category Title */}
+              <div className="flex items-center gap-3">
+                <div className={`h-1 w-12 bg-gradient-to-r ${CATEGORY_COLORS[category as keyof typeof CATEGORY_COLORS] || 'from-gray-500 to-gray-600'} rounded-full`}></div>
+                <h3 className="text-2xl font-semibold text-white/90">
+                  {category}
+                </h3>
+              </div>
+
+              {/* Technology Cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {techs.map((tech) => (
+                  <div
+                    key={tech.id}
+                    className="group relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6 transition-all hover:border-white/20 hover:bg-white/10 hover:scale-105 hover:shadow-xl hover:shadow-cyan-500/20"
+                  >
+                    {/* Technology Icon */}
+                    {tech.icon && (
+                      <div className="relative h-16 w-16 mx-auto mb-4 transition-transform group-hover:scale-110">
+                        <Image
+                          src={tech.icon}
+                          alt={tech.name}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                    )}
+
+                    {/* Technology Name */}
+                    <p className="text-center text-sm font-medium text-white/80 group-hover:text-white transition-colors">
+                      {tech.name}
+                    </p>
+
+                    {/* Hover Glow Effect */}
+                    <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${CATEGORY_COLORS[category as keyof typeof CATEGORY_COLORS] || 'from-gray-500 to-gray-600'} opacity-0 group-hover:opacity-10 transition-opacity -z-10`}></div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ) : (
-          // Default categorized skills
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {defaultSkillCategories.map((category) => {
-              const Icon = category.icon;
-              return (
-                <div
-                  key={category.name}
-                  className="group p-6 rounded-xl bg-slate-800/50 border border-slate-700 hover:border-cyan-500/50 transition-all hover:shadow-xl hover:shadow-cyan-500/10"
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-400 group-hover:bg-cyan-500/20 transition-colors">
-                      <Icon className="h-6 w-6" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-white">
-                      {category.name}
-                    </h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {category.skills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="px-3 py-1 text-sm rounded-md bg-slate-700/50 text-slate-300 border border-slate-600 group-hover:border-cyan-500/30 transition-colors"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+          ))}
+        </div>
       </div>
     </section>
   );

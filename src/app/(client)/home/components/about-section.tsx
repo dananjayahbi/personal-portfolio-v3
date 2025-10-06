@@ -1,4 +1,6 @@
-import { User, Briefcase, GraduationCap, Award } from "lucide-react";
+import Link from "next/link";
+import { User, Briefcase, GraduationCap, Award, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface AboutSectionProps {
   content?: {
@@ -87,6 +89,16 @@ export function AboutSection({ content, experiences }: AboutSectionProps) {
               </div>
             </div>
           )}
+        </div>
+
+        {/* See More Button */}
+        <div className="text-center mt-12">
+          <Button asChild size="lg" variant="outline" className="group border-slate-700 hover:border-cyan-500">
+            <Link href="/about">
+              Learn More About Me
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </Button>
         </div>
       </div>
     </section>
