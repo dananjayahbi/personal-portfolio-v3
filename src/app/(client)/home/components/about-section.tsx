@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { User, Briefcase, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { GitHubGraph } from "@/components/common/github-graph";
 
 interface AboutSectionProps {
   content?: {
@@ -109,6 +110,9 @@ export function AboutSection({ content, experiences }: AboutSectionProps) {
               </div>
             </div>
           )}
+
+          {/* GitHub Contributions Graph */}
+          <GitHubGraph />
         </div>
 
         {/* See More Button */}

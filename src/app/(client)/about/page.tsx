@@ -3,6 +3,7 @@ import { User, Briefcase, Download, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getPortfolioContent, getSiteSettings } from "@/services/content.service";
+import { GitHubGraph } from "@/components/common/github-graph";
 
 export const revalidate = 60;
 
@@ -85,6 +86,9 @@ export default async function AboutPage() {
                 </div>
               </div>
             )}
+
+            {/* GitHub Contributions Graph */}
+            <GitHubGraph />
 
             {/* Experience Timeline */}
             {experiences.length > 0 && (

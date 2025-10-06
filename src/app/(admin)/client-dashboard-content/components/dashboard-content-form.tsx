@@ -4,6 +4,7 @@ import { useEffect, useState, useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import clsx from "clsx";
 import { saveDashboardContent, type ContentState } from "../actions";
+import { GitHubGraphUpload } from "./github-graph-upload";
 
 const initialContentState: ContentState = { status: 'idle' };
 
@@ -120,7 +121,8 @@ export function DashboardContentForm({ defaults }: { defaults: DashboardContentD
     .join('\n');
 
   return (
-    <form action={formAction} className="flex flex-col gap-8">
+    <>
+      <form action={formAction} className="flex flex-col gap-8">
       <Fieldset
         title="Hero Narrative"
         description="Craft the first impression above the fold—be bold, personal, and unmistakably you."
@@ -251,5 +253,15 @@ export function DashboardContentForm({ defaults }: { defaults: DashboardContentD
 
       <SubmitBar success={success} />
     </form>
+
+    {/* GitHub Graph Upload - Separate Form */}
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-5 md:p-6">
+      <h2 className="text-lg font-semibold text-white mb-4">GitHub Contribution Graph</h2>
+      <p className="text-sm text-white/60 mb-6">
+        Upload and manage your GitHub contribution graph that appears on the homepage and About page.
+      </p>
+      <GitHubGraphUpload />
+    </div>
+    </>
   );
 }

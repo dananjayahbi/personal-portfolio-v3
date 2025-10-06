@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
+import { writeFile } from "fs/promises";
+import path from "path";
 
 const contentSchema = z.object({
   heroEyebrow: z.string().trim().min(2, "Add a short pre-header"),
@@ -146,4 +148,46 @@ export async function saveDashboardContent(_: ContentState, formData: FormData):
   revalidatePath('/client-dashboard-content');
 
   return { status: 'success', message: 'Dashboard content saved successfully' };
+}
+
+export type GitHubGraphState = {
+  status: 'idle' | 'success' | 'error';
+  message?: string;
+};
+
+export async function uploadGitHubGraph(_: GitHubGraphState, formData: FormData): Promise<GitHubGraphState> {
+  try {
+    const file = formData.get('graphImage') as File;
+    
+    if (!file) {
+      return { status: 'error', message: 'No file provided' };
+    }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      return { status: 'error', message: 'File must be an image' };
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      return { status: 'error', message: 'File size must be less than 5MB' };
+    }
+
+    // Read file as buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Save to assets/github-status/graph.png
+    const filePath = path.join(process.cwd(), 'src', 'assets', 'github-status', 'graph.png');
+    await writeFile(filePath, buffer);
+
+    // Revalidate paths that display the graph
+    revalidatePath('/');
+    revalidatePath('/about');
+
+    return { status: 'success', message: 'GitHub graph updated successfully' };
+  } catch (error) {
+    console.error('Error uploading GitHub graph:', error);
+    return { status: 'error', message: 'Failed to upload graph. Please try again.' };
+  }
 }
