@@ -130,3 +130,26 @@ model ContactMessage {
 
   @@index([read, createdAt])
 }
+
+model PageView {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  ip         String   @unique
+  userAgent  String?
+  country    String?
+  city       String?
+  visits     Int      @default(1)
+  firstVisit DateTime @default(now())
+  lastVisit  DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([lastVisit])
+}
+
+model IgnoredIP {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  ip          String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
