@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ExternalLink, Github } from "lucide-react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Project } from "@prisma/client";
@@ -41,7 +41,7 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
             asChild
             size="lg"
             variant="outline"
-            className="group border-slate-700 hover:border-cyan-500 text-white"
+            className="group border-slate-700 hover:border-cyan-500 text-black"
           >
             <Link href="/projects">
               View All Projects

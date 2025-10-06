@@ -69,13 +69,18 @@ export function InboxContent({ messages: initialMessages }: InboxContentProps) {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Messages List */}
       <div className="lg:col-span-1 space-y-4">
-        {/* Filter Tabs */}
         <div className="flex gap-2">
+          {/* Filter Tabs */}
           <Button
             variant={filter === "all" ? "default" : "outline"}
             size="sm"
             onClick={() => setFilter("all")}
-            className="flex-1"
+            className={`flex-1 rounded-full py-1 px-3 text-sm transition-colors ${
+              filter === "all"
+                ? "bg-slate-900 text-white border-slate-700"
+                : "bg-white/5 text-slate-400 hover:bg-white/10"
+            }`}
+            aria-pressed={filter === "all"}
           >
             All ({messages.length})
           </Button>
@@ -83,7 +88,12 @@ export function InboxContent({ messages: initialMessages }: InboxContentProps) {
             variant={filter === "unread" ? "default" : "outline"}
             size="sm"
             onClick={() => setFilter("unread")}
-            className="flex-1"
+            className={`flex-1 rounded-full py-1 px-3 text-sm transition-colors ${
+              filter === "unread"
+                ? "bg-slate-900 text-white border-slate-700"
+                : "bg-white/5 text-slate-400 hover:bg-white/10"
+            }`}
+            aria-pressed={filter === "unread"}
           >
             Unread ({unreadCount})
           </Button>
@@ -91,7 +101,12 @@ export function InboxContent({ messages: initialMessages }: InboxContentProps) {
             variant={filter === "read" ? "default" : "outline"}
             size="sm"
             onClick={() => setFilter("read")}
-            className="flex-1"
+            className={`flex-1 rounded-full py-1 px-3 text-sm transition-colors ${
+              filter === "read"
+                ? "bg-slate-900 text-white border-slate-700"
+                : "bg-white/5 text-slate-400 hover:bg-white/10"
+            }`}
+            aria-pressed={filter === "read"}
           >
             Read
           </Button>

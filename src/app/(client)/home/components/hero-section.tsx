@@ -118,7 +118,7 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
                 asChild
                 size="lg"
                 variant="outline"
-                className="border-slate-700 hover:border-cyan-500 text-white px-8 py-6 text-base"
+                className="border-slate-700 hover:border-cyan-500 text-black px-8 py-6 text-base"
               >
                 <Link href={secondaryCta.url}>
                   {secondaryCta.label}

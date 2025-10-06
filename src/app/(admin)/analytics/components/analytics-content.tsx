@@ -205,7 +205,7 @@ export function AnalyticsContent({
           variant="outline"
           onClick={refreshData}
           disabled={isRefreshing}
-          className="border-slate-700 hover:border-cyan-500"
+          className="border-slate-700 text-black hover:border-cyan-500"
         >
           <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
           {isRefreshing ? "Refreshing..." : "Refresh Data"}

@@ -56,7 +56,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               src={project.heroImage}
               alt={project.title}
               fill
-              className="object-cover opacity-20"
+              className="object-cover opacity-80"
               priority
             />
             <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/90 to-slate-950" />

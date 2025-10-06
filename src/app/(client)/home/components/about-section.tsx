@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { User, Briefcase, GraduationCap, Award, ArrowRight } from "lucide-react";
+import { User, Briefcase, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface AboutSectionProps {
