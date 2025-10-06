@@ -23,7 +23,6 @@ const contentSchema = z.object({
   aboutTitle: z.string().trim().min(4, "About title required"),
   aboutSummary: z.string().trim().min(12, "Share a concise summary"),
   aboutNarrative: z.string().trim().optional(),
-  skills: z.string().trim().optional(),
   experiences: z.string().trim().optional(),
 });
 
@@ -75,7 +74,6 @@ export async function saveDashboardContent(_: ContentState, formData: FormData):
     aboutTitle: formData.get('aboutTitle'),
     aboutSummary: formData.get('aboutSummary'),
     aboutNarrative: formData.get('aboutNarrative'),
-    skills: formData.get('skills'),
     experiences: formData.get('experiences'),
   });
 
@@ -94,7 +92,6 @@ export async function saveDashboardContent(_: ContentState, formData: FormData):
 
   const data = parsed.data;
   const highlights = [data.highlightOne, data.highlightTwo, data.highlightThree].filter(Boolean) as string[];
-  const skills = parseList(data.skills);
   const experiences = parseExperiences(data.experiences);
 
   const payload = {
@@ -121,7 +118,6 @@ export async function saveDashboardContent(_: ContentState, formData: FormData):
       summary: data.aboutSummary,
       narrative: data.aboutNarrative,
     },
-    skills,
     experiences,
   };
 
@@ -133,7 +129,6 @@ export async function saveDashboardContent(_: ContentState, formData: FormData):
         hero: payload.hero,
         callToActions: payload.callToActions,
         about: payload.about,
-        skills: payload.skills,
         experiences: payload.experiences,
       },
     });
@@ -143,7 +138,6 @@ export async function saveDashboardContent(_: ContentState, formData: FormData):
         hero: payload.hero,
         callToActions: payload.callToActions,
         about: payload.about,
-        skills: payload.skills,
         experiences: payload.experiences,
       },
     });

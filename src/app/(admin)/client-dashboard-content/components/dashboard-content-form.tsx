@@ -19,7 +19,6 @@ export type DashboardContentDefaults = {
   aboutTitle?: string;
   aboutSummary?: string;
   aboutNarrative?: string | null;
-  skills?: string[];
   experiences?: Array<{
     company: string;
     role: string;
@@ -114,7 +113,6 @@ export function DashboardContentForm({ defaults }: { defaults: DashboardContentD
     }
   }, [state]);
 
-  const skillText = defaults.skills?.join('\n') ?? '';
   const highlights = defaults.highlights ?? [];
   const experiences = defaults.experiences ?? [];
   const experiencesText = experiences
@@ -227,14 +225,6 @@ export function DashboardContentForm({ defaults }: { defaults: DashboardContentD
           defaultValue={defaults.aboutNarrative ?? undefined}
           error={state.fieldErrors?.aboutNarrative}
           placeholder="Use this space to elaborate on your process, beliefs, and past achievements."
-          rows={6}
-        />
-        <TextField
-          label="Skills & focus areas"
-          name="skills"
-          defaultValue={skillText}
-          error={state.fieldErrors?.skills}
-          placeholder="Product strategy\nDesign systems\nMotion design"
           rows={6}
         />
       </Fieldset>

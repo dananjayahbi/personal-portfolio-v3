@@ -79,7 +79,6 @@ model PortfolioContent {
   id                String   @id @default(auto()) @map("_id") @db.ObjectId
   hero              Json?
   about             Json?
-  skills            String[] @default([])
   personalDetails   Json?
   services          Json?
   experiences       Json?

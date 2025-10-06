@@ -41,7 +41,6 @@ export default async function ClientDashboardContentPage() {
     aboutTitle: toText(about?.title),
     aboutSummary: toText(about?.summary),
     aboutNarrative: toText(about?.narrative),
-    skills: toStringArray(content?.skills),
     experiences: toExperiencesArray(content?.experiences),
   };
 
