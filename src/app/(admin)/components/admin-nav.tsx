@@ -14,6 +14,7 @@ import {
   Zap,
   Inbox,
   BarChart3,
+  FlaskConical,
 } from "lucide-react";
 
 type NavItem = {
@@ -52,6 +53,16 @@ const NAV_ITEMS: NavItem[] = [
     href: "/edit-project",
     label: "Manage projects",
     icon: Folders,
+  },
+  {
+    href: "/add-experiment",
+    label: "Add experiment",
+    icon: FlaskConical,
+  },
+  {
+    href: "/edit-experiment",
+    label: "Manage experiments",
+    icon: FlaskConical,
   },
   {
     href: "/manage-technologies",

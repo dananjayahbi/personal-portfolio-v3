@@ -75,6 +75,29 @@ model Project {
   @@index([status])
 }
 
+model Experiment {
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  slug           String         @unique
+  summary        String
+  description    String?
+  heroImage      String?
+  gallery        Json?
+  technologies   String[]       @default([])
+  tags           String[]       @default([])
+  status         ProjectStatus  @default(DRAFT)
+  isFeatured     Boolean        @default(false)
+  featuredOrder  Int?
+  liveUrl        String?
+  sourceUrl      String?
+  seo            Json?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([isFeatured, featuredOrder])
+  @@index([status])
+}
+
 model PortfolioContent {
   id                String   @id @default(auto()) @map("_id") @db.ObjectId
   hero              Json?

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
-import { ProjectEditForm } from "../components/project-edit-form";
+import { ExperimentEditForm } from "../components/experiment-edit-form";
 
 function parseGallery(value: unknown) {
   if (!Array.isArray(value)) return [] as Array<{ url: string; alt: string | null }>;
@@ -21,10 +21,10 @@ function parseSeo(value: unknown) {
   };
 }
 
-export default async function ProjectEditPage({ params }: { params: Promise<{ projectId: string }> }) {
-  const { projectId } = await params;
-  const project = await prisma.project.findUnique({
-    where: { id: projectId },
+export default async function ExperimentEditPage({ params }: { params: Promise<{ experimentId: string }> }) {
+  const { experimentId } = await params;
+  const experiment = await prisma.experiment.findUnique({
+    where: { id: experimentId },
     select: {
       id: true,
       title: true,
@@ -46,42 +46,42 @@ export default async function ProjectEditPage({ params }: { params: Promise<{ pr
     },
   });
 
-  if (!project) {
+  if (!experiment) {
     notFound();
   }
 
-  const gallery = parseGallery(project.gallery);
-  const seo = parseSeo(project.seo);
+  const gallery = parseGallery(experiment.gallery);
+  const seo = parseSeo(experiment.seo);
 
   return (
     <div className="space-y-10">
       <header className="space-y-3">
-        <p className="text-xs uppercase tracking-[0.4em] text-white/40">Project editor</p>
-        <h1 className="text-3xl font-semibold text-white">{project.title}</h1>
+        <p className="text-xs uppercase tracking-[0.4em] text-white/40">Experiment editor</p>
+        <h1 className="text-3xl font-semibold text-white">{experiment.title}</h1>
         <div className="flex flex-wrap items-center gap-4 text-xs text-white/45">
-          <span className="rounded-full border border-white/15 px-3 py-1 uppercase tracking-[0.3em] text-white/40">/{project.slug}</span>
-          <span>Created {project.createdAt.toLocaleDateString()}</span>
-          <span>Updated {project.updatedAt.toLocaleDateString()}</span>
+          <span className="rounded-full border border-white/15 px-3 py-1 uppercase tracking-[0.3em] text-white/40">/{experiment.slug}</span>
+          <span>Created {experiment.createdAt.toLocaleDateString()}</span>
+          <span>Updated {experiment.updatedAt.toLocaleDateString()}</span>
         </div>
-        <p className="max-w-2xl text-sm text-white/60">{project.summary}</p>
+        <p className="max-w-2xl text-sm text-white/60">{experiment.summary}</p>
       </header>
 
-      <ProjectEditForm
-        project={{
-          id: project.id,
-          title: project.title,
-          slug: project.slug,
-          summary: project.summary,
-          description: project.description ?? "",
-          heroImage: project.heroImage ?? "",
+      <ExperimentEditForm
+        experiment={{
+          id: experiment.id,
+          title: experiment.title,
+          slug: experiment.slug,
+          summary: experiment.summary,
+          description: experiment.description ?? "",
+          heroImage: experiment.heroImage ?? "",
           gallery,
-          technologies: project.technologies ?? [],
-          tags: project.tags ?? [],
-          liveUrl: project.liveUrl ?? "",
-          sourceUrl: project.sourceUrl ?? "",
-          status: project.status,
-          isFeatured: project.isFeatured,
-          featuredOrder: project.featuredOrder ?? null,
+          technologies: experiment.technologies ?? [],
+          tags: experiment.tags ?? [],
+          liveUrl: experiment.liveUrl ?? "",
+          sourceUrl: experiment.sourceUrl ?? "",
+          status: experiment.status,
+          isFeatured: experiment.isFeatured,
+          featuredOrder: experiment.featuredOrder ?? null,
           seo,
         }}
       />
