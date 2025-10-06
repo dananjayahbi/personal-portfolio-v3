@@ -26,15 +26,33 @@ export function ContactSection({ settings }: ContactSectionProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitStatus("idle");
     
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/contact-messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSubmitStatus("success");
+        setFormData({ name: "", email: "", subject: "", message: "" });
+        
+        setTimeout(() => setSubmitStatus("idle"), 5000);
+      } else {
+        setSubmitStatus("error");
+        setTimeout(() => setSubmitStatus("idle"), 5000);
+      }
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      setSubmitStatus("error");
+      setTimeout(() => setSubmitStatus("idle"), 5000);
+    } finally {
       setIsSubmitting(false);
-      setSubmitStatus("success");
-      setFormData({ name: "", email: "", subject: "", message: "" });
-      
-      setTimeout(() => setSubmitStatus("idle"), 3000);
-    }, 1000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

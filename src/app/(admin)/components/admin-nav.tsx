@@ -12,6 +12,7 @@ import {
   Settings2,
   UserRoundCog,
   Zap,
+  Inbox,
 } from "lucide-react";
 
 type NavItem = {
@@ -25,6 +26,11 @@ const NAV_ITEMS: NavItem[] = [
     href: "/admin-dashboard",
     label: "Dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    href: "/inbox",
+    label: "Inbox",
+    icon: Inbox,
   },
   {
     href: "/client-dashboard-content",
