@@ -24,6 +24,7 @@ const contentSchema = z.object({
   aboutSummary: z.string().trim().min(12, "Share a concise summary"),
   aboutNarrative: z.string().trim().optional(),
   skills: z.string().trim().optional(),
+  experiences: z.string().trim().optional(),
 });
 
 export type ContentState = {
@@ -38,6 +39,25 @@ function parseList(value?: string | null) {
     .split(/\r?\n|,/)
     .map((entry) => entry.trim())
     .filter(Boolean);
+}
+
+function parseExperiences(value?: string | null) {
+  if (!value) return [] as Array<{ company: string; role: string; period: string; description?: string }>;
+  return value
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const parts = line.split('|').map((part) => part?.trim());
+      if (parts.length < 3) return null;
+      return {
+        company: parts[0],
+        role: parts[1],
+        period: parts[2],
+        description: parts[3] || undefined,
+      };
+    })
+    .filter(Boolean) as Array<{ company: string; role: string; period: string; description?: string }>;
 }
 
 export async function saveDashboardContent(_: ContentState, formData: FormData): Promise<ContentState> {
@@ -56,6 +76,7 @@ export async function saveDashboardContent(_: ContentState, formData: FormData):
     aboutSummary: formData.get('aboutSummary'),
     aboutNarrative: formData.get('aboutNarrative'),
     skills: formData.get('skills'),
+    experiences: formData.get('experiences'),
   });
 
   if (!parsed.success) {
@@ -74,6 +95,7 @@ export async function saveDashboardContent(_: ContentState, formData: FormData):
   const data = parsed.data;
   const highlights = [data.highlightOne, data.highlightTwo, data.highlightThree].filter(Boolean) as string[];
   const skills = parseList(data.skills);
+  const experiences = parseExperiences(data.experiences);
 
   const payload = {
     hero: {
@@ -100,6 +122,7 @@ export async function saveDashboardContent(_: ContentState, formData: FormData):
       narrative: data.aboutNarrative,
     },
     skills,
+    experiences,
   };
 
   const existing = await prisma.portfolioContent.findFirst();
@@ -111,6 +134,7 @@ export async function saveDashboardContent(_: ContentState, formData: FormData):
         callToActions: payload.callToActions,
         about: payload.about,
         skills: payload.skills,
+        experiences: payload.experiences,
       },
     });
   } else {
@@ -120,6 +144,7 @@ export async function saveDashboardContent(_: ContentState, formData: FormData):
         callToActions: payload.callToActions,
         about: payload.about,
         skills: payload.skills,
+        experiences: payload.experiences,
       },
     });
   }

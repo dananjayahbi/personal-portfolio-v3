@@ -20,6 +20,12 @@ export type DashboardContentDefaults = {
   aboutSummary?: string;
   aboutNarrative?: string | null;
   skills?: string[];
+  experiences?: Array<{
+    company: string;
+    role: string;
+    period: string;
+    description?: string;
+  }>;
 };
 
 function Fieldset({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
@@ -110,6 +116,10 @@ export function DashboardContentForm({ defaults }: { defaults: DashboardContentD
 
   const skillText = defaults.skills?.join('\n') ?? '';
   const highlights = defaults.highlights ?? [];
+  const experiences = defaults.experiences ?? [];
+  const experiencesText = experiences
+    .map(exp => `${exp.company} | ${exp.role} | ${exp.period}${exp.description ? ' | ' + exp.description : ''}`)
+    .join('\n');
 
   return (
     <form action={formAction} className="flex flex-col gap-8">
@@ -226,6 +236,20 @@ export function DashboardContentForm({ defaults }: { defaults: DashboardContentD
           error={state.fieldErrors?.skills}
           placeholder="Product strategy\nDesign systems\nMotion design"
           rows={6}
+        />
+      </Fieldset>
+
+      <Fieldset
+        title="Experience Timeline"
+        description="Document your professional journey. Format: Company | Role | Period | Description (optional)"
+      >
+        <TextField
+          label="Experiences"
+          name="experiences"
+          defaultValue={experiencesText}
+          error={state.fieldErrors?.experiences}
+          placeholder={"Tech Company | Senior Full Stack Developer | 2021 - Present | Leading development of scalable web applications\nSoftware Agency | Full Stack Developer | 2019 - 2021 | Built responsive web applications and RESTful APIs"}
+          rows={10}
         />
       </Fieldset>
 

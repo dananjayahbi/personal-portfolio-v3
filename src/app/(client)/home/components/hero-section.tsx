@@ -1,29 +1,58 @@
 import Link from "next/link";
-import { ArrowRight, Download, Github, Linkedin, Mail } from "lucide-react";
+import { ArrowRight, Download, Github, Linkedin, Mail, Twitter, Facebook, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface HeroSectionProps {
   content?: {
-    title?: string;
-    subtitle?: string;
-    tagline?: string;
-    ctaPrimary?: string;
-    ctaSecondary?: string;
+    eyebrow?: string;
+    headline?: string;
+    subheadline?: string;
+    highlights?: string[];
+  };
+  callToActions?: {
+    primary?: {
+      label?: string;
+      url?: string;
+    };
+    secondary?: {
+      label?: string;
+      url?: string;
+    } | null;
   };
   settings?: {
     resumeUrl?: string;
-    socialLinks?: {
-      github?: string;
-      linkedin?: string;
-      email?: string;
-    };
+    socialLinks?: Array<{
+      platform?: string;
+      url?: string;
+    }>;
   };
 }
 
-export function HeroSection({ content, settings }: HeroSectionProps) {
-  const title = content?.title || "Hi, I'm a Software Engineer";
-  const subtitle = content?.subtitle || "Building Digital Experiences";
-  const tagline = content?.tagline || "Passionate about creating elegant solutions to complex problems using modern technologies and best practices.";
+const SOCIAL_ICONS: Record<string, any> = {
+  github: Github,
+  linkedin: Linkedin,
+  twitter: Twitter,
+  facebook: Facebook,
+  instagram: Instagram,
+  email: Mail,
+};
+
+export function HeroSection({ content, callToActions, settings }: HeroSectionProps) {
+  const eyebrow = content?.eyebrow;
+  const headline = content?.headline;
+  const subheadline = content?.subheadline;
+  const highlights = content?.highlights || [];
+  
+  const primaryCta = callToActions?.primary;
+  const secondaryCta = callToActions?.secondary;
+
+  // Parse social links from settings
+  const socialLinks = settings?.socialLinks || [];
+
+  // Only show section if there's content
+  if (!headline && !eyebrow) {
+    return null;
+  }
 
   return (
     <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden">
@@ -39,80 +68,87 @@ export function HeroSection({ content, settings }: HeroSectionProps) {
         <div className="max-w-4xl mx-auto text-center space-y-8">
           {/* Greeting */}
           <div className="space-y-2 animate-fade-in">
-            <p className="text-sm sm:text-base text-cyan-400 font-mono tracking-wider">
-              &lt;/&gt; Welcome to my portfolio
-            </p>
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white leading-tight">
-              {title}
-            </h1>
-            <p className="text-xl sm:text-2xl md:text-3xl text-slate-300 font-light">
-              {subtitle}
-            </p>
+            {eyebrow && (
+              <p className="text-sm sm:text-base text-cyan-400 font-mono tracking-wider">
+                {eyebrow}
+              </p>
+            )}
+            {headline && (
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white leading-tight">
+                {headline}
+              </h1>
+            )}
+            {subheadline && (
+              <p className="text-xl sm:text-2xl md:text-3xl text-slate-300 font-light">
+                {subheadline}
+              </p>
+            )}
           </div>
 
-          {/* Tagline */}
-          <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            {tagline}
-          </p>
+          {/* Highlights */}
+          {highlights.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-4 pt-4">
+              {highlights.map((highlight, index) => (
+                <div
+                  key={index}
+                  className="px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 text-sm text-slate-300"
+                >
+                  {highlight}
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <Button
-              asChild
-              size="lg"
-              className="group bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-6 text-base shadow-lg shadow-cyan-500/20"
-            >
-              <Link href="/projects">
-                View My Work
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="border-slate-700 hover:border-cyan-500 text-white px-8 py-6 text-base"
-            >
-              <Link href="/#contact">
-                Get in Touch
-              </Link>
-            </Button>
+            {primaryCta?.label && primaryCta?.url && (
+              <Button
+                asChild
+                size="lg"
+                className="group bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-6 text-base shadow-lg shadow-cyan-500/20"
+              >
+                <Link href={primaryCta.url}>
+                  {primaryCta.label}
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </Button>
+            )}
+            {secondaryCta?.label && secondaryCta?.url && (
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="border-slate-700 hover:border-cyan-500 text-white px-8 py-6 text-base"
+              >
+                <Link href={secondaryCta.url}>
+                  {secondaryCta.label}
+                </Link>
+              </Button>
+            )}
           </div>
 
           {/* Social Links */}
-          <div className="flex items-center justify-center gap-4 pt-8">
-            {settings?.socialLinks?.github && (
-              <a
-                href={settings.socialLinks.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-3 rounded-lg bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-800 transition-all hover:scale-110"
-                aria-label="GitHub"
-              >
-                <Github className="h-5 w-5" />
-              </a>
-            )}
-            {settings?.socialLinks?.linkedin && (
-              <a
-                href={settings.socialLinks.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-3 rounded-lg bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-800 transition-all hover:scale-110"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-5 w-5" />
-              </a>
-            )}
-            {settings?.socialLinks?.email && (
-              <a
-                href={`mailto:${settings.socialLinks.email}`}
-                className="p-3 rounded-lg bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-800 transition-all hover:scale-110"
-                aria-label="Email"
-              >
-                <Mail className="h-5 w-5" />
-              </a>
-            )}
-          </div>
+          {socialLinks.length > 0 && (
+            <div className="flex items-center justify-center gap-4 pt-8">
+              {socialLinks.map((link, index) => {
+                const platform = link.platform?.toLowerCase() || '';
+                const Icon = SOCIAL_ICONS[platform] || Mail;
+                
+                return (
+                  <a
+                    key={index}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3 rounded-lg bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-800 transition-all hover:scale-110"
+                    aria-label={link.platform}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </a>
+                );
+              })}
+            </div>
+          )}
 
           {/* Resume Download */}
           {settings?.resumeUrl && (

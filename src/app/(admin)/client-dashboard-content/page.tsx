@@ -12,6 +12,16 @@ function toStringArray(value: unknown) {
   return [];
 }
 
+function toExperiencesArray(value: unknown) {
+  if (Array.isArray(value)) {
+    return value.filter((item): item is { company: string; role: string; period: string; description?: string } => {
+      return typeof item === 'object' && item !== null && 
+             'company' in item && 'role' in item && 'period' in item;
+    });
+  }
+  return [];
+}
+
 export default async function ClientDashboardContentPage() {
   const content = await prisma.portfolioContent.findFirst();
 
@@ -32,6 +42,7 @@ export default async function ClientDashboardContentPage() {
     aboutSummary: toText(about?.summary),
     aboutNarrative: toText(about?.narrative),
     skills: toStringArray(content?.skills),
+    experiences: toExperiencesArray(content?.experiences),
   };
 
   return (

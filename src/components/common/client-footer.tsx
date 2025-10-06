@@ -1,10 +1,18 @@
 import Link from "next/link";
-import { Github, Linkedin, Mail, Twitter, ExternalLink } from "lucide-react";
+import { Github, Linkedin, Mail, Twitter, Facebook, Instagram, ExternalLink } from "lucide-react";
 import { getSiteSettings } from "@/services/content.service";
+
+const SOCIAL_ICONS: Record<string, any> = {
+  github: Github,
+  linkedin: Linkedin,
+  twitter: Twitter,
+  facebook: Facebook,
+  instagram: Instagram,
+};
 
 export async function ClientFooter() {
   const settings = await getSiteSettings();
-  const socialLinks = settings?.socialLinks as any;
+  const socialLinks = (settings?.socialLinks as Array<{ platform?: string; url?: string }>) || [];
 
   const currentYear = new Date().getFullYear();
 
@@ -50,56 +58,42 @@ export async function ClientFooter() {
           {/* Social Links */}
           <div className="space-y-4">
             <h4 className="text-sm font-semibold text-white uppercase tracking-wider">Connect</h4>
-            <div className="flex gap-3">
-              {socialLinks?.github && (
-                <a
-                  href={socialLinks.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
-                  aria-label="GitHub"
-                >
-                  <Github className="h-5 w-5" />
-                </a>
-              )}
-              {socialLinks?.linkedin && (
-                <a
-                  href={socialLinks.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
-                  aria-label="LinkedIn"
-                >
-                  <Linkedin className="h-5 w-5" />
-                </a>
-              )}
-              {socialLinks?.twitter && (
-                <a
-                  href={socialLinks.twitter}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
-                  aria-label="Twitter"
-                >
-                  <Twitter className="h-5 w-5" />
-                </a>
-              )}
-              {settings?.contactEmail && (
+            {socialLinks.length > 0 && (
+              <div className="flex gap-3">
+                {socialLinks.map((link, index) => {
+                  const platform = link.platform?.toLowerCase() || '';
+                  const Icon = SOCIAL_ICONS[platform] || Mail;
+                  
+                  return (
+                    <a
+                      key={index}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-lg bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
+                      aria-label={link.platform}
+                    >
+                      <Icon className="h-5 w-5" />
+                    </a>
+                  );
+                })}
+              </div>
+            )}
+            {settings?.contactEmail && (
+              <>
                 <a
                   href={`mailto:${settings.contactEmail}`}
-                  className="p-2 rounded-lg bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
+                  className="p-2 inline-flex rounded-lg bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
                   aria-label="Email"
                 >
                   <Mail className="h-5 w-5" />
                 </a>
-              )}
-            </div>
-            {settings?.contactEmail && (
-              <p className="text-slate-400 text-sm">
-                <a href={`mailto:${settings.contactEmail}`} className="hover:text-cyan-400 transition-colors">
-                  {settings.contactEmail}
-                </a>
-              </p>
+                <p className="text-slate-400 text-sm">
+                  <a href={`mailto:${settings.contactEmail}`} className="hover:text-cyan-400 transition-colors">
+                    {settings.contactEmail}
+                  </a>
+                </p>
+              </>
             )}
             {settings?.location && (
               <p className="text-slate-400 text-sm">{settings.location}</p>
