@@ -48,7 +48,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
       {/* Hero Section with Background Image */}
-      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
         {/* Background Image with Overlay */}
         {project.heroImage && (
           <div className="absolute inset-0 z-0">
@@ -63,7 +63,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           </div>
         )}
 
-        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 mt-[-120px]">
           {/* Back Button */}
           <Button asChild variant="ghost" className="mb-8 text-slate-400 hover:text-white hover:bg-slate-800/50">
             <Link href="/projects">
@@ -112,7 +112,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap gap-4 justify-center">
+            <div className="flex flex-wrap gap-4 justify-center mb-[-100px]">
               {project.liveUrl && (
                 <Button asChild size="lg" className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg shadow-cyan-500/20 px-8">
                   <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
@@ -122,7 +122,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                 </Button>
               )}
               {project.sourceUrl && (
-                <Button asChild size="lg" variant="outline" className="border-slate-600 hover:border-cyan-400 hover:bg-slate-800/50 text-slate-200 px-8">
+                <Button asChild size="lg" variant="outline" className="border-slate-600 hover:border-cyan-400 hover:bg-slate-800/50 text-slate-800 hover:text-slate-200 px-8">
                   <a href={project.sourceUrl} target="_blank" rel="noopener noreferrer">
                     <Github className="mr-2 h-5 w-5" />
                     View Source Code
