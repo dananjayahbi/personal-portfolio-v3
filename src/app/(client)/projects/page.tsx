@@ -1,14 +1,33 @@
-export default function ClientProjectsPage() {
+import { ProjectsGrid } from "./components/projects-grid";
+import { getPublishedProjects, getAllTechnologies, getAllTags } from "@/services/project.service";
+
+export const revalidate = 60;
+
+export default async function ClientProjectsPage() {
+  const [projects, technologies, tags] = await Promise.all([
+    getPublishedProjects(),
+    getAllTechnologies(),
+    getAllTags(),
+  ]);
+
   return (
-    <section className="flex min-h-[60vh] items-center justify-center bg-slate-950 text-center text-white/60">
-      <div className="max-w-xl space-y-3">
-        <p className="text-xs uppercase tracking-[0.4em] text-white/30">Case studies</p>
-        <h1 className="text-3xl font-semibold text-white">Curated stories arriving shortly</h1>
-        <p className="text-sm">
-          We’re finalizing the admin authoring workflow. Once complete, this space will showcase detailed projects sourced
-          from the admin console.
-        </p>
+    <div className="min-h-screen bg-slate-950 py-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
+            My Projects
+          </h1>
+          <p className="text-lg text-slate-400">
+            Explore my portfolio of web applications, tools, and experiments showcasing various technologies and approaches.
+          </p>
+        </div>
+
+        <ProjectsGrid
+          initialProjects={projects}
+          technologies={technologies}
+          tags={tags}
+        />
       </div>
-    </section>
+    </div>
   );
 }
