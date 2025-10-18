@@ -3,6 +3,8 @@ import { FeaturedProjects } from "./components/featured-projects";
 import { SkillsSection } from "./components/skills-section";
 import { AboutSection } from "./components/about-section";
 import { ContactSection } from "./components/contact-section";
+import FeedbackSection from "./components/feedback-section";
+import FeaturedFeedbackSection from "./components/featured-feedback-section";
 import { getFeaturedProjects } from "@/services/project.service";
 import { getPortfolioContent, getSiteSettings } from "@/services/content.service";
 import { Metadata } from "next";
@@ -42,6 +44,8 @@ export default async function ClientHomePage() {
       <AboutSection content={aboutContent} experiences={experiences} />
       <SkillsSection />
       <FeaturedProjects projects={featuredProjects} />
+      <FeaturedFeedbackSection />
+      <FeedbackSection />
       <ContactSection settings={siteSettings as any} />
     </div>
   );
