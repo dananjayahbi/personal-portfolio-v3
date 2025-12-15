@@ -46,7 +46,7 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
   const gallery = experiment.gallery as any;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+    <div className="min-h-screen bg-[#0a192f]">
       {/* Hero Section with Background Image */}
       <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
         {/* Background Image with Overlay */}
@@ -56,16 +56,20 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
               src={experiment.heroImage}
               alt={experiment.title}
               fill
-              className="object-cover opacity-80"
+              className="object-cover opacity-60"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/90 to-slate-950" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0a192f]/90 via-[#0a192f]/95 to-[#0a192f]" />
           </div>
         )}
+        
+        {/* Ambient Glow Effects */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 mt-[-120px]">
           {/* Back Button */}
-          <Button asChild variant="ghost" className="mb-8 text-slate-400 hover:text-white hover:bg-slate-800/50">
+          <Button asChild variant="ghost" className="mb-8 text-slate-400 hover:text-cyan-400 hover:bg-[#0a192f]/50 border border-transparent hover:border-cyan-500/30 transition-all">
             <Link href="/experiments">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Experiments
@@ -76,7 +80,7 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
             {/* Featured Badge */}
             {experiment.isFeatured && (
               <div className="mb-6 flex justify-center">
-                <Badge className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-1.5 text-sm font-medium">
+                <Badge className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-1.5 text-sm font-medium shadow-lg shadow-cyan-500/30">
                   <Sparkles className="w-4 h-4 mr-1.5" />
                   Featured Experiment
                 </Badge>
@@ -84,7 +88,7 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
             )}
 
             {/* Title with Gradient */}
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-black bg-gradient-to-r from-white via-cyan-100 to-blue-200 bg-clip-text text-transparent leading-tight">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-black bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent leading-tight drop-shadow-lg">
               {experiment.title}
             </h1>
 
@@ -95,16 +99,16 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
 
             {/* Meta Info */}
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400 mb-10">
-              <div className="flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-full">
+              <div className="flex items-center gap-2 bg-[#0a192f]/80 backdrop-blur-sm border border-cyan-500/20 px-4 py-2 rounded-full">
                 <Calendar className="h-4 w-4 text-cyan-400" />
                 <span>{formatDate(experiment.createdAt)}</span>
               </div>
-              <div className="flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-full">
+              <div className="flex items-center gap-2 bg-[#0a192f]/80 backdrop-blur-sm border border-cyan-500/20 px-4 py-2 rounded-full">
                 <Clock className="h-4 w-4 text-cyan-400" />
                 <span>Updated {formatDate(experiment.updatedAt)}</span>
               </div>
               {experiment.tags.length > 0 && (
-                <div className="flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-full">
+                <div className="flex items-center gap-2 bg-[#0a192f]/80 backdrop-blur-sm border border-cyan-500/20 px-4 py-2 rounded-full">
                   <Tag className="h-4 w-4 text-cyan-400" />
                   <span>{experiment.tags.slice(0, 3).join(" • ")}</span>
                 </div>
@@ -114,7 +118,7 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
             {/* Action Buttons */}
             <div className="flex flex-wrap gap-4 justify-center mb-[-100px]">
               {experiment.liveUrl && (
-                <Button asChild size="lg" className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg shadow-cyan-500/20 px-8">
+                <Button asChild size="lg" className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/30 px-8 transition-all duration-300 hover:shadow-cyan-500/50 hover:scale-105">
                   <a href={experiment.liveUrl} target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="mr-2 h-5 w-5" />
                     View Live Demo
@@ -122,7 +126,7 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
                 </Button>
               )}
               {experiment.sourceUrl && (
-                <Button asChild size="lg" variant="outline" className="border-slate-600 hover:border-cyan-400 hover:bg-slate-800/50 text-slate-800 hover:text-slate-200 px-8">
+                <Button asChild size="lg" variant="outline" className="border-cyan-500/30 hover:border-cyan-400 bg-[#0a192f]/50 backdrop-blur-sm text-slate-200 hover:text-cyan-400 px-8 transition-all duration-300 hover:bg-cyan-500/10">
                   <a href={experiment.sourceUrl} target="_blank" rel="noopener noreferrer">
                     <Github className="mr-2 h-5 w-5" />
                     View Source Code
@@ -142,13 +146,13 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
             <div className="lg:col-span-3 space-y-16">
               {/* Description */}
               {experiment.description && (
-                <div className="bg-slate-800/30 rounded-2xl p-8 sm:p-12 border border-slate-700/50 backdrop-blur-sm">
+                <div className="bg-[#0a192f]/80 backdrop-blur-xl rounded-2xl p-8 sm:p-12 border border-cyan-500/20 shadow-xl shadow-cyan-500/5">
                   <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-                    <div className="h-1 w-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"></div>
+                    <div className="h-1 w-12 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full"></div>
                     About This Experiment
                   </h2>
                   <div
-                    className="prose prose-invert prose-lg max-w-none text-slate-300 leading-relaxed [&_p]:mb-4 [&_h3]:text-white [&_h3]:font-bold [&_h3]:mb-3 [&_h3]:mt-8 [&_ul]:list-disc [&_ul]:ml-6 [&_li]:mb-2"
+                    className="prose prose-invert prose-lg max-w-none text-slate-300 leading-relaxed [&_p]:mb-4 [&_h3]:text-white [&_h3]:font-bold [&_h3]:mb-3 [&_h3]:mt-8 [&_ul]:list-disc [&_ul]:ml-6 [&_li]:mb-2 [&_a]:text-cyan-400 [&_a]:hover:text-cyan-300"
                     dangerouslySetInnerHTML={{ __html: experiment.description }}
                   />
                 </div>
@@ -161,10 +165,10 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
             {/* Sidebar - Right */}
             <div className="space-y-6">
               {/* Technologies */}
-              <Card className="bg-gradient-to-br from-slate-800/50 to-slate-800/30 border-slate-700/50 backdrop-blur-sm hover:border-cyan-500/30 transition-colors">
+              <Card className="bg-[#0a192f]/80 backdrop-blur-xl border-cyan-500/20 hover:border-cyan-400/40 transition-all duration-300 shadow-xl shadow-cyan-500/5">
                 <CardHeader>
                   <CardTitle className="text-white text-lg flex items-center gap-2">
-                    <div className="h-8 w-1 bg-gradient-to-b from-cyan-500 to-blue-500 rounded-full"></div>
+                    <div className="h-8 w-1 bg-gradient-to-b from-cyan-400 to-blue-500 rounded-full"></div>
                     Technologies
                   </CardTitle>
                 </CardHeader>
@@ -173,7 +177,7 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
                     {experiment.technologies.map((tech) => (
                       <Badge
                         key={tech}
-                        className="bg-gradient-to-r from-slate-700 to-slate-600 text-slate-200 hover:from-cyan-500/20 hover:to-blue-500/20 hover:text-cyan-300 border border-slate-600 hover:border-cyan-500/50 transition-all cursor-default"
+                        className="bg-[#0a192f] text-slate-200 hover:bg-cyan-500/20 hover:text-cyan-300 border border-cyan-500/30 hover:border-cyan-400/50 transition-all cursor-default"
                       >
                         {tech}
                       </Badge>
@@ -184,10 +188,10 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
 
               {/* Tags */}
               {experiment.tags.length > 0 && (
-                <Card className="bg-gradient-to-br from-slate-800/50 to-slate-800/30 border-slate-700/50 backdrop-blur-sm hover:border-cyan-500/30 transition-colors">
+                <Card className="bg-[#0a192f]/80 backdrop-blur-xl border-cyan-500/20 hover:border-cyan-400/40 transition-all duration-300 shadow-xl shadow-cyan-500/5">
                   <CardHeader>
                     <CardTitle className="text-white text-lg flex items-center gap-2">
-                      <div className="h-8 w-1 bg-gradient-to-b from-cyan-500 to-blue-500 rounded-full"></div>
+                      <div className="h-8 w-1 bg-gradient-to-b from-cyan-400 to-blue-500 rounded-full"></div>
                       Tags
                     </CardTitle>
                   </CardHeader>
@@ -197,7 +201,7 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
                         <Badge
                           key={tag}
                           variant="outline"
-                          className="border-slate-600 text-slate-400 hover:border-cyan-400 hover:text-cyan-300 transition-all cursor-default"
+                          className="border-cyan-500/30 text-slate-400 hover:border-cyan-400 hover:text-cyan-300 transition-all cursor-default"
                         >
                           #{tag}
                         </Badge>
@@ -208,21 +212,21 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
               )}
 
               {/* Experiment Info */}
-              <Card className="bg-gradient-to-br from-slate-800/50 to-slate-800/30 border-slate-700/50 backdrop-blur-sm hover:border-cyan-500/30 transition-colors">
+              <Card className="bg-[#0a192f]/80 backdrop-blur-xl border-cyan-500/20 hover:border-cyan-400/40 transition-all duration-300 shadow-xl shadow-cyan-500/5">
                 <CardHeader>
                   <CardTitle className="text-white text-lg flex items-center gap-2">
-                    <div className="h-8 w-1 bg-gradient-to-b from-cyan-500 to-blue-500 rounded-full"></div>
+                    <div className="h-8 w-1 bg-gradient-to-b from-cyan-400 to-blue-500 rounded-full"></div>
                     Experiment Info
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4 text-sm">
-                  <div className="flex justify-between items-center py-2 border-b border-slate-700/50">
+                  <div className="flex justify-between items-center py-2 border-b border-cyan-500/20">
                     <span className="text-slate-400">Status</span>
-                    <Badge variant="outline" className="border-green-500/50 text-green-400">
+                    <Badge variant="outline" className="border-green-500/50 text-green-400 bg-green-500/10">
                       {experiment.status}
                     </Badge>
                   </div>
-                  <div className="flex justify-between items-center py-2 border-b border-slate-700/50">
+                  <div className="flex justify-between items-center py-2 border-b border-cyan-500/20">
                     <span className="text-slate-400">Created</span>
                     <span className="text-slate-200">{formatDate(experiment.createdAt)}</span>
                   </div>
@@ -239,26 +243,26 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
 
       {/* Related Experiments */}
       {relatedExperiments.length > 0 && (
-        <section className="py-20 bg-slate-900/50 border-t border-slate-800/50">
+        <section className="py-20 bg-[#0a192f]/50 border-t border-cyan-500/10">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-4xl font-bold text-white mb-12 text-center flex items-center justify-center gap-4">
-              <div className="h-1 w-16 bg-gradient-to-r from-transparent to-cyan-500 rounded-full"></div>
+              <div className="h-1 w-16 bg-gradient-to-r from-transparent to-cyan-400 rounded-full"></div>
               Related Experiments
-              <div className="h-1 w-16 bg-gradient-to-l from-transparent to-cyan-500 rounded-full"></div>
+              <div className="h-1 w-16 bg-gradient-to-l from-transparent to-cyan-400 rounded-full"></div>
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
               {relatedExperiments.map((relatedExperiment) => (
                 <Link key={relatedExperiment.id} href={`/experiment-detail/${relatedExperiment.slug}`}>
-                  <Card className="group h-full bg-slate-800/30 border-slate-700/50 hover:border-cyan-500/50 hover:bg-slate-800/50 transition-all duration-300 overflow-hidden backdrop-blur-sm shadow-lg hover:shadow-cyan-500/20">
+                  <Card className="group h-full bg-[#0a192f]/80 backdrop-blur-xl border-cyan-500/20 hover:border-cyan-400/50 transition-all duration-300 overflow-hidden shadow-xl shadow-cyan-500/5 hover:shadow-cyan-500/20 hover:scale-[1.02]">
                     {relatedExperiment.heroImage && (
-                      <div className="relative h-48 w-full overflow-hidden bg-slate-900">
+                      <div className="relative h-48 w-full overflow-hidden bg-[#0a192f]">
                         <Image
                           src={relatedExperiment.heroImage}
                           alt={relatedExperiment.title}
                           fill
                           className="object-cover group-hover:scale-110 transition-transform duration-500"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0a192f] via-[#0a192f]/50 to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
                       </div>
                     )}
                     <CardHeader>
@@ -272,12 +276,12 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
                     <CardContent>
                       <div className="flex flex-wrap gap-2">
                         {relatedExperiment.technologies.slice(0, 3).map((tech) => (
-                          <Badge key={tech} variant="secondary" className="text-xs bg-slate-700/50 text-slate-300">
+                          <Badge key={tech} variant="secondary" className="text-xs bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
                             {tech}
                           </Badge>
                         ))}
                         {relatedExperiment.technologies.length > 3 && (
-                          <Badge variant="secondary" className="text-xs bg-slate-700/50 text-slate-300">
+                          <Badge variant="secondary" className="text-xs bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
                             +{relatedExperiment.technologies.length - 3}
                           </Badge>
                         )}

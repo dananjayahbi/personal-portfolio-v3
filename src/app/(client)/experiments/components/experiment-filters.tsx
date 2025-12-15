@@ -69,13 +69,13 @@ export function ExperimentFilters({ technologies, tags, onFilterChange }: Experi
             value={search}
             onChange={(e) => handleSearchChange(e.target.value)}
             placeholder="Search experiments..."
-            className="w-full pl-12 pr-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+            className="w-full pl-12 pr-4 py-3 rounded-lg bg-[#0a192f]/80 backdrop-blur-xl border border-cyan-500/20 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition-all shadow-xl shadow-cyan-500/5"
           />
         </div>
         <Button
           variant="outline"
           onClick={() => setShowFilters(!showFilters)}
-          className="border-slate-700 hover:border-cyan-500 h-[50px]"
+          className="border-cyan-500/30 hover:border-cyan-400 bg-[#0a192f]/80 backdrop-blur-xl text-slate-200 hover:text-cyan-400 h-[50px] transition-all"
         >
           <Filter className="h-5 w-5 mr-2" />
           Filters
@@ -84,7 +84,7 @@ export function ExperimentFilters({ technologies, tags, onFilterChange }: Experi
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className="p-6 rounded-xl bg-slate-800/50 border border-slate-700 space-y-6">
+        <div className="p-6 rounded-xl bg-[#0a192f]/80 backdrop-blur-xl border border-cyan-500/20 space-y-6 shadow-xl shadow-cyan-500/5">
           {/* Technologies */}
           {technologies.length > 0 && (
             <div>
@@ -96,8 +96,8 @@ export function ExperimentFilters({ technologies, tags, onFilterChange }: Experi
                     onClick={() => toggleTechnology(tech)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                       selectedTechnologies.includes(tech)
-                        ? "bg-cyan-500 text-white"
-                        : "bg-slate-700/50 text-slate-300 hover:bg-slate-700"
+                        ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/30"
+                        : "bg-[#0a192f] border border-cyan-500/30 text-slate-300 hover:border-cyan-400 hover:text-cyan-300"
                     }`}
                   >
                     {tech}
@@ -118,8 +118,8 @@ export function ExperimentFilters({ technologies, tags, onFilterChange }: Experi
                     onClick={() => toggleTag(tag)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                       selectedTags.includes(tag)
-                        ? "bg-cyan-500 text-white"
-                        : "bg-slate-700/50 text-slate-300 hover:bg-slate-700"
+                        ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/30"
+                        : "bg-[#0a192f] border border-cyan-500/30 text-slate-300 hover:border-cyan-400 hover:text-cyan-300"
                     }`}
                   >
                     {tag}
@@ -131,11 +131,11 @@ export function ExperimentFilters({ technologies, tags, onFilterChange }: Experi
 
           {/* Clear Filters */}
           {hasActiveFilters && (
-            <div className="pt-4 border-t border-slate-700">
+            <div className="pt-4 border-t border-cyan-500/20">
               <Button
                 variant="ghost"
                 onClick={clearFilters}
-                className="text-cyan-400 hover:text-cyan-300"
+                className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10"
               >
                 Clear All Filters
               </Button>
