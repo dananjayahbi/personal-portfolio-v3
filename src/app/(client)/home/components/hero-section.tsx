@@ -21,6 +21,7 @@ interface HeroSectionProps {
   };
   settings?: {
     resumeUrl?: string;
+    resumeCloudinaryUrl?: string;
     socialLinks?: Array<{
       platform?: string;
       url?: string;
@@ -151,10 +152,10 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
           )}
 
           {/* Resume Download */}
-          {settings?.resumeUrl && (
+          {(settings?.resumeCloudinaryUrl || settings?.resumeUrl) && (
             <div className="pt-4">
               <a
-                href={settings.resumeUrl}
+                href={settings.resumeCloudinaryUrl || settings.resumeUrl!}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-cyan-400 transition-colors"

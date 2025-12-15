@@ -139,3 +139,55 @@ export function generateUploadSignature(params: Record<string, SignableValue> = 
     apiKey: apiKey!,
   } as const;
 }
+
+/**
+ * Delete a file from Cloudinary by public ID
+ */
+export async function deleteFromCloudinary(publicId: string, resourceType: "image" | "raw" | "video" | "auto" = "image") {
+  ensureCloudinaryEnv();
+
+  try {
+    const result = await cloudinaryClient.uploader.destroy(publicId, {
+      resource_type: resourceType,
+      invalidate: true,
+    });
+    
+    console.log(`[Cloudinary] Deleted ${publicId}:`, result);
+    return result;
+  } catch (error) {
+    console.error(`[Cloudinary] Error deleting ${publicId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Upload a file buffer to Cloudinary (for server-side uploads)
+ */
+export async function uploadBufferToCloudinary(
+  buffer: Buffer,
+  options: UploadOptions = {}
+) {
+  ensureCloudinaryEnv();
+
+  const uploadOptions: UploadApiOptions = {
+    folder: options.folder,
+    upload_preset: options.uploadPreset ?? uploadPreset ?? undefined,
+    public_id: options.publicId,
+    resource_type: options.resourceType ?? "image",
+    overwrite: options.overwrite,
+    invalidate: options.invalidate,
+    timeout: options.timeoutMs,
+  };
+
+  return new Promise<UploadApiResponse>((resolve, reject) => {
+    const stream = cloudinaryClient.uploader.upload_stream(uploadOptions, (error, result) => {
+      if (error || !result) {
+        reject(error ?? new Error("Cloudinary upload failed"));
+      } else {
+        resolve(result);
+      }
+    });
+
+    stream.end(buffer);
+  });
+}

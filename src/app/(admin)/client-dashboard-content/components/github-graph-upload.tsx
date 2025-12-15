@@ -2,13 +2,16 @@
 
 import { useState, useActionState, useEffect } from "react";
 import Image from "next/image";
-import { Upload } from "lucide-react";
+import { Upload, ImageIcon } from "lucide-react";
 import { uploadGitHubGraph, type GitHubGraphState } from "../actions";
-import githubGraphImage from "@/assets/github-status/graph.png";
 
 const initialState: GitHubGraphState = { status: 'idle' };
 
-export function GitHubGraphUpload() {
+interface GitHubGraphUploadProps {
+  currentGraphUrl?: string | null;
+}
+
+export function GitHubGraphUpload({ currentGraphUrl }: GitHubGraphUploadProps) {
   const [state, formAction] = useActionState(uploadGitHubGraph, initialState);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | undefined>();
@@ -45,12 +48,22 @@ export function GitHubGraphUpload() {
       {/* Current Image Preview */}
       <div className="rounded-xl border border-white/10 bg-white/5 p-4">
         <p className="text-xs text-white/60 mb-3">Current Graph</p>
-        <div className="relative w-full h-auto">
-          <Image
-            src={githubGraphImage}
-            alt="Current GitHub Contribution Graph"
-            className="w-full h-auto rounded-lg"
-          />
+        <div className="relative w-full h-auto min-h-[200px] flex items-center justify-center">
+          {currentGraphUrl ? (
+            <Image
+              src={currentGraphUrl}
+              alt="Current GitHub Contribution Graph"
+              className="w-full h-auto rounded-lg"
+              width={1200}
+              height={400}
+              unoptimized
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center gap-3 py-12">
+              <ImageIcon className="h-12 w-12 text-white/20" />
+              <p className="text-sm text-white/40">No graph uploaded yet</p>
+            </div>
+          )}
         </div>
       </div>
 

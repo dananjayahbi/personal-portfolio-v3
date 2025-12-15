@@ -5,6 +5,7 @@ import { useFormStatus } from "react-dom";
 import clsx from "clsx";
 import { saveSiteSettings, type SettingsState } from "../actions";
 import { CloudinaryImageInput } from "@/components/common/cloudinary-image-input";
+import { ResumeUpload } from "./resume-upload";
 
 const initialSettingsState: SettingsState = { status: 'idle' };
 
@@ -14,6 +15,7 @@ type SettingsDefaults = {
   location?: string | null;
   availability?: string | null;
   resumeUrl?: string | null;
+  resumeCloudinaryUrl?: string | null;
   socialLinks?: Array<{ platform: string; url: string }>;
   seo?: {
     title?: string | null;
@@ -149,7 +151,8 @@ export function SiteSettingsForm({ defaults }: { defaults: SettingsDefaults }) {
   const keywordsDefault = defaults.seo?.keywords?.join(', ');
 
   return (
-    <form action={formAction} className="flex flex-col gap-8">
+    <>
+    <form action={formAction} className="space-y-8">\
       <Section title="Contact & availability" description="Keep inquiries flowing with current and clear contact details.">
         <TextInput
           label="Primary email"
@@ -272,5 +275,18 @@ export function SiteSettingsForm({ defaults }: { defaults: SettingsDefaults }) {
 
       <SubmitBar success={success} />
     </form>
+
+    {/* Resume Upload - Separate Section */}
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-5 md:p-6">
+      <h2 className="text-lg font-semibold text-white mb-4">Resume / CV Management</h2>
+      <p className="text-sm text-white/60 mb-6">
+        Upload your resume or CV to Cloudinary for reliable hosting. This will be available for download on your public pages.
+      </p>
+      <ResumeUpload 
+        currentResumeUrl={defaults.resumeCloudinaryUrl} 
+        legacyResumeUrl={defaults.resumeUrl} 
+      />
+    </div>
+    </>
   );
 }

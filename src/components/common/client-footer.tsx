@@ -107,9 +107,9 @@ export async function ClientFooter() {
             <p className="text-slate-400 text-sm text-center md:text-left">
               © {currentYear} Portfolio. All rights reserved.
             </p>
-            {settings?.resumeUrl && (
+            {(settings?.resumeCloudinaryUrl || settings?.resumeUrl) && (
               <a
-                href={settings.resumeUrl}
+                href={settings.resumeCloudinaryUrl || settings.resumeUrl!}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 transition-colors"

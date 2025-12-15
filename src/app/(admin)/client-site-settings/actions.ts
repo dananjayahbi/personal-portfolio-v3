@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
+import { uploadBufferToCloudinary, deleteFromCloudinary } from "@/lib/cloudinary";
 
 const settingsSchema = z.object({
   contactEmail: z.string().trim().email("Enter a valid email"),
@@ -128,4 +129,122 @@ export async function saveSiteSettings(_: SettingsState, formData: FormData): Pr
   revalidatePath('/client-dashboard-content');
 
   return { status: 'success', message: 'Site settings updated successfully' };
+}
+
+export type ResumeUploadState = {
+  status: 'idle' | 'success' | 'error';
+  message?: string;
+};
+
+export async function uploadResume(_: ResumeUploadState, formData: FormData): Promise<ResumeUploadState> {
+  try {
+    const file = formData.get('resumeFile') as File;
+    
+    if (!file) {
+      return { status: 'error', message: 'No file provided' };
+    }
+
+    // Validate file type (PDF ONLY)
+    if (file.type !== 'application/pdf') {
+      return { status: 'error', message: 'File must be a PDF document' };
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      return { status: 'error', message: 'File size must be less than 10MB' };
+    }
+
+    // Get current settings to check for existing resume
+    let settings = await prisma.siteSettings.findFirst();
+    
+    if (!settings) {
+      // Create settings if they don't exist
+      settings = await prisma.siteSettings.create({
+        data: {},
+      });
+    }
+
+    // Delete old resume from Cloudinary if it exists
+    if (settings.resumePublicId) {
+      try {
+        await deleteFromCloudinary(settings.resumePublicId, "raw");
+        console.log("[Resume] Deleted old resume:", settings.resumePublicId);
+      } catch (error) {
+        console.error("[Resume] Error deleting old resume:", error);
+        // Continue with upload even if delete fails
+      }
+    }
+
+    // Read file as buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Upload PDF to Cloudinary as raw resource type
+    const uploadResult = await uploadBufferToCloudinary(buffer, {
+      folder: "portfolio/assets",
+      publicId: `resume-${Date.now()}`,
+      resourceType: "raw", // PDFs are uploaded as raw files
+      overwrite: false,
+      invalidate: true,
+    });
+
+    console.log("[Resume] Uploaded new resume:", uploadResult.public_id);
+
+    // Update database with new Cloudinary URL and public ID
+    await prisma.siteSettings.update({
+      where: { id: settings.id },
+      data: {
+        resumeCloudinaryUrl: uploadResult.secure_url,
+        resumePublicId: uploadResult.public_id,
+      },
+    });
+
+    // Revalidate paths that use the resume
+    revalidatePath('/');
+    revalidatePath('/about');
+    revalidatePath('/client-site-settings');
+
+    return { status: 'success', message: 'Resume uploaded successfully' };
+  } catch (error) {
+    console.error('Error uploading resume:', error);
+    return { status: 'error', message: 'Failed to upload resume. Please try again.' };
+  }
+}
+
+export async function deleteResume(): Promise<ResumeUploadState> {
+  try {
+    const settings = await prisma.siteSettings.findFirst();
+    
+    if (!settings || !settings.resumePublicId) {
+      return { status: 'error', message: 'No resume found to delete' };
+    }
+
+    // Delete from Cloudinary
+    try {
+      await deleteFromCloudinary(settings.resumePublicId, "raw");
+      console.log("[Resume] Deleted resume from Cloudinary:", settings.resumePublicId);
+    } catch (error) {
+      console.error("[Resume] Error deleting from Cloudinary:", error);
+      // Continue to update database even if Cloudinary deletion fails
+    }
+
+    // Update database to remove resume references
+    await prisma.siteSettings.update({
+      where: { id: settings.id },
+      data: {
+        resumeCloudinaryUrl: null,
+        resumePublicId: null,
+      },
+    });
+
+    // Revalidate paths
+    revalidatePath('/');
+    revalidatePath('/about');
+    revalidatePath('/client-site-settings');
+
+    return { status: 'success', message: 'Resume deleted successfully' };
+  } catch (error) {
+    console.error('Error deleting resume:', error);
+    return { status: 'error', message: 'Failed to delete resume. Please try again.' };
+  }
 }

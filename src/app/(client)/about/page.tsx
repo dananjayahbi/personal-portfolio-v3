@@ -121,10 +121,10 @@ export default async function AboutPage() {
             )}
 
             {/* Download CV */}
-            {siteSettings?.resumeUrl && (
+            {(siteSettings?.resumeCloudinaryUrl || siteSettings?.resumeUrl) && (
               <div className="text-center py-8">
                 <Button asChild size="lg" className="bg-cyan-500 hover:bg-cyan-600">
-                  <a href={siteSettings.resumeUrl} target="_blank" rel="noopener noreferrer">
+                  <a href={siteSettings.resumeCloudinaryUrl || siteSettings.resumeUrl!} target="_blank" rel="noopener noreferrer">
                     <Download className="mr-2 h-5 w-5" />
                     Download CV
                   </a>

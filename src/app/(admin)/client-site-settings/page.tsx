@@ -33,6 +33,7 @@ export default async function ClientSiteSettingsPage() {
     location: settings?.location ?? undefined,
     availability: settings?.availability ?? undefined,
     resumeUrl: settings?.resumeUrl ?? undefined,
+    resumeCloudinaryUrl: settings?.resumeCloudinaryUrl ?? undefined,
     socialLinks: parseSocialLinks(settings?.socialLinks ?? []),
     seo: seoRaw
       ? {

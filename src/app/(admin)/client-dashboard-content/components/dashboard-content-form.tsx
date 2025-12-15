@@ -26,6 +26,7 @@ export type DashboardContentDefaults = {
     period: string;
     description?: string;
   }>;
+  githubGraphUrl?: string | null;
 };
 
 function Fieldset({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
@@ -260,7 +261,7 @@ export function DashboardContentForm({ defaults }: { defaults: DashboardContentD
       <p className="text-sm text-white/60 mb-6">
         Upload and manage your GitHub contribution graph that appears on the homepage and About page.
       </p>
-      <GitHubGraphUpload />
+      <GitHubGraphUpload currentGraphUrl={defaults.githubGraphUrl} />
     </div>
     </>
   );

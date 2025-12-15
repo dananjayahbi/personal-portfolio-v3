@@ -3,8 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
-import { writeFile } from "fs/promises";
-import path from "path";
+import { uploadBufferToCloudinary, deleteFromCloudinary } from "@/lib/cloudinary";
 
 const contentSchema = z.object({
   heroEyebrow: z.string().trim().min(2, "Add a short pre-header"),
@@ -173,17 +172,55 @@ export async function uploadGitHubGraph(_: GitHubGraphState, formData: FormData)
       return { status: 'error', message: 'File size must be less than 5MB' };
     }
 
+    // Get current settings to check for existing GitHub graph
+    let settings = await prisma.siteSettings.findFirst();
+    
+    if (!settings) {
+      // Create settings if they don't exist
+      settings = await prisma.siteSettings.create({
+        data: {},
+      });
+    }
+
+    // Delete old GitHub graph from Cloudinary if it exists
+    if (settings.githubGraphPublicId) {
+      try {
+        await deleteFromCloudinary(settings.githubGraphPublicId, "image");
+        console.log("[GitHub Graph] Deleted old graph:", settings.githubGraphPublicId);
+      } catch (error) {
+        console.error("[GitHub Graph] Error deleting old graph:", error);
+        // Continue with upload even if delete fails
+      }
+    }
+
     // Read file as buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Save to assets/github-status/graph.png
-    const filePath = path.join(process.cwd(), 'src', 'assets', 'github-status', 'graph.png');
-    await writeFile(filePath, buffer);
+    // Upload to Cloudinary
+    const uploadResult = await uploadBufferToCloudinary(buffer, {
+      folder: "portfolio/assets",
+      publicId: "github-status-graph",
+      resourceType: "image",
+      overwrite: true,
+      invalidate: true,
+    });
+
+    console.log("[GitHub Graph] Uploaded new graph:", uploadResult.public_id);
+
+    // Update database with new Cloudinary URL and public ID
+    await prisma.siteSettings.update({
+      where: { id: settings.id },
+      data: {
+        githubGraphUrl: uploadResult.secure_url,
+        githubGraphPublicId: uploadResult.public_id,
+      },
+    });
 
     // Revalidate paths that display the graph
     revalidatePath('/');
     revalidatePath('/about');
+    revalidatePath('/client-dashboard-content');
 
     return { status: 'success', message: 'GitHub graph updated successfully' };
   } catch (error) {
