@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { User, Briefcase, ArrowRight } from "lucide-react";
+import { ArrowRight, Briefcase, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GitHubGraph } from "@/components/common/github-graph";
 
@@ -28,99 +28,114 @@ export function AboutSection({ content, experiences }: AboutSectionProps) {
   }
 
   return (
-    <section id="about" className="py-20 bg-slate-900/50 scroll-mt-16">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="about" className="py-24 md:py-32 scroll-mt-16">
+      <div className="container mx-auto px-6 sm:px-8 lg:px-12">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+        <div className="max-w-3xl mx-auto text-center mb-16">
+          <span className="inline-block text-cyan-400 text-sm font-medium tracking-wider uppercase mb-4">
+            Who I Am
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
             {title}
           </h2>
           {summary && (
-            <p className="text-lg text-slate-400">
+            <p className="text-slate-400 text-lg leading-relaxed">
               {summary}
             </p>
           )}
         </div>
 
-        {/* Content Stack */}
-        <div className="space-y-8 max-w-4xl mx-auto">
-          {/* Background Section */}
-          {narrative && (
-            <div className="p-8 rounded-xl bg-slate-800/50 border border-slate-700">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-400">
-                  <User className="h-6 w-6" />
-                </div>
-                <h3 className="text-2xl font-semibold text-white">Background</h3>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+          {/* Left Column - Background & GitHub */}
+          <div className="space-y-10">
+            {narrative && (
+              <div className="p-8 rounded-2xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm">
+                <h3 className="flex items-center gap-2 text-lg font-semibold text-white mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                    <Briefcase className="w-4 h-4 text-cyan-400" />
+                  </div>
+                  Background
+                </h3>
+                <p className="text-slate-400 leading-relaxed whitespace-pre-line">
+                  {narrative}
+                </p>
               </div>
-              <p className="text-slate-300 leading-relaxed whitespace-pre-line">
-                {narrative}
-              </p>
+            )}
+
+            {/* GitHub Contributions */}
+            <div className="p-8 rounded-2xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm">
+              <h3 className="text-lg font-semibold text-white mb-6">
+                GitHub Activity
+              </h3>
+              <GitHubGraph />
             </div>
-          )}
+          </div>
 
-          {/* Experience Section */}
+          {/* Right Column - Experience Timeline */}
           {experiences && experiences.length > 0 && (
-            <div className="p-8 rounded-xl bg-slate-800/50 border border-slate-700">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-400">
-                  <Briefcase className="h-6 w-6" />
+            <div className="p-8 rounded-2xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm">
+              <h3 className="flex items-center gap-2 text-lg font-semibold text-white mb-8">
+                <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                  <Calendar className="w-4 h-4 text-cyan-400" />
                 </div>
-                <h3 className="text-2xl font-semibold text-white">Experience</h3>
-              </div>
-
+                Experience
+              </h3>
+              
               <div className="relative">
-                <div className="space-y-6">
-                  {experiences.slice(0, 3).map((exp, index) => (
-                    <div 
-                      key={index} 
-                      className={`relative pl-6 border-l-2 border-slate-700 transition-opacity ${
-                        index === 2 && experiences.length > 2 ? 'opacity-40' : 'opacity-100'
-                      }`}
-                    >
-                      <div className={`absolute -left-[9px] top-0 w-4 h-4 rounded-full ${index === 0 ? 'bg-cyan-500' : 'bg-slate-600'}`} />
-                      <div className="space-y-1">
-                        <h4 className="text-lg font-semibold text-white">{exp.role}</h4>
-                        <p className="text-cyan-400 text-sm">{exp.company}</p>
-                        <p className="text-slate-400 text-sm">{exp.period}</p>
+                {/* Timeline line */}
+                <div className="absolute left-3 top-2 bottom-2 w-px bg-gradient-to-b from-cyan-500 via-blue-500 to-transparent" />
+                
+                <div className="space-y-8">
+                  {experiences.slice(0, 4).map((exp, index) => (
+                    <div key={index} className="relative pl-10">
+                      {/* Timeline dot */}
+                      <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-slate-800 border-2 border-cyan-500 flex items-center justify-center">
+                        <div className="w-2 h-2 rounded-full bg-cyan-400" />
+                      </div>
+                      
+                      <div>
+                        <span className="text-xs text-cyan-400 font-medium tracking-wide">
+                          {exp.period}
+                        </span>
+                        <h4 className="text-white font-semibold mt-1">{exp.role}</h4>
+                        <p className="text-slate-400 text-sm">{exp.company}</p>
                         {exp.description && (
-                          <p className="text-slate-300 text-sm mt-2">{exp.description}</p>
+                          <p className="text-slate-500 text-sm mt-2 line-clamp-2">{exp.description}</p>
                         )}
                       </div>
                     </div>
                   ))}
                 </div>
-
-                {/* Show "See Full" button if more than 2 experiences */}
-                {experiences.length > 2 && (
-                  <div className="mt-6 text-center">
-                    <Button 
-                      asChild 
-                      size="sm" 
-                      variant="outline" 
-                      className="group border-slate-700 hover:border-cyan-500"
-                    >
-                      <Link href="/about">
-                        See Full Experience
-                        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                      </Link>
-                    </Button>
-                  </div>
-                )}
               </div>
+
+              {/* See More Button */}
+              {experiences.length > 4 && (
+                <div className="mt-8 pt-6 border-t border-slate-700/50">
+                  <Button 
+                    asChild 
+                    variant="ghost" 
+                    className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-400/10 p-0 h-auto font-medium"
+                  >
+                    <Link href="/about" className="inline-flex items-center gap-2">
+                      View full experience
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              )}
             </div>
           )}
-
-          {/* GitHub Contributions Graph */}
-          <GitHubGraph />
         </div>
 
-        {/* See More Button */}
-        <div className="text-center mt-12">
-          <Button asChild size="lg" variant="outline" className="group border-slate-700 hover:border-cyan-500">
+        {/* Learn More Button */}
+        <div className="mt-12 text-center">
+          <Button 
+            asChild 
+            className="bg-transparent border border-cyan-500/50 hover:border-cyan-400 hover:bg-cyan-400/10 text-cyan-400 hover:text-cyan-300 px-8 py-6 rounded-full text-base font-medium transition-all duration-300"
+          >
             <Link href="/about">
-              Learn More About Me
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              Learn more about me
+              <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>
         </div>

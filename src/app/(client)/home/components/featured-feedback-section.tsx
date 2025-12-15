@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef } from "react";
 import { Star, Quote } from "lucide-react";
-import { Card } from "@/components/ui/card";
 
 interface FeaturedFeedback {
   id: string;
@@ -25,40 +24,30 @@ export default function FeaturedFeedbackSection() {
   useEffect(() => {
     async function checkAndFetchFeaturedFeedback() {
       try {
-        // First, check if there are enough featured feedbacks
-        console.log("[Featured Section] Checking if there are enough featured feedbacks...");
         const checkResponse = await fetch("/api/feedback/featured/check");
         
         if (!checkResponse.ok) {
-          console.error("[Featured Section] Check endpoint failed:", checkResponse.status);
           setIsLoading(false);
           return;
         }
 
         const checkData = await checkResponse.json();
-        console.log("[Featured Section] Check result:", checkData);
 
         if (!checkData.hasEnough) {
-          console.log(`[Featured Section] Not enough featured feedbacks (${checkData.count}/5)`);
           setShouldMount(false);
           setIsLoading(false);
           return;
         }
 
-        // If enough, set shouldMount to true and fetch the full data
-        console.log(`[Featured Section] Sufficient featured feedbacks (${checkData.count}), fetching data...`);
         setShouldMount(true);
 
         const response = await fetch("/api/feedback/featured");
         if (response.ok) {
           const data = await response.json();
-          console.log("[Featured Section] Featured feedback fetched:", data.length, "items");
           setFeaturedFeedback(data);
-        } else {
-          console.error("[Featured Section] Failed to fetch featured feedback:", response.status);
         }
       } catch (error) {
-        console.error("[Featured Section] Error in checkAndFetchFeaturedFeedback:", error);
+        console.error("[Featured Section] Error:", error);
       } finally {
         setIsLoading(false);
       }
@@ -87,32 +76,30 @@ export default function FeaturedFeedbackSection() {
     if (!isDragging || !scrollContainerRef.current) return;
     e.preventDefault();
     const x = e.pageX - scrollContainerRef.current.offsetLeft;
-    const walk = (x - startX) * 2; // Scroll speed multiplier
+    const walk = (x - startX) * 2;
     scrollContainerRef.current.scrollLeft = scrollLeft - walk;
   };
 
-  // Don't render if still loading or if not enough featured feedbacks
   if (isLoading) {
-    console.log("[Featured Section] Component is loading...");
     return (
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-muted-foreground">Loading featured feedback...</p>
+      <section className="py-24 md:py-32">
+        <div className="container mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+            <p className="text-slate-400">Loading testimonials...</p>
+          </div>
         </div>
       </section>
     );
   }
   
   if (!shouldMount) {
-    console.log("[Featured Section] Component should not mount (not enough featured feedbacks)");
     return null;
   }
 
-  console.log(`[Featured Section] Rendering carousel with ${featuredFeedback.length} items`);
-
   const renderStars = (rating: number) => {
     return (
-      <div className="flex gap-1">
+      <div className="flex gap-0.5">
         {[1, 2, 3, 4, 5].map((star) => {
           const isFullStar = star <= rating;
           const isHalfStar = star - 0.5 === rating;
@@ -122,13 +109,13 @@ export default function FeaturedFeedbackSection() {
               <Star
                 className={`w-4 h-4 ${
                   isFullStar
-                    ? "fill-yellow-400 text-yellow-400"
-                    : "text-muted-foreground"
+                    ? "fill-amber-400 text-amber-400"
+                    : "text-slate-600"
                 }`}
               />
               {isHalfStar && (
                 <Star
-                  className="w-4 h-4 absolute top-0 left-0 fill-yellow-400 text-yellow-400"
+                  className="w-4 h-4 absolute top-0 left-0 fill-amber-400 text-amber-400"
                   style={{ clipPath: "polygon(0 0, 50% 0, 50% 100%, 0 100%)" }}
                 />
               )}
@@ -140,90 +127,106 @@ export default function FeaturedFeedbackSection() {
   };
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-10">
-          <h2 className="text-5xl font-bold mb-3 text-white">What People Say</h2>
-          <p className="text-muted-foreground">
-            Feedback from amazing people I've worked with
+    <section className="py-24 md:py-32">
+      <div className="container mx-auto px-6 sm:px-8 lg:px-12">
+        {/* Section Header */}
+        <div className="max-w-3xl mx-auto text-center mb-16">
+          <span className="inline-block text-cyan-400 text-sm font-medium tracking-wider uppercase mb-4">
+            Kind Words
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+            What People Say
+          </h2>
+          <p className="text-slate-400 text-lg">
+            Feedback from those I've had the pleasure to work with
           </p>
         </div>
 
         {/* Horizontal Scrolling Container */}
-        <div className="relative">
+        <div className="relative -mx-6 sm:-mx-8 lg:-mx-12">
           <div
             ref={scrollContainerRef}
             onMouseDown={handleMouseDown}
             onMouseLeave={handleMouseLeave}
             onMouseUp={handleMouseUp}
             onMouseMove={handleMouseMove}
-            className="overflow-x-auto pb-4 cursor-grab active:cursor-grabbing select-none scrollbar-hide"
+            className="overflow-x-auto pb-4 cursor-grab active:cursor-grabbing select-none scrollbar-hide px-6 sm:px-8 lg:px-12"
             style={{ scrollBehavior: isDragging ? "auto" : "smooth" }}
           >
             <div className="flex gap-6 w-max animate-scroll-infinite hover:animation-paused">
               {/* First set of cards */}
               {featuredFeedback.map((item) => (
-                <Card
+                <article
                   key={`${item.id}-1`}
-                  className="w-[350px] p-6 flex-shrink-0 hover:shadow-lg transition-shadow pointer-events-none"
+                  className="w-[320px] md:w-[380px] p-6 flex-shrink-0 rounded-2xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm pointer-events-none relative overflow-hidden group"
                 >
-                  <div className="flex items-start gap-3 mb-4">
-                    <Quote className="w-8 h-8 text-primary flex-shrink-0 mt-1" />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-semibold">
-                          {item.isAnonymous ? "Anonymous" : item.name || "Anonymous"}
-                        </h3>
-                        {renderStars(item.rating)}
-                      </div>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {item.feedback}
-                      </p>
+                  {/* Quote icon */}
+                  <Quote className="absolute top-4 right-4 w-8 h-8 text-cyan-500/10" />
+                  
+                  <div className="flex items-center gap-3 mb-4">
+                    {/* Avatar placeholder */}
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white font-semibold text-sm">
+                      {(item.isAnonymous ? "A" : (item.name?.[0] || "A")).toUpperCase()}
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-white block">
+                        {item.isAnonymous ? "Anonymous" : item.name || "Anonymous"}
+                      </span>
+                      <time className="text-xs text-slate-500">
+                        {new Date(item.createdAt).toLocaleDateString("en-US", {
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </time>
+                    </div>
+                    <div className="ml-auto">
+                      {renderStars(item.rating)}
                     </div>
                   </div>
-                  <div className="text-xs text-muted-foreground">
-                    {new Date(item.createdAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </div>
-                </Card>
+                  <p className="text-sm text-slate-300 leading-relaxed line-clamp-4">
+                    "{item.feedback}"
+                  </p>
+                </article>
               ))}
               {/* Duplicate set for infinite scroll effect */}
               {featuredFeedback.map((item) => (
-                <Card
+                <article
                   key={`${item.id}-2`}
-                  className="w-[350px] p-6 flex-shrink-0 hover:shadow-lg transition-shadow pointer-events-none"
+                  className="w-[320px] md:w-[380px] p-6 flex-shrink-0 rounded-2xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm pointer-events-none relative overflow-hidden group"
                 >
-                  <div className="flex items-start gap-3 mb-4">
-                    <Quote className="w-8 h-8 text-primary flex-shrink-0 mt-1" />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-semibold">
-                          {item.isAnonymous ? "Anonymous" : item.name || "Anonymous"}
-                        </h3>
-                        {renderStars(item.rating)}
-                      </div>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {item.feedback}
-                      </p>
+                  {/* Quote icon */}
+                  <Quote className="absolute top-4 right-4 w-8 h-8 text-cyan-500/10" />
+                  
+                  <div className="flex items-center gap-3 mb-4">
+                    {/* Avatar placeholder */}
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white font-semibold text-sm">
+                      {(item.isAnonymous ? "A" : (item.name?.[0] || "A")).toUpperCase()}
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-white block">
+                        {item.isAnonymous ? "Anonymous" : item.name || "Anonymous"}
+                      </span>
+                      <time className="text-xs text-slate-500">
+                        {new Date(item.createdAt).toLocaleDateString("en-US", {
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </time>
+                    </div>
+                    <div className="ml-auto">
+                      {renderStars(item.rating)}
                     </div>
                   </div>
-                  <div className="text-xs text-muted-foreground">
-                    {new Date(item.createdAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </div>
-                </Card>
+                  <p className="text-sm text-slate-300 leading-relaxed line-clamp-4">
+                    "{item.feedback}"
+                  </p>
+                </article>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Add custom CSS for infinite scroll animation */}
+        {/* Custom CSS for infinite scroll animation */}
         <style jsx>{`
           @keyframes scroll-infinite {
             0% {

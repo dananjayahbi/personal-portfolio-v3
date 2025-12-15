@@ -1,14 +1,6 @@
 import { getAllTechnologies } from "@/services/technology.service";
 import Image from "next/image";
 
-const CATEGORY_COLORS = {
-  Frontend: "from-cyan-500 to-blue-500",
-  Backend: "from-purple-500 to-indigo-500",
-  Database: "from-green-500 to-emerald-500",
-  "Version Control": "from-orange-500 to-red-500",
-  Others: "from-pink-500 to-rose-500",
-};
-
 export async function SkillsSection() {
   const technologies = await getAllTechnologies();
 
@@ -29,45 +21,43 @@ export async function SkillsSection() {
   });
 
   return (
-    <section className="py-20 px-6">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-24 md:py-32">
+      <div className="container mx-auto px-6 sm:px-8 lg:px-12">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <div className="inline-block">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-2xl">⚡</span>
-              <h2 className="text-4xl md:text-5xl font-bold">
-                <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                  Skills & Technologies
-                </span>
-              </h2>
-            </div>
-            <div className="h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 rounded-full"></div>
-          </div>
+        <div className="max-w-3xl mx-auto text-center mb-16">
+          <span className="inline-block text-cyan-400 text-sm font-medium tracking-wider uppercase mb-4">
+            My Expertise
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+            Skills & Technologies
+          </h2>
+          <p className="text-slate-400 text-lg">
+            Tools and technologies I use to bring ideas to life
+          </p>
         </div>
 
         {/* Technologies Grid */}
-        <div className="space-y-12">
+        <div className="space-y-16">
           {Object.entries(groupedTechnologies).map(([category, techs]) => (
-            <div key={category} className="space-y-6">
+            <div key={category}>
               {/* Category Title */}
-              <div className="flex items-center gap-3">
-                <div className={`h-1 w-12 bg-gradient-to-r ${CATEGORY_COLORS[category as keyof typeof CATEGORY_COLORS] || 'from-gray-500 to-gray-600'} rounded-full`}></div>
-                <h3 className="text-2xl font-semibold text-white/90">
+              <div className="flex items-center gap-4 mb-8">
+                <h3 className="text-lg font-semibold text-white">
                   {category}
                 </h3>
+                <div className="flex-1 h-px bg-gradient-to-r from-cyan-500/50 to-transparent" />
               </div>
 
-              {/* Technology Cards */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {/* Technology Items */}
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-6">
                 {techs.map((tech) => (
                   <div
                     key={tech.id}
-                    className="group relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6 transition-all hover:border-white/20 hover:bg-white/10 hover:scale-105 hover:shadow-xl hover:shadow-cyan-500/20"
+                    className="group flex flex-col items-center gap-3 p-4 rounded-xl bg-slate-800/20 border border-slate-700/30 hover:border-cyan-500/50 hover:bg-slate-800/40 transition-all duration-300"
                   >
                     {/* Technology Icon */}
                     {tech.icon && (
-                      <div className="relative h-16 w-16 mx-auto mb-4 transition-transform group-hover:scale-110">
+                      <div className="relative h-10 w-10 md:h-12 md:w-12 grayscale group-hover:grayscale-0 transition-all duration-300">
                         <Image
                           src={tech.icon}
                           alt={tech.name}
@@ -78,12 +68,9 @@ export async function SkillsSection() {
                     )}
 
                     {/* Technology Name */}
-                    <p className="text-center text-sm font-medium text-white/80 group-hover:text-white transition-colors">
+                    <span className="text-xs text-slate-500 group-hover:text-cyan-400 text-center transition-colors duration-300">
                       {tech.name}
-                    </p>
-
-                    {/* Hover Glow Effect */}
-                    <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${CATEGORY_COLORS[category as keyof typeof CATEGORY_COLORS] || 'from-gray-500 to-gray-600'} opacity-0 group-hover:opacity-10 transition-opacity -z-10`}></div>
+                    </span>
                   </div>
                 ))}
               </div>
