@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ExternalLink, Github, Calendar, Tag, Clock, Sparkles } from "lucide-react";
+import { ArrowLeft, ExternalLink, Github, Calendar, Tag, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,89 +47,84 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
 
   return (
     <div className="min-h-screen bg-[#0a192f]">
-      {/* Hero Section with Background Image */}
-      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
-        {/* Background Image with Overlay */}
+      {/* Compact Hero Section */}
+      <section className="relative pt-20 pb-12 overflow-hidden">
+        {/* Background Image with Heavy Overlay */}
         {experiment.heroImage && (
           <div className="absolute inset-0 z-0">
             <Image
               src={experiment.heroImage}
               alt={experiment.title}
               fill
-              className="object-cover opacity-60"
+              className="object-cover opacity-30"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0a192f]/90 via-[#0a192f]/95 to-[#0a192f]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0a192f] via-[#0a192f]/98 to-[#0a192f]" />
           </div>
         )}
         
-        {/* Ambient Glow Effects */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        {/* Subtle Ambient Glow */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
 
-        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 mt-[-120px]">
+        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
           {/* Back Button */}
-          <Button asChild variant="ghost" className="mb-8 text-slate-400 hover:text-cyan-400 hover:bg-[#0a192f]/50 border border-transparent hover:border-cyan-500/30 transition-all">
+          <Button asChild variant="ghost" size="sm" className="mb-6 text-slate-400 hover:text-cyan-400 hover:bg-[#0a192f]/50 border border-transparent hover:border-cyan-500/30 transition-all">
             <Link href="/experiments">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Experiments
             </Link>
           </Button>
 
-          <div className="max-w-5xl mx-auto text-center">
-            {/* Featured Badge */}
+          <div className="max-w-4xl">
+            {/* Featured Badge - Subtle */}
             {experiment.isFeatured && (
-              <div className="mb-6 flex justify-center">
-                <Badge className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-1.5 text-sm font-medium shadow-lg shadow-cyan-500/30">
-                  <Sparkles className="w-4 h-4 mr-1.5" />
-                  Featured Experiment
-                </Badge>
-              </div>
+              <Badge className="mb-3 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs">
+                <Sparkles className="w-3 h-3 mr-1" />
+                Featured
+              </Badge>
             )}
 
-            {/* Title with Gradient */}
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-black bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent leading-tight drop-shadow-lg">
+            {/* Compact Title */}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-white leading-tight">
               {experiment.title}
             </h1>
 
-            {/* Summary */}
-            <p className="text-xl sm:text-2xl text-slate-300 mb-10 max-w-3xl mx-auto font-light leading-relaxed">
+            {/* Summary - Concise */}
+            <p className="text-lg text-slate-400 mb-6 max-w-2xl leading-relaxed">
               {experiment.summary}
             </p>
 
-            {/* Meta Info */}
-            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400 mb-10">
-              <div className="flex items-center gap-2 bg-[#0a192f]/80 backdrop-blur-sm border border-cyan-500/20 px-4 py-2 rounded-full">
-                <Calendar className="h-4 w-4 text-cyan-400" />
-                <span>{formatDate(experiment.createdAt)}</span>
-              </div>
-              <div className="flex items-center gap-2 bg-[#0a192f]/80 backdrop-blur-sm border border-cyan-500/20 px-4 py-2 rounded-full">
-                <Clock className="h-4 w-4 text-cyan-400" />
-                <span>Updated {formatDate(experiment.updatedAt)}</span>
-              </div>
-              {experiment.tags.length > 0 && (
-                <div className="flex items-center gap-2 bg-[#0a192f]/80 backdrop-blur-sm border border-cyan-500/20 px-4 py-2 rounded-full">
-                  <Tag className="h-4 w-4 text-cyan-400" />
-                  <span>{experiment.tags.slice(0, 3).join(" • ")}</span>
+            {/* Meta & Actions Row */}
+            <div className="flex flex-wrap items-center gap-4 mb-6">
+              <div className="flex items-center gap-4 text-sm text-slate-500">
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="h-4 w-4 text-cyan-500/70" />
+                  <span>{formatDate(experiment.createdAt)}</span>
                 </div>
-              )}
+                {experiment.tags.length > 0 && (
+                  <div className="flex items-center gap-1.5">
+                    <Tag className="h-4 w-4 text-cyan-500/70" />
+                    <span>{experiment.tags.slice(0, 2).join(", ")}</span>
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-wrap gap-4 justify-center mb-[-100px]">
+            {/* Action Buttons - Inline */}
+            <div className="flex flex-wrap gap-3">
               {experiment.liveUrl && (
-                <Button asChild size="lg" className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/30 px-8 transition-all duration-300 hover:shadow-cyan-500/50 hover:scale-105">
+                <Button asChild size="sm" className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/20">
                   <a href={experiment.liveUrl} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="mr-2 h-5 w-5" />
-                    View Live Demo
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Live Demo
                   </a>
                 </Button>
               )}
               {experiment.sourceUrl && (
-                <Button asChild size="lg" variant="outline" className="border-cyan-500/30 hover:border-cyan-400 bg-[#0a192f]/50 backdrop-blur-sm text-slate-200 hover:text-cyan-400 px-8 transition-all duration-300 hover:bg-cyan-500/10">
+                <Button asChild size="sm" variant="outline" className="border-cyan-500/30 hover:border-cyan-400 bg-[#0a192f]/50 backdrop-blur-sm text-slate-300 hover:text-cyan-400">
                   <a href={experiment.sourceUrl} target="_blank" rel="noopener noreferrer">
-                    <Github className="mr-2 h-5 w-5" />
-                    View Source Code
+                    <Github className="mr-2 h-4 w-4" />
+                    Source Code
                   </a>
                 </Button>
               )}

@@ -42,32 +42,29 @@ export default async function AboutPage() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative py-24 md:py-32 overflow-hidden">
-        {/* Background glow effects */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/3 pointer-events-none" />
+      {/* Compact Hero Section */}
+      <section className="relative pt-20 pb-12 overflow-hidden">
+        {/* Subtle background glow */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Back Button */}
-          <Button asChild variant="ghost" className="mb-8 text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-full">
+          <Button asChild variant="ghost" size="sm" className="mb-6 text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10">
             <Link href="/">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Home
             </Link>
           </Button>
 
-          <div className="max-w-4xl mx-auto text-center">
-            <span className="inline-block text-cyan-400 text-sm font-medium tracking-wider uppercase mb-4">
+          <div className="max-w-4xl">
+            <span className="inline-block text-cyan-400/80 text-xs font-medium tracking-wider uppercase mb-2">
               Get to Know Me
             </span>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-white via-cyan-100 to-cyan-200 bg-clip-text text-transparent">
-                {title}
-              </span>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-white">
+              {title}
             </h1>
             {summary && (
-              <p className="text-xl text-slate-400 leading-relaxed max-w-2xl mx-auto">
+              <p className="text-lg text-slate-400 leading-relaxed max-w-2xl">
                 {summary}
               </p>
             )}
@@ -76,7 +73,7 @@ export default async function AboutPage() {
       </section>
 
       {/* Main Content */}
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto space-y-12">
             {/* About Content */}

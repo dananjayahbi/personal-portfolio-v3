@@ -61,7 +61,7 @@ export function ProjectFilters({ technologies, tags, onFilterChange }: ProjectFi
   return (
     <div className="space-y-4">
       {/* Search Bar */}
-      <div className="flex gap-4 mt-[-30px]">
+      <div className="flex gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
           <input
