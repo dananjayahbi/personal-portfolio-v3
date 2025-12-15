@@ -48,6 +48,11 @@ export async function ClientFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/admin-dashboard" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">
+                  Admin
+                </Link>
+              </li>
+              <li>
                 <Link href="/#contact" className="text-slate-400 hover:text-cyan-400 text-sm transition-colors">
                   Contact
                 </Link>

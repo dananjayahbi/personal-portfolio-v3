@@ -107,7 +107,8 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
                 size="lg"
                 className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white px-8 py-6 text-base font-medium rounded-full shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300"
               >
-                <Link href={primaryCta.url}>
+                {/* Ensure the Link explicitly receives the text color so it doesn't get overridden */}
+                <Link href={primaryCta.url} className="inline-flex items-center text-white">
                   {primaryCta.label}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
@@ -118,9 +119,10 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
                 asChild
                 size="lg"
                 variant="outline"
-                className="border-slate-600 hover:border-cyan-400/50 hover:bg-cyan-400/5 text-white px-8 py-6 text-base font-medium rounded-full transition-all duration-300"
+                className="border-slate-600 hover:border-cyan-400/50 hover:bg-cyan-400/5 text-black px-8 py-6 text-base font-medium rounded-full transition-all duration-300"
               >
-                <Link href={secondaryCta.url}>
+                {/* Ensure the Link explicitly receives the text color so it doesn't get overridden */}
+                <Link href={secondaryCta.url} className="inline-flex items-center text-black hover:text-cyan-400">
                   {secondaryCta.label}
                 </Link>
               </Button>
