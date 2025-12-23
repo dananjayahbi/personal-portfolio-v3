@@ -31,39 +31,7 @@ export function AboutSection({ content, experiences }: AboutSectionProps) {
 
   return (
     <section id="about" className="py-24 md:py-32 scroll-mt-16 relative overflow-hidden">
-      {/* Large decorative image - right side, well-positioned */}
-      <div className="absolute -right-20 top-1/4 w-[400px] h-[500px] opacity-[0.35] pointer-events-none hidden lg:block animate-float-slow">
-        <div className="relative w-full h-full decorative-frame">
-          <Image
-            src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&q=90"
-            alt=""
-            fill
-            className="object-cover"
-            aria-hidden="true"
-          />
-          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-[#0f1419]/30 to-[#0f1419]/80" />
-        </div>
-      </div>
-
-      {/* Secondary decorative image - bottom left, complementary */}
-      <div className="absolute -left-10 bottom-20 w-[300px] h-[380px] opacity-[0.30] pointer-events-none hidden lg:block animate-float-reverse">
-        <div className="relative w-full h-full decorative-frame">
-          <Image
-            src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=85"
-            alt=""
-            fill
-            className="object-cover"
-            aria-hidden="true"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0f1419]/80 via-[#0f1419]/30 to-transparent" />
-        </div>
-      </div>
-
-      {/* Ambient glow effects */}
-      <div className="absolute top-1/2 left-0 w-96 h-96 bg-emerald-900/15 rounded-full blur-[200px] -translate-y-1/2 pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-amber-900/10 rounded-full blur-[180px] pointer-events-none" />
-      
-      {/* Floating geometric decorations */}
+      {/* Floating geometric decorations - enhanced with glassmorphism */}
       <div className="absolute top-20 right-1/4 w-20 h-20 border-2 border-amber-400/20 rounded-full pointer-events-none animate-float" />
       <div className="absolute bottom-40 left-1/3 w-16 h-16 border-2 border-white/10 rotate-45 pointer-events-none animate-float-reverse" />
       <div className="absolute top-1/2 right-10 w-12 h-12 border border-emerald-400/15 rounded-full pointer-events-none animate-float-subtle" />
@@ -88,12 +56,14 @@ export function AboutSection({ content, experiences }: AboutSectionProps) {
           {/* Left Column - Background & GitHub */}
           <div className="space-y-10">
             {narrative && (
-              <div className="p-8 md:p-10 bg-white/[0.02] border border-white/[0.06] relative overflow-hidden group">
+              <div className="p-8 md:p-10 bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-2xl relative overflow-hidden group hover:bg-white/[0.05] transition-all duration-500">
                 {/* Subtle corner accent */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-500/5 to-transparent pointer-events-none" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-500/10 to-transparent pointer-events-none" />
+                {/* Shimmer effect on hover */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 translate-x-[-100%] group-hover:translate-x-[100%]" style={{ transition: 'transform 0.7s ease-out, opacity 0.3s' }} />
                 
                 <h3 className="flex items-center gap-3 text-lg font-light text-white mb-6">
-                  <div className="w-10 h-10 border border-white/10 flex items-center justify-center">
+                  <div className="w-10 h-10 border border-white/10 rounded-lg flex items-center justify-center bg-white/[0.02]">
                     <Briefcase className="w-4 h-4 text-amber-400/60" />
                   </div>
                   <span className="tracking-wide">Background</span>
@@ -105,8 +75,8 @@ export function AboutSection({ content, experiences }: AboutSectionProps) {
             )}
 
             {/* GitHub Contributions */}
-            <div className="p-8 md:p-10 bg-white/[0.02] border border-white/[0.06] relative">
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-emerald-500/5 to-transparent pointer-events-none" />
+            <div className="p-8 md:p-10 bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-2xl relative overflow-hidden hover:bg-white/[0.05] transition-all duration-500">
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-emerald-500/8 to-transparent pointer-events-none" />
               <h3 className="text-lg font-light text-white mb-8 tracking-wide">
                 GitHub Activity
               </h3>
@@ -116,9 +86,9 @@ export function AboutSection({ content, experiences }: AboutSectionProps) {
 
           {/* Right Column - Experience Timeline */}
           {experiences && experiences.length > 0 && (
-            <div className="p-8 md:p-10 bg-white/[0.02] border border-white/[0.06] relative overflow-hidden">
+            <div className="p-8 md:p-10 bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-2xl relative overflow-hidden hover:bg-white/[0.05] transition-all duration-500">
               {/* Decorative gradient */}
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-500/20 to-transparent" />
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-500/30 to-transparent rounded-t-2xl" />
               
               <h3 className="flex items-center gap-3 text-lg font-light text-white mb-10">
                 <div className="w-10 h-10 border border-white/10 flex items-center justify-center">

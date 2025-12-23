@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import Image from "next/image";
 import { Star, Quote } from "lucide-react";
 
 interface FeaturedFeedback {
@@ -129,20 +128,6 @@ export default function FeaturedFeedbackSection() {
 
   return (
     <section className="py-24 md:py-32 relative overflow-hidden">
-      {/* Large decorative image - left */}
-      <div className="absolute -left-16 top-20 w-[350px] h-[400px] opacity-[0.30] pointer-events-none hidden lg:block animate-float-slow">
-        <div className="relative w-full h-full decorative-frame">
-          <Image
-            src="https://images.unsplash.com/photo-1557683316-973673baf926?w=800&q=85"
-            alt=""
-            fill
-            className="object-cover"
-            aria-hidden="true"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0f1419]/80 via-[#0f1419]/30 to-transparent" />
-        </div>
-      </div>
-
       {/* Large decorative quote mark - right side */}
       <div className="absolute right-10 top-20 opacity-[0.15] pointer-events-none animate-float">
         <Quote className="w-72 h-72 text-amber-400/50" />
@@ -156,8 +141,6 @@ export default function FeaturedFeedbackSection() {
       {/* Floating geometric decorations */}
       <div className="absolute right-1/4 bottom-32 w-20 h-20 border-2 border-purple-400/20 rounded-full pointer-events-none animate-float" />
       <div className="absolute left-1/3 top-1/3 w-14 h-14 border-2 border-amber-400/15 rotate-45 pointer-events-none animate-float-subtle" />
-
-      {/* Ambient glow effects */}
       <div className="absolute top-1/2 right-0 w-96 h-96 bg-purple-900/10 rounded-full blur-[180px] -translate-y-1/2 pointer-events-none" />
       <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-amber-900/10 rounded-full blur-[150px] pointer-events-none" />
       
@@ -191,7 +174,7 @@ export default function FeaturedFeedbackSection() {
               {featuredFeedback.map((item) => (
                 <article
                   key={`${item.id}-1`}
-                  className="w-[320px] md:w-[380px] p-8 flex-shrink-0 rounded-2xl glass-dark pointer-events-none relative overflow-hidden"
+                  className="w-[320px] md:w-[380px] p-8 flex-shrink-0 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] pointer-events-none relative overflow-hidden"
                 >
                   {/* Quote icon */}
                   <Quote className="absolute top-6 right-6 w-8 h-8 text-white/5" />
@@ -225,7 +208,7 @@ export default function FeaturedFeedbackSection() {
               {featuredFeedback.map((item) => (
                 <article
                   key={`${item.id}-2`}
-                  className="w-[320px] md:w-[380px] p-8 flex-shrink-0 rounded-2xl glass-dark pointer-events-none relative overflow-hidden"
+                  className="w-[320px] md:w-[380px] p-8 flex-shrink-0 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] pointer-events-none relative overflow-hidden"
                 >
                   {/* Quote icon */}
                   <Quote className="absolute top-6 right-6 w-8 h-8 text-white/5" />

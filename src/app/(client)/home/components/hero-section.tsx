@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowRight, Download, Github, Linkedin, Mail, Twitter, Facebook, Instagram, ChevronDown } from "lucide-react";
 
 interface HeroSectionProps {
@@ -44,19 +43,32 @@ const SOCIAL_ICONS: Record<string, any> = {
 export function HeroSection({ content, callToActions, settings }: HeroSectionProps) {
   const [scrollY, setScrollY] = useState(0);
   const heroRef = useRef<HTMLElement>(null);
+  const frameRef = useRef<number>(0);
 
+  // Optimized scroll handler with requestAnimationFrame
   useEffect(() => {
     const handleScroll = () => {
-      if (heroRef.current) {
-        const rect = heroRef.current.getBoundingClientRect();
-        if (rect.bottom > 0) {
-          setScrollY(window.scrollY);
-        }
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current);
       }
+      
+      frameRef.current = requestAnimationFrame(() => {
+        if (heroRef.current) {
+          const rect = heroRef.current.getBoundingClientRect();
+          if (rect.bottom > 0) {
+            setScrollY(window.scrollY);
+          }
+        }
+      });
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current);
+      }
+    };
   }, []);
 
   const eyebrow = content?.eyebrow;
@@ -77,35 +89,40 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
       ref={heroRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Background Image with Strong Parallax Effect */}
+      {/* CSS Parallax Background - using background-attachment: fixed */}
       <div 
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 bg-cover bg-center bg-fixed"
         style={{
-          transform: `translateY(${scrollY * 0.4}px) scale(1.1)`,
+          backgroundImage: `url(https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80)`,
         }}
-      >
-        <Image
-          src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=85"
-          alt="Hero background"
-          fill
-          priority
-          className="object-cover object-center"
-          sizes="100vw"
-        />
-        {/* Gradient Overlays for Premium Dark Look */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0f1419]/90 via-[#0f1419]/60 to-[#0f1419]/30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-transparent to-[#0f1419]/20" />
+        role="img"
+        aria-label="Hero background"
+      />
+
+      {/* Gradient overlays */}
+      <div className="absolute inset-0 z-[1]">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0f1419]/95 via-[#0f1419]/70 to-[#0f1419]/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-transparent to-[#0f1419]/30" />
       </div>
 
-      {/* Additional decorative parallax elements */}
+      {/* Decorative geometric elements with scroll-based parallax */}
       <div 
-        className="absolute bottom-20 left-10 w-32 h-32 border-2 border-white/10 rounded-full pointer-events-none z-[1]"
+        className="absolute bottom-32 left-10 w-32 h-32 border border-white/10 rounded-full pointer-events-none z-[2]"
         style={{ transform: `translateY(${scrollY * -0.15}px)` }}
       />
       <div 
-        className="absolute top-1/3 right-10 w-24 h-24 border-2 border-amber-500/15 rotate-45 pointer-events-none z-[1]"
-        style={{ transform: `rotate(45deg) translateY(${scrollY * 0.12}px)` }}
+        className="absolute top-1/4 right-16 w-24 h-24 border border-amber-500/15 rotate-45 pointer-events-none z-[2]"
+        style={{ transform: `rotate(45deg) translateY(${scrollY * 0.1}px)` }}
       />
+      <div 
+        className="absolute bottom-1/4 right-1/3 w-16 h-16 border border-white/5 rounded-full pointer-events-none z-[2]"
+        style={{ transform: `translateY(${scrollY * -0.08}px)` }}
+      />
+
+      {/* Glassmorphism card effect */}
+      <div className="absolute inset-x-4 md:inset-x-12 lg:inset-x-24 top-1/2 -translate-y-1/2 h-[70vh] rounded-3xl overflow-hidden z-[3] pointer-events-none">
+        <div className="absolute inset-0 bg-white/[0.02] backdrop-blur-[2px] border border-white/[0.05] rounded-3xl" />
+      </div>
 
       {/* Content Container */}
       <div className="container relative z-10 mx-auto px-6 sm:px-8 lg:px-12 py-20">
