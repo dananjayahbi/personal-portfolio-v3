@@ -37,6 +37,7 @@ function TechIcon({ tech }: { tech: Technology }) {
         src={tech.icon}
         alt={tech.name}
         fill
+        sizes="48px"
         className={`object-contain opacity-60 group-hover:opacity-100 transition-all duration-500 ${isLoading ? 'opacity-0' : ''}`}
         onLoad={() => setIsLoading(false)}
         onError={() => {

@@ -68,6 +68,7 @@ function ProjectCard({ project }: { project: Project }) {
               src={project.heroImage}
               alt={project.title}
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-transparent to-transparent" />

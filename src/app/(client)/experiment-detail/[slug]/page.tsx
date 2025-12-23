@@ -126,6 +126,7 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
               src={experiment.heroImage}
               alt={experiment.title}
               fill
+              sizes="100vw"
               className="object-cover"
               priority
             />
@@ -228,6 +229,7 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
                           src={relatedExperiment.heroImage}
                           alt={relatedExperiment.title}
                           fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
                           className="object-cover transition-transform duration-700 group-hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-transparent to-transparent opacity-60" />
