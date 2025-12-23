@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Mail, MapPin, Phone, Send, ArrowRight } from "lucide-react";
+import { AnimateOnScroll } from "@/components/common/animate-on-scroll";
 
 interface ContactSectionProps {
   settings?: {
@@ -71,22 +72,25 @@ export function ContactSection({ settings }: ContactSectionProps) {
 
       <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         {/* Section Header - Premium Typography */}
-        <div className="max-w-3xl mx-auto text-center mb-20">
-          <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
-            Let's Connect
-          </span>
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-8">
-            Get in Touch
-          </h2>
-          <p className="text-white/50 text-lg font-light">
-            Have a project in mind? Let's discuss how I can help bring your ideas to life.
-          </p>
-        </div>
+        <AnimateOnScroll animation="fade-up" duration={800}>
+          <div className="max-w-3xl mx-auto text-center mb-20">
+            <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
+              Let's Connect
+            </span>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-8">
+              Get in Touch
+            </h2>
+            <p className="text-white/50 text-lg font-light">
+              Have a project in mind? Let's discuss how I can help bring your ideas to life.
+            </p>
+          </div>
+        </AnimateOnScroll>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 max-w-6xl mx-auto">
           {/* Contact Info */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="p-8 md:p-10 rounded-2xl glass-dark">
+          <AnimateOnScroll animation="fade-right" delay={100} duration={700} className="lg:col-span-2">
+            <div className="space-y-6">
+              <div className="p-8 md:p-10 rounded-2xl glass-dark">
               <h3 className="text-lg font-light text-white mb-8 tracking-wide">
                 Contact Information
               </h3>
@@ -144,11 +148,12 @@ export function ContactSection({ settings }: ContactSectionProps) {
                   </div>
                 )}
               </div>
+              </div>
             </div>
-          </div>
+          </AnimateOnScroll>
 
           {/* Contact Form */}
-          <div className="lg:col-span-3">
+          <AnimateOnScroll animation="fade-left" delay={150} duration={700} className="lg:col-span-3">
             <form onSubmit={handleSubmit} className="p-8 md:p-10 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] space-y-6 hover:bg-white/[0.05] transition-all duration-500">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
@@ -242,7 +247,7 @@ export function ContactSection({ settings }: ContactSectionProps) {
                 )}
               </div>
             </form>
-          </div>
+          </AnimateOnScroll>
         </div>
       </div>
     </section>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { AnimateOnScroll } from "@/components/common/animate-on-scroll";
 
 interface Technology {
   id: string;
@@ -75,48 +76,52 @@ export function SkillsSection({ technologies }: SkillsSectionProps) {
       
       <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         {/* Section Header - Premium Typography */}
-        <div className="max-w-3xl mx-auto text-center mb-20">
-          <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
-            My Expertise
-          </span>
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-8">
-            Skills & Technologies
-          </h2>
-          <p className="text-white/50 text-lg font-light">
-            Tools and technologies I use to bring ideas to life
-          </p>
-        </div>
+        <AnimateOnScroll animation="fade-up" duration={800}>
+          <div className="max-w-3xl mx-auto text-center mb-20">
+            <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
+              My Expertise
+            </span>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-8">
+              Skills & Technologies
+            </h2>
+            <p className="text-white/50 text-lg font-light">
+              Tools and technologies I use to bring ideas to life
+            </p>
+          </div>
+        </AnimateOnScroll>
 
         {/* Technologies Grid */}
         <div className="space-y-16">
-          {Object.entries(groupedTechnologies).map(([category, techs]) => (
-            <div key={category}>
-              {/* Category Title */}
-              <div className="flex items-center gap-6 mb-10">
-                <h3 className="text-sm font-light text-white/60 tracking-[0.2em] uppercase whitespace-nowrap">
-                  {category}
-                </h3>
-                <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent" />
-              </div>
+          {Object.entries(groupedTechnologies).map(([category, techs], categoryIndex) => (
+            <AnimateOnScroll key={category} animation="fade-up" delay={categoryIndex * 100} duration={700}>
+              <div>
+                {/* Category Title */}
+                <div className="flex items-center gap-6 mb-10">
+                  <h3 className="text-sm font-light text-white/60 tracking-[0.2em] uppercase whitespace-nowrap">
+                    {category}
+                  </h3>
+                  <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent" />
+                </div>
 
-              {/* Technology Items - with glassmorphism */}
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-6">
-                {techs.map((tech) => (
-                  <div
-                    key={tech.id}
-                    className="group flex flex-col items-center gap-4 p-4 md:p-6 bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-xl hover:bg-white/[0.08] hover:border-white/[0.12] hover:scale-105 transition-all duration-500"
-                  >
-                    {/* Technology Icon with Skeleton */}
-                    <TechIcon tech={tech} />
+                {/* Technology Items - with glassmorphism */}
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-6">
+                  {techs.map((tech) => (
+                    <div
+                      key={tech.id}
+                      className="group flex flex-col items-center gap-4 p-4 md:p-6 bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-xl hover:bg-white/[0.08] hover:border-white/[0.12] hover:scale-105 transition-all duration-500"
+                    >
+                      {/* Technology Icon with Skeleton */}
+                      <TechIcon tech={tech} />
 
-                    {/* Technology Name */}
-                    <span className="text-[10px] md:text-xs text-white/40 group-hover:text-white/80 text-center transition-colors duration-500 font-light tracking-wide line-clamp-1">
-                      {tech.name}
-                    </span>
-                  </div>
-                ))}
+                      {/* Technology Name */}
+                      <span className="text-[10px] md:text-xs text-white/40 group-hover:text-white/80 text-center transition-colors duration-500 font-light tracking-wide line-clamp-1">
+                        {tech.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            </AnimateOnScroll>
           ))}
         </div>
       </div>

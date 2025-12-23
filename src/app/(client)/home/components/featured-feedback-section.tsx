@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { Star, Quote } from "lucide-react";
+import { AnimateOnScroll } from "@/components/common/animate-on-scroll";
 
 interface FeaturedFeedback {
   id: string;
@@ -146,20 +147,23 @@ export default function FeaturedFeedbackSection() {
       
       <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         {/* Section Header - Premium Typography */}
-        <div className="max-w-3xl mx-auto text-center mb-20">
-          <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
-            Kind Words
-          </span>
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-8">
-            What People Say
-          </h2>
-          <p className="text-white/50 text-lg font-light">
-            Feedback from those I've had the pleasure to work with
-          </p>
-        </div>
+        <AnimateOnScroll animation="fade-up" duration={800}>
+          <div className="max-w-3xl mx-auto text-center mb-20">
+            <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
+              Kind Words
+            </span>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-8">
+              What People Say
+            </h2>
+            <p className="text-white/50 text-lg font-light">
+              Feedback from those I've had the pleasure to work with
+            </p>
+          </div>
+        </AnimateOnScroll>
 
         {/* Horizontal Scrolling Container */}
-        <div className="relative -mx-6 sm:-mx-8 lg:-mx-12">
+        <AnimateOnScroll animation="fade-up" delay={150} duration={700}>
+          <div className="relative -mx-6 sm:-mx-8 lg:-mx-12">
           <div
             ref={scrollContainerRef}
             onMouseDown={handleMouseDown}
@@ -240,7 +244,8 @@ export default function FeaturedFeedbackSection() {
               ))}
             </div>
           </div>
-        </div>
+          </div>
+        </AnimateOnScroll>
 
         {/* Custom CSS for infinite scroll animation */}
         <style jsx>{`

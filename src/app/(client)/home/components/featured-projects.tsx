@@ -1,8 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ExternalLink, Github, Folder } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Project } from "@prisma/client";
+import { AnimateOnScroll } from "@/components/common/animate-on-scroll";
 
 interface FeaturedProjectsProps {
   projects: Project[];
@@ -22,31 +25,35 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
       
       <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8 mb-20">
-          <div className="max-w-xl">
-            <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
-              My Work
-            </span>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-6">
-              Featured Projects
-            </h2>
-            <p className="text-white/50 text-lg font-light">
-              A selection of projects that showcase my expertise
-            </p>
+        <AnimateOnScroll animation="fade-up" duration={800}>
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8 mb-20">
+            <div className="max-w-xl">
+              <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
+                My Work
+              </span>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-6">
+                Featured Projects
+              </h2>
+              <p className="text-white/50 text-lg font-light">
+                A selection of projects that showcase my expertise
+              </p>
+            </div>
+            <Link
+              href="/projects"
+              className="group inline-flex items-center gap-3 px-6 py-3 border border-white/20 rounded-full text-white/60 hover:text-white hover:border-white/40 transition-all duration-300 text-sm tracking-wide font-light w-fit"
+            >
+              View all projects
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
           </div>
-          <Link
-            href="/projects"
-            className="group inline-flex items-center gap-3 px-6 py-3 border border-white/20 rounded-full text-white/60 hover:text-white hover:border-white/40 transition-all duration-300 text-sm tracking-wide font-light w-fit"
-          >
-            View all projects
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Link>
-        </div>
+        </AnimateOnScroll>
 
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {projects.slice(0, 6).map((project) => (
-            <ProjectCard key={project.id} project={project} />
+          {projects.slice(0, 6).map((project, index) => (
+            <AnimateOnScroll key={project.id} animation="fade-up" delay={index * 100} duration={700}>
+              <ProjectCard project={project} />
+            </AnimateOnScroll>
           ))}
         </div>
       </div>

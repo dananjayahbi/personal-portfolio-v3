@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Star, MessageSquare, ArrowRight } from "lucide-react";
+import { AnimateOnScroll } from "@/components/common/animate-on-scroll";
 
 export default function FeedbackSection() {
   const [name, setName] = useState("");
@@ -86,19 +87,22 @@ export default function FeedbackSection() {
       <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         <div className="max-w-2xl mx-auto">
           {/* Section Header - Premium Typography */}
-          <div className="text-center mb-16">
-            <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
-              Your Opinion Matters
-            </span>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-8">
-              Share Your Feedback
-            </h2>
-            <p className="text-white/50 text-lg font-light">
-              Help me improve by sharing your experience
-            </p>
-          </div>
+          <AnimateOnScroll animation="fade-up" duration={800}>
+            <div className="text-center mb-16">
+              <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
+                Your Opinion Matters
+              </span>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-8">
+                Share Your Feedback
+              </h2>
+              <p className="text-white/50 text-lg font-light">
+                Help me improve by sharing your experience
+              </p>
+            </div>
+          </AnimateOnScroll>
 
-          <form onSubmit={handleSubmit} className="p-8 md:p-10 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] space-y-8 hover:bg-white/[0.05] transition-all duration-500">
+          <AnimateOnScroll animation="fade-up" delay={150} duration={700}>
+            <form onSubmit={handleSubmit} className="p-8 md:p-10 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] space-y-8 hover:bg-white/[0.05] transition-all duration-500">
             {/* Name Field */}
             <div>
               <label htmlFor="name" className="block text-xs text-white/40 mb-3 font-light tracking-wider uppercase">
@@ -234,6 +238,7 @@ export default function FeedbackSection() {
               )}
             </button>
           </form>
+          </AnimateOnScroll>
         </div>
       </div>
     </section>

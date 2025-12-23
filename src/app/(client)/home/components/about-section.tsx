@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Briefcase, Calendar } from "lucide-react";
 import { GitHubGraph } from "@/components/common/github-graph";
+import { AnimateOnScroll } from "@/components/common/animate-on-scroll";
 
 interface AboutSectionProps {
   content?: {
@@ -39,57 +40,64 @@ export function AboutSection({ content, experiences, githubGraphUrl }: AboutSect
       
       <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         {/* Section Header - Premium Typography */}
-        <div className="max-w-3xl mx-auto text-center mb-20">
-          <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
-            Who I Am
-          </span>
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-8">
-            {title}
-          </h2>
-          {summary && (
-            <p className="text-white/50 text-lg leading-relaxed font-light">
-              {summary}
-            </p>
-          )}
-        </div>
+        <AnimateOnScroll animation="fade-up" duration={800}>
+          <div className="max-w-3xl mx-auto text-center mb-20">
+            <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
+              Who I Am
+            </span>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-8">
+              {title}
+            </h2>
+            {summary && (
+              <p className="text-white/50 text-lg leading-relaxed font-light">
+                {summary}
+              </p>
+            )}
+          </div>
+        </AnimateOnScroll>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
           {/* Left Column - Background & GitHub */}
           <div className="space-y-10">
             {narrative && (
-              <div className="p-8 md:p-10 bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-2xl relative overflow-hidden group hover:bg-white/[0.05] transition-all duration-500">
-                {/* Subtle corner accent */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-500/10 to-transparent pointer-events-none" />
-                {/* Shimmer effect on hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 translate-x-[-100%] group-hover:translate-x-[100%]" style={{ transition: 'transform 0.7s ease-out, opacity 0.3s' }} />
-                
-                <h3 className="flex items-center gap-3 text-lg font-light text-white mb-6">
-                  <div className="w-10 h-10 border border-white/10 rounded-lg flex items-center justify-center bg-white/[0.02]">
-                    <Briefcase className="w-4 h-4 text-amber-400/60" />
-                  </div>
-                  <span className="tracking-wide">Background</span>
-                </h3>
-                <p className="text-white/50 leading-relaxed whitespace-pre-line font-light">
-                  {narrative}
-                </p>
-              </div>
+              <AnimateOnScroll animation="fade-up" delay={100} duration={700}>
+                <div className="p-8 md:p-10 bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-2xl relative overflow-hidden group hover:bg-white/[0.05] transition-all duration-500">
+                  {/* Subtle corner accent */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-500/10 to-transparent pointer-events-none" />
+                  {/* Shimmer effect on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 translate-x-[-100%] group-hover:translate-x-[100%]" style={{ transition: 'transform 0.7s ease-out, opacity 0.3s' }} />
+                  
+                  <h3 className="flex items-center gap-3 text-lg font-light text-white mb-6">
+                    <div className="w-10 h-10 border border-white/10 rounded-lg flex items-center justify-center bg-white/[0.02]">
+                      <Briefcase className="w-4 h-4 text-amber-400/60" />
+                    </div>
+                    <span className="tracking-wide">Background</span>
+                  </h3>
+                  <p className="text-white/50 leading-relaxed whitespace-pre-line font-light">
+                    {narrative}
+                  </p>
+                </div>
+              </AnimateOnScroll>
             )}
 
             {/* GitHub Contributions */}
-            <div className="p-8 md:p-10 bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-2xl relative overflow-hidden hover:bg-white/[0.05] transition-all duration-500">
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-emerald-500/8 to-transparent pointer-events-none" />
-              <h3 className="text-lg font-light text-white mb-8 tracking-wide">
-                GitHub Activity
-              </h3>
-              <GitHubGraph graphUrl={githubGraphUrl} />
-            </div>
+            <AnimateOnScroll animation="fade-up" delay={200} duration={700}>
+              <div className="p-8 md:p-10 bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-2xl relative overflow-hidden hover:bg-white/[0.05] transition-all duration-500">
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-emerald-500/8 to-transparent pointer-events-none" />
+                <h3 className="text-lg font-light text-white mb-8 tracking-wide">
+                  GitHub Activity
+                </h3>
+                <GitHubGraph graphUrl={githubGraphUrl} />
+              </div>
+            </AnimateOnScroll>
           </div>
 
           {/* Right Column - Experience Timeline */}
           {experiences && experiences.length > 0 && (
-            <div className="p-8 md:p-10 bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-2xl relative overflow-hidden hover:bg-white/[0.05] transition-all duration-500">
-              {/* Decorative gradient */}
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-500/30 to-transparent rounded-t-2xl" />
+            <AnimateOnScroll animation="fade-left" delay={150} duration={700}>
+              <div className="p-8 md:p-10 bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-2xl relative overflow-hidden hover:bg-white/[0.05] transition-all duration-500">
+                {/* Decorative gradient */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-500/30 to-transparent rounded-t-2xl" />
               
               <h3 className="flex items-center gap-3 text-lg font-light text-white mb-10">
                 <div className="w-10 h-10 border border-white/10 flex items-center justify-center">
@@ -137,20 +145,23 @@ export function AboutSection({ content, experiences, githubGraphUrl }: AboutSect
                   </Link>
                 </div>
               )}
-            </div>
+              </div>
+            </AnimateOnScroll>
           )}
         </div>
 
         {/* Learn More Button */}
-        <div className="mt-16 text-center">
-          <Link 
-            href="/about"
-            className="group inline-flex items-center gap-3 px-8 py-4 border border-white/20 text-white/70 hover:text-white hover:border-amber-500/40 transition-all duration-300 text-sm tracking-wide font-light"
-          >
-            Learn more about me
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Link>
-        </div>
+        <AnimateOnScroll animation="fade-up" delay={300} duration={600}>
+          <div className="mt-16 text-center">
+            <Link 
+              href="/about"
+              className="group inline-flex items-center gap-3 px-8 py-4 border border-white/20 text-white/70 hover:text-white hover:border-amber-500/40 transition-all duration-300 text-sm tracking-wide font-light"
+            >
+              Learn more about me
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+        </AnimateOnScroll>
       </div>
     </section>
   );
