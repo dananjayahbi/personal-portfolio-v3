@@ -13,7 +13,16 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
 
     // Parse filters from query params
-    const filters: any = {};
+    const filters: {
+      name?: string;
+      isAnonymous?: boolean;
+      minRating?: number;
+      maxRating?: number;
+      sortBy?: "createdAt" | "rating";
+      sortOrder?: "asc" | "desc";
+      limit?: number;
+      skip?: number;
+    } = {};
 
     const name = searchParams.get("name");
     if (name) filters.name = name;
@@ -30,10 +39,10 @@ export async function GET(request: NextRequest) {
     if (maxRating) filters.maxRating = parseInt(maxRating);
 
     const sortBy = searchParams.get("sortBy");
-    if (sortBy) filters.sortBy = sortBy;
+    if (sortBy && (sortBy === "createdAt" || sortBy === "rating")) filters.sortBy = sortBy;
 
     const sortOrder = searchParams.get("sortOrder");
-    if (sortOrder) filters.sortOrder = sortOrder;
+    if (sortOrder && (sortOrder === "asc" || sortOrder === "desc")) filters.sortOrder = sortOrder;
 
     const limit = searchParams.get("limit");
     if (limit) filters.limit = parseInt(limit);

@@ -10,7 +10,7 @@ import {
  * GET /api/analytics
  * Get all analytics data (admin only)
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // TODO: Add admin authentication check
 

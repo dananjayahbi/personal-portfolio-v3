@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Feedback } from "@prisma/client";
-import { Star, Trash2, Search, Filter, RefreshCw, Ban, Check, Award } from "lucide-react";
+import { Star, Trash2, Search, RefreshCw, Ban, Check, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -273,7 +273,7 @@ export function FeedbackContent({ initialFeedback, stats }: FeedbackContentProps
           {/* Anonymous Filter */}
           <select
             value={filterAnonymous}
-            onChange={(e) => setFilterAnonymous(e.target.value as any)}
+            onChange={(e) => setFilterAnonymous(e.target.value as "all" | "named" | "anonymous")}
             className="px-4 py-2 bg-slate-900 border border-slate-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">All Feedback</option>
@@ -302,8 +302,8 @@ export function FeedbackContent({ initialFeedback, stats }: FeedbackContentProps
             value={`${sortBy}-${sortOrder}`}
             onChange={(e) => {
               const [newSortBy, newSortOrder] = e.target.value.split("-");
-              setSortBy(newSortBy as any);
-              setSortOrder(newSortOrder as any);
+              setSortBy(newSortBy as "createdAt" | "rating");
+              setSortOrder(newSortOrder as "asc" | "desc");
             }}
             className="px-4 py-2 bg-slate-900 border border-slate-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           >

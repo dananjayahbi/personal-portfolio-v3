@@ -33,14 +33,6 @@ export type ContentState = {
   fieldErrors?: Partial<Record<keyof z.infer<typeof contentSchema>, string>>;
 };
 
-function parseList(value?: string | null) {
-  if (!value) return [] as string[];
-  return value
-    .split(/\r?\n|,/)
-    .map((entry) => entry.trim())
-    .filter(Boolean);
-}
-
 function parseExperiences(value?: string | null) {
   if (!value) return [] as Array<{ company: string; role: string; period: string; description?: string }>;
   return value

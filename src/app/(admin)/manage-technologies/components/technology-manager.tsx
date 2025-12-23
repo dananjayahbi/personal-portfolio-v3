@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Technology } from "@prisma/client";
-import { Plus, Edit, Trash2, Save, X, Upload } from "lucide-react";
+import { Plus, Edit, Trash2, Save, X } from "lucide-react";
 import Image from "next/image";
 
 const CATEGORIES = ["Frontend", "Backend", "Database", "Version Control", "Others"];

@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowRight, Briefcase, Calendar } from "lucide-react";
 import { GitHubGraph } from "@/components/common/github-graph";
 import { AnimateOnScroll } from "@/components/common/animate-on-scroll";

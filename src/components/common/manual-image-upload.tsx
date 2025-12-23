@@ -8,11 +8,10 @@ interface ManualImageUploadProps {
   label: string;
   name: string;
   defaultValue?: string;
-  folder?: string;
   onFileSelect: (file: File | null) => void;
 }
 
-export function ManualImageUpload({ label, name, defaultValue, folder, onFileSelect }: ManualImageUploadProps) {
+export function ManualImageUpload({ label, name, defaultValue, onFileSelect }: ManualImageUploadProps) {
   const [preview, setPreview] = useState<string | null>(defaultValue || null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 

@@ -4,6 +4,7 @@ import { useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Download, Github, Linkedin, Mail, Twitter, Facebook, Instagram, ChevronDown } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 // import hero from "/images/internal-images/hero.webp";
 
 interface HeroSectionProps {
@@ -33,7 +34,7 @@ interface HeroSectionProps {
   };
 }
 
-const SOCIAL_ICONS: Record<string, any> = {
+const SOCIAL_ICONS: Record<string, LucideIcon> = {
   github: Github,
   linkedin: Linkedin,
   twitter: Twitter,

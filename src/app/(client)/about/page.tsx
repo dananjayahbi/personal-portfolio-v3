@@ -8,7 +8,7 @@ export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteSettings = await getSiteSettings();
-  const seo = siteSettings?.seo as any;
+  const seo = siteSettings?.seo as { description?: string; image?: string } | undefined;
 
   return {
     title: "About",
@@ -27,7 +27,7 @@ export default async function AboutPage() {
     getSiteSettings(),
   ]);
 
-  const aboutContent = portfolioContent?.about as any;
+  const aboutContent = portfolioContent?.about as { title?: string; summary?: string; narrative?: string } | undefined;
   const experiences = (portfolioContent?.experiences as Array<{
     company: string;
     role: string;

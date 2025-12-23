@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { ExperimentStatus } from "@prisma/client";
+import { ProjectStatus } from "@prisma/client";
 import { ExperimentCard } from "./components/experiment-card";
 import { StatusFilter } from "./components/status-filter";
 import { Pagination } from "./components/pagination";
@@ -37,7 +37,7 @@ type ManageExperiment = {
   slug: string;
   summary: string;
   heroImage: string | null;
-  status: ExperimentStatus;
+  status: ProjectStatus;
   isFeatured: boolean;
   featuredOrder: number | null;
   technologies: string[];
@@ -54,7 +54,7 @@ export default async function EditExperimentPage({
   const { status, page } = await searchParams;
   const currentPage = page ? Math.max(1, parseInt(page, 10)) : 1;
   const statusFilter = status && ['DRAFT', 'PUBLISHED', 'ARCHIVED'].includes(status)
-    ? (status as ExperimentStatus)
+    ? (status as ProjectStatus)
     : undefined;
 
   const whereClause = statusFilter ? { status: statusFilter } : undefined;
@@ -141,6 +141,7 @@ export default async function EditExperimentPage({
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
+          totalItems={totalCount}
           statusFilter={statusFilter}
         />
       )}
