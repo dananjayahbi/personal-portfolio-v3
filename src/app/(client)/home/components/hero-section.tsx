@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Download, Github, Linkedin, Mail, Twitter, Facebook, Instagram, ChevronDown } from "lucide-react";
 // import hero from "/images/internal-images/hero.webp";
 
@@ -173,6 +174,19 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
 
           {/* Right Column - CTA Section */}
           <div className="lg:text-right space-y-8">
+            {/* Profile Image */}
+            <div className="flex justify-center lg:justify-end mb-6">
+              <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
+                <Image
+                  src="/images/internal-images/me.png"
+                  alt="Profile"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            </div>
+
             {/* Headline */}
             {headline && (
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-medium text-white leading-tight">

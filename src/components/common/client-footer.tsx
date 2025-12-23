@@ -92,6 +92,15 @@ export async function ClientFooter() {
                   <ArrowUpRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/admin-dashboard"
+                  className="text-white/40 hover:text-white text-sm font-light transition-colors inline-flex items-center gap-1 group"
+                >
+                  Admin
+                  <ArrowUpRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </Link>
+              </li>
             </ul>
           </div>
 
