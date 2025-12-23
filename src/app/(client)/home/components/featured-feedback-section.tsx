@@ -156,7 +156,7 @@ export default function FeaturedFeedbackSection() {
               What People Say
             </h2>
             <p className="text-white/50 text-lg font-light">
-              Feedback from those I've had the pleasure to work with
+              Feedback from those I&apos;ve had the pleasure to work with
             </p>
           </div>
         </AnimateOnScroll>
@@ -204,7 +204,7 @@ export default function FeaturedFeedbackSection() {
                     </div>
                   </div>
                   <p className="text-sm text-white/50 leading-relaxed line-clamp-4 font-light italic">
-                    "{item.feedback}"
+                    &quot;{item.feedback}&quot;
                   </p>
                 </article>
               ))}
@@ -238,7 +238,7 @@ export default function FeaturedFeedbackSection() {
                     </div>
                   </div>
                   <p className="text-sm text-white/50 leading-relaxed line-clamp-4 font-light italic">
-                    "{item.feedback}"
+                    &quot;{item.feedback}&quot;
                   </p>
                 </article>
               ))}

@@ -15,7 +15,7 @@ const addIgnoredIPSchema = z.object({
  * GET /api/ignored-ips
  * Get all ignored IPs (admin only)
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // TODO: Add admin authentication check
 

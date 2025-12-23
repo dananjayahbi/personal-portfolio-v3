@@ -33,7 +33,7 @@ export default function NotFound() {
             Lost in Space
           </h2>
           <p className="text-lg text-slate-400 max-w-md mx-auto">
-            The page you're looking for has drifted into the void. Let's get you back on track.
+            The page you&apos;re looking for has drifted into the void. Let&apos;s get you back on track.
           </p>
         </div>
 

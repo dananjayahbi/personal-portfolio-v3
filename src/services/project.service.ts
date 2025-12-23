@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { Project, ProjectStatus } from "@prisma/client";
+import { ProjectStatus, Prisma } from "@prisma/client";
 import { cache } from "react";
 
 export interface ProjectFilters {
@@ -11,7 +11,7 @@ export interface ProjectFilters {
 }
 
 export const getPublishedProjects = cache(async (filters?: ProjectFilters) => {
-  const where: any = {
+  const where: Prisma.ProjectWhereInput = {
     status: ProjectStatus.PUBLISHED,
   };
 

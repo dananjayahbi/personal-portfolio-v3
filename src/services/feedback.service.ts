@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { Feedback } from "@prisma/client";
 
 export interface FeedbackFilters {
@@ -39,7 +40,7 @@ export const feedbackService = {
     } = filters;
 
     // Build where clause
-    const where: any = {};
+    const where: Prisma.FeedbackWhereInput = {};
 
     if (name) {
       where.name = {

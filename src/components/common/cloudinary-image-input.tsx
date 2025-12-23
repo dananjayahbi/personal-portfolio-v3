@@ -75,6 +75,13 @@ export function CloudinaryImageInput({ label, name, defaultValue, hint, error, f
   const [isRemoving, setIsRemoving] = useState(false);
   const [actionMessage, setActionMessage] = useState<{ type: 'info' | 'error'; text: string } | undefined>();
 
+  // Move useMemo before any conditional returns
+  const widgetOptions = useMemo(() => {
+    const options: Record<string, unknown> = { cloudName };
+    if (folder) options.folder = folder;
+    return options;
+  }, [folder]);
+
   useEffect(() => {
     setValue(defaultValue ?? "");
     setPublicId(derivePublicIdFromUrl(defaultValue));
@@ -106,12 +113,6 @@ export function CloudinaryImageInput({ label, name, defaultValue, hint, error, f
       </div>
     );
   }
-
-  const widgetOptions = useMemo(() => {
-    const options: Record<string, unknown> = { cloudName };
-    if (folder) options.folder = folder;
-    return options;
-  }, [folder, cloudName]);
 
   async function handleRemove() {
     if (!value) return;

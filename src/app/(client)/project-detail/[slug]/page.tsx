@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
   }
 
-  const seo = project.seo as any;
+  const seo = project.seo as { title?: string; description?: string } | undefined;
 
   return {
     title: seo?.title || project.title,
@@ -40,7 +40,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   }
 
   const relatedProjects = await getRelatedProjects(project.id, project.technologies, 3);
-  const gallery = project.gallery as any;
+  const gallery = (project.gallery as Array<{ url: string; alt: string | null }> | null | undefined) || [];
 
   return (
     <div className="min-h-screen pt-28 pb-20 relative overflow-hidden">

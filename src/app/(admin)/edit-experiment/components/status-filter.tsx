@@ -1,11 +1,11 @@
 'use client';
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { ExperimentStatus } from "@prisma/client";
+import { ProjectStatus } from "@prisma/client";
 import clsx from "clsx";
 
 type StatusFilterProps = {
-  currentStatus?: ExperimentStatus;
+  currentStatus?: ProjectStatus;
 };
 
 const statuses = [
@@ -19,7 +19,7 @@ export function StatusFilter({ currentStatus }: StatusFilterProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const handleFilterChange = (status: ExperimentStatus | null) => {
+  const handleFilterChange = (status: ProjectStatus | null) => {
     const params = new URLSearchParams(searchParams.toString());
     if (status) {
       params.set("status", status);

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { feedbackService } from "@/services/feedback.service";
 import { getCurrentAdmin } from "@/lib/auth/session";
 
@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
  * GET /api/feedback/stats
  * Get feedback statistics (Admin only)
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Verify admin session
     const admin = await getCurrentAdmin();

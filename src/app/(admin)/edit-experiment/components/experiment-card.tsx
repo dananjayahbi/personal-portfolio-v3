@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import clsx from "clsx";
-import type { ExperimentStatus } from "@prisma/client";
+import type { ProjectStatus } from "@prisma/client";
 import { deleteExperimentById } from "../actions";
 
 type ExperimentCardProps = {
@@ -14,7 +14,7 @@ type ExperimentCardProps = {
     slug: string;
     summary: string;
     heroImage: string | null;
-    status: ExperimentStatus;
+    status: ProjectStatus;
     isFeatured: boolean;
     featuredOrder: number | null;
     technologies: string[];
@@ -25,7 +25,7 @@ type ExperimentCardProps = {
   };
 };
 
-const STATUS_BADGES: Record<ExperimentStatus, string> = {
+const STATUS_BADGES: Record<ProjectStatus, string> = {
   DRAFT: "border-amber-400/30 bg-amber-500/10 text-amber-100",
   PUBLISHED: "border-emerald-400/40 bg-emerald-500/10 text-emerald-100",
   ARCHIVED: "border-slate-400/40 bg-slate-500/10 text-slate-200",

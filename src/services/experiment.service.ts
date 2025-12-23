@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { Experiment, ProjectStatus } from "@prisma/client";
+import { ProjectStatus, Prisma } from "@prisma/client";
 import { cache } from "react";
 
 export interface ExperimentFilters {
@@ -11,7 +11,7 @@ export interface ExperimentFilters {
 }
 
 export const getPublishedExperiments = cache(async (filters?: ExperimentFilters) => {
-  const where: any = {
+  const where: Prisma.ExperimentWhereInput = {
     status: ProjectStatus.PUBLISHED,
   };
 

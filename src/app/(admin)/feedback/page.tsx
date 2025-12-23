@@ -4,7 +4,7 @@ import { FeedbackContent } from "./components/feedback-content";
 export const dynamic = "force-dynamic";
 
 export default async function FeedbackPage() {
-  const { data: feedbackList, total } = await feedbackService.getFeedback({
+  const { data: feedbackList } = await feedbackService.getFeedback({
     limit: 100,
   });
 

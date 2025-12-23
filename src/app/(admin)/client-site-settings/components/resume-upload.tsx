@@ -56,7 +56,7 @@ export function ResumeUpload({ currentResumeUrl, legacyResumeUrl }: ResumeUpload
       } else {
         alert(result.message || 'Failed to delete resume');
       }
-    } catch (error) {
+    } catch {
       alert('An error occurred while deleting the resume');
     } finally {
       setDeleting(false);
@@ -189,7 +189,7 @@ export function ResumeUpload({ currentResumeUrl, legacyResumeUrl }: ResumeUpload
         <div className="rounded-xl border border-yellow-400/40 bg-yellow-500/10 px-4 py-3 text-xs text-yellow-200">
           <p className="font-semibold mb-1">Note:</p>
           <p>
-            You're currently using an external resume link. Upload a file to host it on Cloudinary for better performance and reliability.
+            You&apos;re currently using an external resume link. Upload a file to host it on Cloudinary for better performance and reliability.
           </p>
         </div>
       )}

@@ -15,7 +15,7 @@ export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteSettings = await getSiteSettings();
-  const seo = siteSettings?.seo as any;
+  const seo = siteSettings?.seo as { title?: string; description?: string; ogTitle?: string; ogDescription?: string; ogImage?: string } | undefined;
 
   return {
     title: seo?.title || "Home",
@@ -36,15 +36,15 @@ export default async function ClientHomePage() {
     getAllTechnologies(),
   ]);
 
-  const heroContent = portfolioContent?.hero as any;
-  const callToActions = portfolioContent?.callToActions as any;
-  const aboutContent = portfolioContent?.about as any;
-  const experiences = portfolioContent?.experiences as any;
+  const heroContent = portfolioContent?.hero as Record<string, unknown> | undefined;
+  const callToActions = portfolioContent?.callToActions as Record<string, unknown> | undefined;
+  const aboutContent = portfolioContent?.about as Record<string, unknown> | undefined;
+  const experiences = portfolioContent?.experiences as Array<{ company: string; role: string; period: string; description?: string }> | undefined;
   const githubGraphUrl = siteSettings?.githubGraphUrl as string | null | undefined;
 
   return (
     <div className="min-h-screen">
-      <HeroSection content={heroContent} callToActions={callToActions} settings={siteSettings as any} />
+      <HeroSection content={heroContent} callToActions={callToActions} settings={siteSettings as Record<string, unknown> | undefined} />
       
       {/* First parallax background wrapper - covers About and Skills sections */}
       <ParallaxBackgroundWrapper
@@ -81,7 +81,7 @@ export default async function ClientHomePage() {
         overlayType="dark"
         id="contact-parallax"
       >
-        <ContactSection settings={siteSettings as any} />
+        <ContactSection settings={siteSettings as Record<string, unknown> | undefined} />
       </ParallaxBackgroundWrapper>
     </div>
   );

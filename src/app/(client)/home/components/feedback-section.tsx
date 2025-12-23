@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Star, MessageSquare, ArrowRight } from "lucide-react";
+import { Star, ArrowRight } from "lucide-react";
 import { AnimateOnScroll } from "@/components/common/animate-on-scroll";
 
 export default function FeedbackSection() {

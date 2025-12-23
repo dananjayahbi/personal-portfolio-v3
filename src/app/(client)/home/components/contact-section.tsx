@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import { Mail, MapPin, Phone, Send, ArrowRight } from "lucide-react";
+import { Mail, MapPin, Phone, ArrowRight } from "lucide-react";
 import { AnimateOnScroll } from "@/components/common/animate-on-scroll";
 
 interface ContactSectionProps {
@@ -75,13 +74,13 @@ export function ContactSection({ settings }: ContactSectionProps) {
         <AnimateOnScroll animation="fade-up" duration={800}>
           <div className="max-w-3xl mx-auto text-center mb-20">
             <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
-              Let's Connect
+              Let&apos;s Connect
             </span>
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-8">
               Get in Touch
             </h2>
             <p className="text-white/50 text-lg font-light">
-              Have a project in mind? Let's discuss how I can help bring your ideas to life.
+              Have a project in mind? Let&apos;s discuss how I can help bring your ideas to life.
             </p>
           </div>
         </AnimateOnScroll>

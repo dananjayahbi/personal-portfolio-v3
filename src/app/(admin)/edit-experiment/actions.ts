@@ -26,14 +26,21 @@ export type ExperimentState = {
 };
 
 function normalizeUpdatePayload(data: ReturnType<typeof buildExperimentData>) {
-  return {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const result: any = {
     ...data,
     heroImage: data.heroImage ?? null,
     liveUrl: data.liveUrl ?? null,
     sourceUrl: data.sourceUrl ?? null,
-    gallery: data.gallery ?? null,
     seo: data.seo ?? null,
   };
+  
+  // Handle gallery separately to avoid Prisma JSON type issues
+  if (data.gallery !== undefined) {
+    result.gallery = data.gallery;
+  }
+  
+  return result;
 }
 
 function parseExperimentGallery(value: unknown) {

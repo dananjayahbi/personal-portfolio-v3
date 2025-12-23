@@ -9,10 +9,11 @@ import {
   ExternalLink,
   ArrowUpRight,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { getSiteSettings } from "@/services/content.service";
 import Image from "next/image";
 
-const SOCIAL_ICONS: Record<string, any> = {
+const SOCIAL_ICONS: Record<string, LucideIcon> = {
   github: Github,
   linkedin: Linkedin,
   twitter: Twitter,
