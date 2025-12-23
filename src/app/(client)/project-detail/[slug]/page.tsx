@@ -2,9 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink, Github, Calendar, Tag, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getProjectBySlug, getRelatedProjects } from "@/services/project.service";
 import { formatDate } from "@/lib/utils";
 import { GallerySection } from "../components/gallery-section";
@@ -46,243 +43,212 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const gallery = project.gallery as any;
 
   return (
-    <div className="min-h-screen bg-[#0a192f]">
-      {/* Compact Hero Section */}
-      <section className="relative pt-20 pb-12 overflow-hidden">
-        {/* Background Image with Heavy Overlay */}
+    <div className="min-h-screen pt-28 pb-20 relative overflow-hidden">
+      {/* Subtle background accents */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-900/5 rounded-full blur-[200px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-900/5 rounded-full blur-[180px] translate-y-1/2 -translate-x-1/3 pointer-events-none" />
+
+      <div className="container relative z-10 mx-auto px-6 sm:px-8 lg:px-12">
+        {/* Back Button */}
+        <Link 
+          href="/projects" 
+          className="inline-flex items-center gap-2 text-white/40 hover:text-amber-400/80 transition-colors text-sm font-light tracking-wide mb-12"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Projects
+        </Link>
+
+        {/* Hero Section */}
+        <div className="max-w-4xl mb-16">
+          {/* Featured Badge */}
+          {project.isFeatured && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-400/80 text-xs font-light tracking-wide mb-6">
+              <Sparkles className="w-3 h-3" />
+              Featured
+            </span>
+          )}
+
+          {/* Title */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-6 leading-tight">
+            {project.title}
+          </h1>
+
+          {/* Summary */}
+          <p className="text-lg text-white/50 mb-8 max-w-2xl leading-relaxed font-light">
+            {project.summary}
+          </p>
+
+          {/* Meta Row */}
+          <div className="flex flex-wrap items-center gap-6 mb-8 text-sm text-white/40 font-light">
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-amber-400/50" />
+              <span>{formatDate(project.createdAt)}</span>
+            </div>
+            {project.tags.length > 0 && (
+              <div className="flex items-center gap-2">
+                <Tag className="h-4 w-4 text-amber-400/50" />
+                <span>{project.tags.slice(0, 2).join(", ")}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-4">
+            {project.liveUrl && (
+              <a 
+                href={project.liveUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500/50 transition-all duration-300 text-sm font-light tracking-wide"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Live Demo
+              </a>
+            )}
+            {project.sourceUrl && (
+              <a 
+                href={project.sourceUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-white/[0.03] border border-white/[0.08] text-white/60 hover:text-white hover:border-white/20 transition-all duration-300 text-sm font-light tracking-wide"
+              >
+                <Github className="h-4 w-4" />
+                Source Code
+              </a>
+            )}
+          </div>
+        </div>
+
+        {/* Hero Image */}
         {project.heroImage && (
-          <div className="absolute inset-0 z-0">
+          <div className="relative aspect-[21/9] w-full overflow-hidden mb-16">
             <Image
               src={project.heroImage}
               alt={project.title}
               fill
-              className="object-cover opacity-30"
+              className="object-cover"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0a192f] via-[#0a192f]/98 to-[#0a192f]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-transparent to-transparent opacity-40" />
           </div>
         )}
-        
-        {/* Subtle Ambient Glow */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
 
-        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Back Button */}
-          <Button asChild variant="ghost" size="sm" className="mb-6 text-slate-400 hover:text-cyan-400 hover:bg-[#0a192f]/50 border border-transparent hover:border-cyan-500/30 transition-all">
-            <Link href="/projects">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Projects
-            </Link>
-          </Button>
-
-          <div className="max-w-4xl">
-            {/* Featured Badge - Subtle */}
-            {project.isFeatured && (
-              <Badge className="mb-3 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs">
-                <Sparkles className="w-3 h-3 mr-1" />
-                Featured
-              </Badge>
+        {/* Main Content Grid */}
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-12">
+          {/* Main Content - Left */}
+          <div className="lg:col-span-3 space-y-16">
+            {/* Description */}
+            {project.description && (
+              <div className="p-8 md:p-12 bg-white/[0.02] border border-white/[0.06]">
+                <h2 className="text-2xl md:text-3xl font-serif text-white mb-8 flex items-center gap-4">
+                  <div className="h-px w-12 bg-gradient-to-r from-amber-500/50 to-transparent"></div>
+                  About This Project
+                </h2>
+                <div
+                  className="prose prose-invert prose-lg max-w-none text-white/60 leading-relaxed font-light [&_p]:mb-4 [&_h3]:text-white [&_h3]:font-serif [&_h3]:mb-3 [&_h3]:mt-8 [&_ul]:list-disc [&_ul]:ml-6 [&_li]:mb-2 [&_a]:text-amber-400/80 [&_a]:hover:text-amber-400"
+                  dangerouslySetInnerHTML={{ __html: project.description }}
+                />
+              </div>
             )}
 
-            {/* Compact Title */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-white leading-tight">
-              {project.title}
-            </h1>
+            {/* Gallery */}
+            <GallerySection images={gallery || []} title={project.title} type="project" />
+          </div>
 
-            {/* Summary - Concise */}
-            <p className="text-lg text-slate-400 mb-6 max-w-2xl leading-relaxed">
-              {project.summary}
-            </p>
-
-            {/* Meta & Actions Row */}
-            <div className="flex flex-wrap items-center gap-4 mb-6">
-              <div className="flex items-center gap-4 text-sm text-slate-500">
-                <div className="flex items-center gap-1.5">
-                  <Calendar className="h-4 w-4 text-cyan-500/70" />
-                  <span>{formatDate(project.createdAt)}</span>
-                </div>
-                {project.tags.length > 0 && (
-                  <div className="flex items-center gap-1.5">
-                    <Tag className="h-4 w-4 text-cyan-500/70" />
-                    <span>{project.tags.slice(0, 2).join(", ")}</span>
-                  </div>
-                )}
+          {/* Sidebar - Right */}
+          <div className="space-y-8">
+            {/* Technologies */}
+            <div className="p-6 bg-white/[0.02] border border-white/[0.06]">
+              <h3 className="text-sm font-light text-white/40 uppercase tracking-[0.2em] mb-4">Technologies</h3>
+              <div className="flex flex-wrap gap-2">
+                {project.technologies.map((tech) => (
+                  <span
+                    key={tech}
+                    className="px-3 py-1.5 text-xs text-white/60 bg-white/[0.03] border border-white/[0.08] font-light"
+                  >
+                    {tech}
+                  </span>
+                ))}
               </div>
             </div>
 
-            {/* Action Buttons - Inline */}
-            <div className="flex flex-wrap gap-3">
-              {project.liveUrl && (
-                <Button asChild size="sm" className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/20">
-                  <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="mr-2 h-4 w-4" />
-                    Live Demo
-                  </a>
-                </Button>
-              )}
-              {project.sourceUrl && (
-                <Button asChild size="sm" variant="outline" className="border-cyan-500/30 hover:border-cyan-400 bg-[#0a192f]/50 backdrop-blur-sm text-slate-300 hover:text-cyan-400">
-                  <a href={project.sourceUrl} target="_blank" rel="noopener noreferrer">
-                    <Github className="mr-2 h-4 w-4" />
-                    Source Code
-                  </a>
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Main Content */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-12">
-            {/* Main Content - Left */}
-            <div className="lg:col-span-3 space-y-16">
-              {/* Description */}
-              {project.description && (
-                <div className="bg-[#0a192f]/80 backdrop-blur-xl rounded-2xl p-8 sm:p-12 border border-cyan-500/20 shadow-xl shadow-cyan-500/5">
-                  <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-                    <div className="h-1 w-12 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full"></div>
-                    About This Project
-                  </h2>
-                  <div
-                    className="prose prose-invert prose-lg max-w-none text-slate-300 leading-relaxed [&_p]:mb-4 [&_h3]:text-white [&_h3]:font-bold [&_h3]:mb-3 [&_h3]:mt-8 [&_ul]:list-disc [&_ul]:ml-6 [&_li]:mb-2 [&_a]:text-cyan-400 [&_a]:hover:text-cyan-300"
-                    dangerouslySetInnerHTML={{ __html: project.description }}
-                  />
+            {/* Tags */}
+            {project.tags.length > 0 && (
+              <div className="p-6 bg-white/[0.02] border border-white/[0.06]">
+                <h3 className="text-sm font-light text-white/40 uppercase tracking-[0.2em] mb-4">Tags</h3>
+                <div className="flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-xs text-white/40 font-light"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* Gallery */}
-              <GallerySection images={gallery || []} title={project.title} type="project" />
-            </div>
-
-            {/* Sidebar - Right */}
-            <div className="space-y-6">
-              {/* Technologies */}
-              <Card className="bg-[#0a192f]/80 backdrop-blur-xl border-cyan-500/20 hover:border-cyan-400/40 transition-all duration-300 shadow-xl shadow-cyan-500/5">
-                <CardHeader>
-                  <CardTitle className="text-white text-lg flex items-center gap-2">
-                    <div className="h-8 w-1 bg-gradient-to-b from-cyan-400 to-blue-500 rounded-full"></div>
-                    Technologies
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {project.technologies.map((tech) => (
-                      <Badge
-                        key={tech}
-                        className="bg-[#0a192f] text-slate-200 hover:bg-cyan-500/20 hover:text-cyan-300 border border-cyan-500/30 hover:border-cyan-400/50 transition-all cursor-default"
-                      >
-                        {tech}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Tags */}
-              {project.tags.length > 0 && (
-                <Card className="bg-[#0a192f]/80 backdrop-blur-xl border-cyan-500/20 hover:border-cyan-400/40 transition-all duration-300 shadow-xl shadow-cyan-500/5">
-                  <CardHeader>
-                    <CardTitle className="text-white text-lg flex items-center gap-2">
-                      <div className="h-8 w-1 bg-gradient-to-b from-cyan-400 to-blue-500 rounded-full"></div>
-                      Tags
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {project.tags.map((tag) => (
-                        <Badge
-                          key={tag}
-                          variant="outline"
-                          className="border-cyan-500/30 text-slate-400 hover:border-cyan-400 hover:text-cyan-300 transition-all cursor-default"
-                        >
-                          #{tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Project Info */}
-              <Card className="bg-[#0a192f]/80 backdrop-blur-xl border-cyan-500/20 hover:border-cyan-400/40 transition-all duration-300 shadow-xl shadow-cyan-500/5">
-                <CardHeader>
-                  <CardTitle className="text-white text-lg flex items-center gap-2">
-                    <div className="h-8 w-1 bg-gradient-to-b from-cyan-400 to-blue-500 rounded-full"></div>
-                    Project Info
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4 text-sm">
-                  <div className="flex justify-between items-center py-2 border-b border-cyan-500/20">
-                    <span className="text-slate-400">Status</span>
-                    <Badge variant="outline" className="border-green-500/50 text-green-400 bg-green-500/10">
-                      {project.status}
-                    </Badge>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-cyan-500/20">
-                    <span className="text-slate-400">Created</span>
-                    <span className="text-slate-200">{formatDate(project.createdAt)}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2">
-                    <span className="text-slate-400">Last Updated</span>
-                    <span className="text-slate-200">{formatDate(project.updatedAt)}</span>
-                  </div>
-                </CardContent>
-              </Card>
+            {/* Project Info */}
+            <div className="p-6 bg-white/[0.02] border border-white/[0.06]">
+              <h3 className="text-sm font-light text-white/40 uppercase tracking-[0.2em] mb-4">Project Info</h3>
+              <div className="space-y-4 text-sm">
+                <div className="flex justify-between items-center py-3 border-b border-white/[0.06]">
+                  <span className="text-white/40 font-light">Status</span>
+                  <span className="text-emerald-400/80 text-xs font-light">{project.status}</span>
+                </div>
+                <div className="flex justify-between items-center py-3 border-b border-white/[0.06]">
+                  <span className="text-white/40 font-light">Created</span>
+                  <span className="text-white/60 font-light">{formatDate(project.createdAt)}</span>
+                </div>
+                <div className="flex justify-between items-center py-3">
+                  <span className="text-white/40 font-light">Updated</span>
+                  <span className="text-white/60 font-light">{formatDate(project.updatedAt)}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Related Projects */}
       {relatedProjects.length > 0 && (
-        <section className="py-20 bg-[#0a192f]/50 border-t border-cyan-500/10">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-4xl font-bold text-white mb-12 text-center flex items-center justify-center gap-4">
-              <div className="h-1 w-16 bg-gradient-to-r from-transparent to-cyan-400 rounded-full"></div>
+        <section className="mt-24 pt-16 border-t border-white/[0.06]">
+          <div className="container mx-auto px-6 sm:px-8 lg:px-12">
+            <h2 className="text-3xl font-serif text-white mb-12 text-center">
               Related Projects
-              <div className="h-1 w-16 bg-gradient-to-l from-transparent to-cyan-400 rounded-full"></div>
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
               {relatedProjects.map((relatedProject) => (
-                <Link key={relatedProject.id} href={`/project-detail/${relatedProject.slug}`}>
-                  <Card className="group h-full bg-[#0a192f]/80 backdrop-blur-xl border-cyan-500/20 hover:border-cyan-400/50 transition-all duration-300 overflow-hidden shadow-xl shadow-cyan-500/5 hover:shadow-cyan-500/20 hover:scale-[1.02]">
+                <Link key={relatedProject.id} href={`/project-detail/${relatedProject.slug}`} className="group block">
+                  <article className="h-full bg-white/[0.02] border border-white/[0.06] overflow-hidden transition-all duration-500 hover:border-white/20">
                     {relatedProject.heroImage && (
-                      <div className="relative h-48 w-full overflow-hidden bg-[#0a192f]">
+                      <div className="relative aspect-[16/10] w-full overflow-hidden">
                         <Image
                           src={relatedProject.heroImage}
                           alt={relatedProject.title}
                           fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-500"
+                          className="object-cover transition-transform duration-700 group-hover:scale-105"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0a192f] via-[#0a192f]/50 to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-transparent to-transparent opacity-60" />
                       </div>
                     )}
-                    <CardHeader>
-                      <CardTitle className="text-white group-hover:text-cyan-400 transition-colors line-clamp-1">
+                    <div className="p-6">
+                      <h3 className="text-lg font-serif text-white group-hover:text-amber-400/90 transition-colors line-clamp-1 mb-2">
                         {relatedProject.title}
-                      </CardTitle>
-                      <CardDescription className="text-slate-400 line-clamp-2">
+                      </h3>
+                      <p className="text-white/40 text-sm font-light line-clamp-2 mb-4">
                         {relatedProject.summary}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
+                      </p>
                       <div className="flex flex-wrap gap-2">
                         {relatedProject.technologies.slice(0, 3).map((tech) => (
-                          <Badge key={tech} variant="secondary" className="text-xs bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+                          <span key={tech} className="text-xs text-white/30 font-light border-b border-white/10">
                             {tech}
-                          </Badge>
+                          </span>
                         ))}
-                        {relatedProject.technologies.length > 3 && (
-                          <Badge variant="secondary" className="text-xs bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
-                            +{relatedProject.technologies.length - 3}
-                          </Badge>
-                        )}
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </article>
                 </Link>
               ))}
             </div>

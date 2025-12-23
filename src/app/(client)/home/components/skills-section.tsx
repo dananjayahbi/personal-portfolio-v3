@@ -1,9 +1,54 @@
-import { getAllTechnologies } from "@/services/technology.service";
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 
-export async function SkillsSection() {
-  const technologies = await getAllTechnologies();
+interface Technology {
+  id: string;
+  name: string;
+  icon: string | null;
+  category: string;
+  order: number;
+}
 
+interface SkillsSectionProps {
+  technologies: Technology[];
+}
+
+function TechIcon({ tech }: { tech: Technology }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
+  if (!tech.icon || hasError) {
+    return (
+      <div className="h-10 w-10 md:h-12 md:w-12 flex items-center justify-center bg-white/5 rounded-lg">
+        <span className="text-lg font-serif text-white/30">{tech.name.charAt(0)}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative h-10 w-10 md:h-12 md:w-12">
+      {/* Skeleton loader */}
+      {isLoading && (
+        <div className="absolute inset-0 bg-white/5 rounded-lg animate-pulse" />
+      )}
+      <Image
+        src={tech.icon}
+        alt={tech.name}
+        fill
+        className={`object-contain opacity-60 group-hover:opacity-100 transition-all duration-500 ${isLoading ? 'opacity-0' : ''}`}
+        onLoad={() => setIsLoading(false)}
+        onError={() => {
+          setIsLoading(false);
+          setHasError(true);
+        }}
+      />
+    </div>
+  );
+}
+
+export function SkillsSection({ technologies }: SkillsSectionProps) {
   if (!technologies || technologies.length === 0) return null;
 
   // Group technologies by category
@@ -21,17 +66,20 @@ export async function SkillsSection() {
   });
 
   return (
-    <section className="py-24 md:py-32">
-      <div className="container mx-auto px-6 sm:px-8 lg:px-12">
-        {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <span className="inline-block text-cyan-400 text-sm font-medium tracking-wider uppercase mb-4">
+    <section className="py-24 md:py-32 relative">
+      {/* Subtle background accent */}
+      <div className="absolute top-1/3 right-0 w-80 h-80 bg-amber-900/5 rounded-full blur-[180px] pointer-events-none" />
+      
+      <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
+        {/* Section Header - Premium Typography */}
+        <div className="max-w-3xl mx-auto text-center mb-20">
+          <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
             My Expertise
           </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-8">
             Skills & Technologies
           </h2>
-          <p className="text-slate-400 text-lg">
+          <p className="text-white/50 text-lg font-light">
             Tools and technologies I use to bring ideas to life
           </p>
         </div>
@@ -41,11 +89,11 @@ export async function SkillsSection() {
           {Object.entries(groupedTechnologies).map(([category, techs]) => (
             <div key={category}>
               {/* Category Title */}
-              <div className="flex items-center gap-4 mb-8">
-                <h3 className="text-lg font-semibold text-white">
+              <div className="flex items-center gap-6 mb-10">
+                <h3 className="text-sm font-light text-white/60 tracking-[0.2em] uppercase whitespace-nowrap">
                   {category}
                 </h3>
-                <div className="flex-1 h-px bg-gradient-to-r from-cyan-500/50 to-transparent" />
+                <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent" />
               </div>
 
               {/* Technology Items */}
@@ -53,22 +101,13 @@ export async function SkillsSection() {
                 {techs.map((tech) => (
                   <div
                     key={tech.id}
-                    className="group flex flex-col items-center gap-3 p-4 rounded-xl bg-slate-800/20 border border-slate-700/30 hover:border-cyan-500/50 hover:bg-slate-800/40 transition-all duration-300"
+                    className="group flex flex-col items-center gap-4 p-4 md:p-6 bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.05] hover:border-white/[0.08] transition-all duration-500"
                   >
-                    {/* Technology Icon */}
-                    {tech.icon && (
-                      <div className="relative h-10 w-10 md:h-12 md:w-12 grayscale group-hover:grayscale-0 transition-all duration-300">
-                        <Image
-                          src={tech.icon}
-                          alt={tech.name}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    )}
+                    {/* Technology Icon with Skeleton */}
+                    <TechIcon tech={tech} />
 
                     {/* Technology Name */}
-                    <span className="text-xs text-slate-500 group-hover:text-cyan-400 text-center transition-colors duration-300">
+                    <span className="text-[10px] md:text-xs text-white/40 group-hover:text-white/70 text-center transition-colors duration-500 font-light tracking-wide line-clamp-1">
                       {tech.name}
                     </span>
                   </div>

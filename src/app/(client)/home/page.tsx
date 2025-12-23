@@ -7,6 +7,7 @@ import FeedbackSection from "./components/feedback-section";
 import FeaturedFeedbackSection from "./components/featured-feedback-section";
 import { getFeaturedProjects } from "@/services/project.service";
 import { getPortfolioContent, getSiteSettings } from "@/services/content.service";
+import { getAllTechnologies } from "@/services/technology.service";
 import { Metadata } from "next";
 
 export const revalidate = 60;
@@ -27,10 +28,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ClientHomePage() {
-  const [featuredProjects, portfolioContent, siteSettings] = await Promise.all([
+  const [featuredProjects, portfolioContent, siteSettings, technologies] = await Promise.all([
     getFeaturedProjects(6),
     getPortfolioContent(),
     getSiteSettings(),
+    getAllTechnologies(),
   ]);
 
   const heroContent = portfolioContent?.hero as any;
@@ -42,7 +44,7 @@ export default async function ClientHomePage() {
     <div className="min-h-screen">
       <HeroSection content={heroContent} callToActions={callToActions} settings={siteSettings as any} />
       <AboutSection content={aboutContent} experiences={experiences} />
-      <SkillsSection />
+      <SkillsSection technologies={technologies} />
       <FeaturedProjects projects={featuredProjects} />
       <FeaturedFeedbackSection />
       <FeedbackSection />

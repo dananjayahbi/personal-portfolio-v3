@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ExternalLink, Github, Folder } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Project } from "@prisma/client";
 
 interface FeaturedProjectsProps {
@@ -15,30 +14,31 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
   }
 
   return (
-    <section className="py-24 md:py-32">
-      <div className="container mx-auto px-6 sm:px-8 lg:px-12">
+    <section className="py-24 md:py-32 relative">
+      {/* Subtle background accent */}
+      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-blue-900/5 rounded-full blur-[200px] pointer-events-none" />
+      
+      <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-16">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8 mb-20">
           <div className="max-w-xl">
-            <span className="inline-block text-cyan-400 text-sm font-medium tracking-wider uppercase mb-4">
+            <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
               My Work
             </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-6">
               Featured Projects
             </h2>
-            <p className="text-slate-400 text-lg">
+            <p className="text-white/50 text-lg font-light">
               A selection of projects that showcase my expertise
             </p>
           </div>
-          <Button
-            asChild
-            className="bg-transparent border border-slate-600 hover:border-cyan-400/50 hover:bg-cyan-400/5 text-slate-300 hover:text-cyan-400 px-6 py-5 rounded-full text-sm font-medium transition-all duration-300 w-fit"
+          <Link
+            href="/projects"
+            className="group inline-flex items-center gap-3 px-6 py-3 border border-white/20 rounded-full text-white/60 hover:text-white hover:border-white/40 transition-all duration-300 text-sm tracking-wide font-light w-fit"
           >
-            <Link href="/projects" className="inline-flex items-center gap-2">
-              View all projects
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+            View all projects
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
         </div>
 
         {/* Projects Grid */}
@@ -58,7 +58,7 @@ function ProjectCard({ project }: { project: Project }) {
       href={`/project-detail/${project.slug}`}
       className="group block"
     >
-      <article className="h-full rounded-2xl overflow-hidden bg-slate-800/20 border border-slate-700/30 hover:border-cyan-500/50 transition-all duration-500 hover:transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-cyan-500/10">
+      <article className="h-full rounded-2xl overflow-hidden glass-dark hover:bg-white/5 transition-all duration-500">
         {/* Project Image */}
         {project.heroImage ? (
           <div className="relative aspect-[16/10] w-full overflow-hidden">
@@ -66,19 +66,19 @@ function ProjectCard({ project }: { project: Project }) {
               src={project.heroImage}
               alt={project.title}
               fill
-              className="object-cover transition-transform duration-700 group-hover:scale-110"
+              className="object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-transparent to-transparent" />
           </div>
         ) : (
-          <div className="relative aspect-[16/10] w-full bg-slate-800/50 flex items-center justify-center">
-            <Folder className="w-12 h-12 text-slate-600" />
+          <div className="relative aspect-[16/10] w-full bg-white/5 flex items-center justify-center">
+            <Folder className="w-12 h-12 text-white/20" />
           </div>
         )}
 
         {/* Project Info */}
         <div className="p-6 space-y-4">
-          <h3 className="text-lg font-semibold text-white group-hover:text-cyan-400 transition-colors duration-300 line-clamp-1">
+          <h3 className="text-lg font-medium text-white group-hover:text-white/80 transition-colors duration-300 line-clamp-1 tracking-wide">
             {project.title}
           </h3>
 
@@ -87,14 +87,14 @@ function ProjectCard({ project }: { project: Project }) {
             {project.technologies.slice(0, 3).map((tech) => (
               <Badge 
                 key={tech} 
-                className="text-xs bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 border border-cyan-500/20 font-normal"
+                className="text-xs bg-white/5 text-white/50 hover:bg-white/10 border border-white/10 font-light"
               >
                 {tech}
               </Badge>
             ))}
             {project.technologies.length > 3 && (
               <Badge 
-                className="text-xs bg-slate-700/50 text-slate-400 hover:bg-slate-700 border border-slate-600/50 font-normal"
+                className="text-xs bg-white/5 text-white/40 hover:bg-white/10 border border-white/10 font-light"
               >
                 +{project.technologies.length - 3}
               </Badge>
@@ -103,16 +103,16 @@ function ProjectCard({ project }: { project: Project }) {
 
           {/* Links */}
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm text-slate-500 group-hover:text-cyan-400 transition-colors inline-flex items-center gap-2">
+            <span className="text-sm text-white/40 group-hover:text-white/60 transition-colors inline-flex items-center gap-2 font-light">
               View details
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </span>
             <div className="flex items-center gap-2">
               {project.liveUrl && (
-                <ExternalLink className="h-4 w-4 text-slate-600 group-hover:text-cyan-400 transition-colors" />
+                <ExternalLink className="h-4 w-4 text-white/30 group-hover:text-white/50 transition-colors" />
               )}
               {project.sourceUrl && (
-                <Github className="h-4 w-4 text-slate-600 group-hover:text-cyan-400 transition-colors" />
+                <Github className="h-4 w-4 text-white/30 group-hover:text-white/50 transition-colors" />
               )}
             </div>
           </div>

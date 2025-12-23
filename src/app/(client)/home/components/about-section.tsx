@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowRight, Briefcase, Calendar } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { GitHubGraph } from "@/components/common/github-graph";
 
 interface AboutSectionProps {
@@ -28,18 +27,21 @@ export function AboutSection({ content, experiences }: AboutSectionProps) {
   }
 
   return (
-    <section id="about" className="py-24 md:py-32 scroll-mt-16">
-      <div className="container mx-auto px-6 sm:px-8 lg:px-12">
-        {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <span className="inline-block text-cyan-400 text-sm font-medium tracking-wider uppercase mb-4">
+    <section id="about" className="py-24 md:py-32 scroll-mt-16 relative">
+      {/* Subtle background accent */}
+      <div className="absolute top-1/2 left-0 w-96 h-96 bg-emerald-900/10 rounded-full blur-[200px] -translate-y-1/2 pointer-events-none" />
+      
+      <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
+        {/* Section Header - Premium Typography */}
+        <div className="max-w-3xl mx-auto text-center mb-20">
+          <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
             Who I Am
           </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-8">
             {title}
           </h2>
           {summary && (
-            <p className="text-slate-400 text-lg leading-relaxed">
+            <p className="text-white/50 text-lg leading-relaxed font-light">
               {summary}
             </p>
           )}
@@ -49,22 +51,22 @@ export function AboutSection({ content, experiences }: AboutSectionProps) {
           {/* Left Column - Background & GitHub */}
           <div className="space-y-10">
             {narrative && (
-              <div className="p-8 rounded-2xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm">
-                <h3 className="flex items-center gap-2 text-lg font-semibold text-white mb-4">
-                  <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
-                    <Briefcase className="w-4 h-4 text-cyan-400" />
+              <div className="p-8 md:p-10 rounded-2xl glass-dark">
+                <h3 className="flex items-center gap-3 text-lg font-light text-white mb-6">
+                  <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center">
+                    <Briefcase className="w-4 h-4 text-white/60" />
                   </div>
-                  Background
+                  <span className="tracking-wide">Background</span>
                 </h3>
-                <p className="text-slate-400 leading-relaxed whitespace-pre-line">
+                <p className="text-white/50 leading-relaxed whitespace-pre-line font-light">
                   {narrative}
                 </p>
               </div>
             )}
 
             {/* GitHub Contributions */}
-            <div className="p-8 rounded-2xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm">
-              <h3 className="text-lg font-semibold text-white mb-6">
+            <div className="p-8 md:p-10 rounded-2xl glass-dark">
+              <h3 className="text-lg font-light text-white mb-8 tracking-wide">
                 GitHub Activity
               </h3>
               <GitHubGraph />
@@ -73,34 +75,34 @@ export function AboutSection({ content, experiences }: AboutSectionProps) {
 
           {/* Right Column - Experience Timeline */}
           {experiences && experiences.length > 0 && (
-            <div className="p-8 rounded-2xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm">
-              <h3 className="flex items-center gap-2 text-lg font-semibold text-white mb-8">
-                <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
-                  <Calendar className="w-4 h-4 text-cyan-400" />
+            <div className="p-8 md:p-10 rounded-2xl glass-dark">
+              <h3 className="flex items-center gap-3 text-lg font-light text-white mb-10">
+                <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center">
+                  <Calendar className="w-4 h-4 text-white/60" />
                 </div>
-                Experience
+                <span className="tracking-wide">Experience</span>
               </h3>
               
               <div className="relative">
                 {/* Timeline line */}
-                <div className="absolute left-3 top-2 bottom-2 w-px bg-gradient-to-b from-cyan-500 via-blue-500 to-transparent" />
+                <div className="absolute left-3 top-2 bottom-2 w-px bg-gradient-to-b from-white/20 via-white/10 to-transparent" />
                 
-                <div className="space-y-8">
+                <div className="space-y-10">
                   {experiences.slice(0, 4).map((exp, index) => (
-                    <div key={index} className="relative pl-10">
+                    <div key={index} className="relative pl-12">
                       {/* Timeline dot */}
-                      <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-slate-800 border-2 border-cyan-500 flex items-center justify-center">
-                        <div className="w-2 h-2 rounded-full bg-cyan-400" />
+                      <div className="absolute left-0 top-1 w-6 h-6 rounded-full border border-white/20 bg-[#0f1419] flex items-center justify-center">
+                        <div className="w-2 h-2 rounded-full bg-white/40" />
                       </div>
                       
                       <div>
-                        <span className="text-xs text-cyan-400 font-medium tracking-wide">
+                        <span className="text-xs text-white/40 font-light tracking-wider uppercase">
                           {exp.period}
                         </span>
-                        <h4 className="text-white font-semibold mt-1">{exp.role}</h4>
-                        <p className="text-slate-400 text-sm">{exp.company}</p>
+                        <h4 className="text-white font-medium mt-2 tracking-wide">{exp.role}</h4>
+                        <p className="text-white/40 text-sm font-light mt-1">{exp.company}</p>
                         {exp.description && (
-                          <p className="text-slate-500 text-sm mt-2 line-clamp-2">{exp.description}</p>
+                          <p className="text-white/30 text-sm mt-3 line-clamp-2 font-light leading-relaxed">{exp.description}</p>
                         )}
                       </div>
                     </div>
@@ -110,17 +112,14 @@ export function AboutSection({ content, experiences }: AboutSectionProps) {
 
               {/* See More Button */}
               {experiences.length > 4 && (
-                <div className="mt-8 pt-6 border-t border-slate-700/50">
-                  <Button 
-                    asChild 
-                    variant="ghost" 
-                    className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-400/10 p-0 h-auto font-medium"
+                <div className="mt-10 pt-8 border-t border-white/5">
+                  <Link 
+                    href="/about" 
+                    className="inline-flex items-center gap-2 text-sm text-white/40 hover:text-white transition-colors font-light tracking-wide"
                   >
-                    <Link href="/about" className="inline-flex items-center gap-2">
-                      View full experience
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </Button>
+                    View full experience
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
                 </div>
               )}
             </div>
@@ -128,16 +127,14 @@ export function AboutSection({ content, experiences }: AboutSectionProps) {
         </div>
 
         {/* Learn More Button */}
-        <div className="mt-12 text-center">
-          <Button 
-            asChild 
-            className="bg-transparent border border-cyan-500/50 hover:border-cyan-400 hover:bg-cyan-400/10 text-cyan-400 hover:text-cyan-300 px-8 py-6 rounded-full text-base font-medium transition-all duration-300"
+        <div className="mt-16 text-center">
+          <Link 
+            href="/about"
+            className="group inline-flex items-center gap-3 px-8 py-4 border border-white/20 rounded-full text-white/70 hover:text-white hover:border-white/40 transition-all duration-300 text-sm tracking-wide font-light"
           >
-            <Link href="/about">
-              Learn more about me
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
+            Learn more about me
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
         </div>
       </div>
     </section>

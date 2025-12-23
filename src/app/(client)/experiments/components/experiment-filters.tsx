@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Filter } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Search, Filter, X } from "lucide-react";
 
 interface ExperimentFiltersProps {
   technologies: string[];
@@ -59,45 +58,48 @@ export function ExperimentFilters({ technologies, tags, onFilterChange }: Experi
   const hasActiveFilters = search || selectedTechnologies.length > 0 || selectedTags.length > 0;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Search Bar */}
       <div className="flex gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
           <input
             type="text"
             value={search}
             onChange={(e) => handleSearchChange(e.target.value)}
             placeholder="Search experiments..."
-            className="w-full pl-12 pr-4 py-3 rounded-lg bg-[#0a192f]/80 backdrop-blur-xl border border-cyan-500/20 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition-all shadow-xl shadow-cyan-500/5"
+            className="w-full pl-11 pr-4 py-3.5 bg-white/[0.03] border border-white/[0.08] text-white placeholder-white/30 focus:outline-none focus:border-amber-500/40 transition-colors font-light text-sm"
           />
         </div>
-        <Button
-          variant="outline"
+        <button
           onClick={() => setShowFilters(!showFilters)}
-          className="border-cyan-500/30 hover:border-cyan-400 bg-[#0a192f]/80 backdrop-blur-xl text-slate-200 hover:text-cyan-400 h-[50px] transition-all"
+          className={`px-5 border transition-all duration-300 flex items-center gap-2 text-sm font-light tracking-wide ${
+            showFilters 
+              ? "bg-white/10 border-white/20 text-white" 
+              : "bg-transparent border-white/[0.08] text-white/50 hover:text-white hover:border-white/20"
+          }`}
         >
-          <Filter className="h-5 w-5 mr-2" />
+          <Filter className="h-4 w-4" />
           Filters
-        </Button>
+        </button>
       </div>
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className="p-6 rounded-xl bg-[#0a192f]/80 backdrop-blur-xl border border-cyan-500/20 space-y-6 shadow-xl shadow-cyan-500/5">
+        <div className="p-6 bg-white/[0.02] border border-white/[0.06] space-y-6">
           {/* Technologies */}
           {technologies.length > 0 && (
             <div>
-              <h3 className="text-sm font-semibold text-white mb-3">Technologies</h3>
+              <h3 className="text-xs font-light text-white/40 uppercase tracking-[0.2em] mb-4">Technologies</h3>
               <div className="flex flex-wrap gap-2">
                 {technologies.map((tech) => (
                   <button
                     key={tech}
                     onClick={() => toggleTechnology(tech)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    className={`px-4 py-2 text-sm font-light transition-all duration-300 ${
                       selectedTechnologies.includes(tech)
-                        ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/30"
-                        : "bg-[#0a192f] border border-cyan-500/30 text-slate-300 hover:border-cyan-400 hover:text-cyan-300"
+                        ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+                        : "bg-transparent border border-white/[0.08] text-white/50 hover:border-white/20 hover:text-white"
                     }`}
                   >
                     {tech}
@@ -110,16 +112,16 @@ export function ExperimentFilters({ technologies, tags, onFilterChange }: Experi
           {/* Tags */}
           {tags.length > 0 && (
             <div>
-              <h3 className="text-sm font-semibold text-white mb-3">Tags</h3>
+              <h3 className="text-xs font-light text-white/40 uppercase tracking-[0.2em] mb-4">Tags</h3>
               <div className="flex flex-wrap gap-2">
                 {tags.map((tag) => (
                   <button
                     key={tag}
                     onClick={() => toggleTag(tag)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    className={`px-4 py-2 text-sm font-light transition-all duration-300 ${
                       selectedTags.includes(tag)
-                        ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/30"
-                        : "bg-[#0a192f] border border-cyan-500/30 text-slate-300 hover:border-cyan-400 hover:text-cyan-300"
+                        ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+                        : "bg-transparent border border-white/[0.08] text-white/50 hover:border-white/20 hover:text-white"
                     }`}
                   >
                     {tag}
@@ -131,27 +133,27 @@ export function ExperimentFilters({ technologies, tags, onFilterChange }: Experi
 
           {/* Clear Filters */}
           {hasActiveFilters && (
-            <div className="pt-4 border-t border-cyan-500/20">
-              <Button
-                variant="ghost"
+            <div className="pt-4 border-t border-white/[0.06]">
+              <button
                 onClick={clearFilters}
-                className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10"
+                className="text-amber-400/70 hover:text-amber-400 text-sm font-light transition-colors flex items-center gap-2"
               >
+                <X className="h-4 w-4" />
                 Clear All Filters
-              </Button>
+              </button>
             </div>
           )}
         </div>
       )}
 
       {/* Active Filters Summary */}
-      {hasActiveFilters && (
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-slate-400">Active filters:</span>
+      {hasActiveFilters && !showFilters && (
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-xs text-white/40 font-light uppercase tracking-wide">Active:</span>
           {selectedTechnologies.map((tech) => (
             <span
               key={tech}
-              className="px-3 py-1 rounded-full text-xs bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
+              className="px-3 py-1 text-xs bg-amber-500/10 text-amber-400/80 border border-amber-500/20 font-light"
             >
               {tech}
             </span>
@@ -159,7 +161,7 @@ export function ExperimentFilters({ technologies, tags, onFilterChange }: Experi
           {selectedTags.map((tag) => (
             <span
               key={tag}
-              className="px-3 py-1 rounded-full text-xs bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
+              className="px-3 py-1 text-xs bg-amber-500/10 text-amber-400/80 border border-amber-500/20 font-light"
             >
               {tag}
             </span>

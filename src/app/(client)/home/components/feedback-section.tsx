@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Star, MessageSquare } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Star, MessageSquare, ArrowRight } from "lucide-react";
 
 export default function FeedbackSection() {
   const [name, setName] = useState("");
@@ -78,27 +77,30 @@ export default function FeedbackSection() {
   };
 
   return (
-    <section className="py-24 md:py-32">
-      <div className="container mx-auto px-6 sm:px-8 lg:px-12">
+    <section className="py-24 md:py-32 relative">
+      {/* Subtle background accent */}
+      <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-emerald-900/5 rounded-full blur-[180px] pointer-events-none" />
+      
+      <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         <div className="max-w-2xl mx-auto">
-          {/* Section Header */}
-          <div className="text-center mb-12">
-            <span className="inline-block text-cyan-400 text-sm font-medium tracking-wider uppercase mb-4">
+          {/* Section Header - Premium Typography */}
+          <div className="text-center mb-16">
+            <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
               Your Opinion Matters
             </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-8">
               Share Your Feedback
             </h2>
-            <p className="text-slate-400 text-lg">
+            <p className="text-white/50 text-lg font-light">
               Help me improve by sharing your experience
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-8 rounded-2xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm space-y-6">
+          <form onSubmit={handleSubmit} className="p-8 md:p-10 rounded-2xl glass-dark space-y-8">
             {/* Name Field */}
             <div>
-              <label htmlFor="name" className="block text-sm text-slate-300 mb-2 font-medium">
-                Name {!isAnonymous && <span className="text-slate-500">(optional)</span>}
+              <label htmlFor="name" className="block text-xs text-white/40 mb-3 font-light tracking-wider uppercase">
+                Name {!isAnonymous && <span className="text-white/30">(optional)</span>}
               </label>
               <input
                 id="name"
@@ -107,7 +109,7 @@ export default function FeedbackSection() {
                 onChange={(e) => setName(e.target.value)}
                 disabled={isAnonymous}
                 placeholder={isAnonymous ? "Anonymous" : "Your name"}
-                className="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-white/30 transition-all font-light disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
 
@@ -118,17 +120,17 @@ export default function FeedbackSection() {
                 type="checkbox"
                 checked={isAnonymous}
                 onChange={(e) => setIsAnonymous(e.target.checked)}
-                className="w-4 h-4 rounded border-slate-600 bg-slate-900 text-cyan-500 focus:ring-cyan-500/20 focus:ring-offset-0"
+                className="w-4 h-4 rounded border-white/20 bg-white/5 text-white focus:ring-white/20 focus:ring-offset-0"
               />
-              <label htmlFor="anonymous" className="text-sm text-slate-400 cursor-pointer">
+              <label htmlFor="anonymous" className="text-sm text-white/40 cursor-pointer font-light">
                 Submit anonymously
               </label>
             </div>
 
             {/* Star Rating */}
             <div>
-              <label className="block text-sm text-slate-300 mb-3 font-medium">
-                Rating <span className="text-cyan-400">*</span>
+              <label className="block text-xs text-white/40 mb-4 font-light tracking-wider uppercase">
+                Rating <span className="text-white/60">*</span>
               </label>
               <div className="flex gap-2">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -155,10 +157,10 @@ export default function FeedbackSection() {
                     <Star
                       className={`w-8 h-8 relative pointer-events-none transition-all duration-200 ${
                         star <= (hoveredRating || rating)
-                          ? "fill-amber-400 text-amber-400 scale-110"
+                          ? "fill-amber-400/80 text-amber-400/80 scale-110"
                           : star - 0.5 === (hoveredRating || rating)
-                          ? "fill-amber-400 text-amber-400"
-                          : "text-slate-600 hover:text-slate-500"
+                          ? "fill-amber-400/80 text-amber-400/80"
+                          : "text-white/20 hover:text-white/30"
                       }`}
                       style={{
                         clipPath:
@@ -168,13 +170,13 @@ export default function FeedbackSection() {
                       }}
                     />
                     {star - 0.5 === (hoveredRating || rating) && (
-                      <Star className="w-8 h-8 absolute top-0 left-0 text-slate-600 pointer-events-none" />
+                      <Star className="w-8 h-8 absolute top-0 left-0 text-white/20 pointer-events-none" />
                     )}
                   </div>
                 ))}
               </div>
               {rating > 0 && (
-                <p className="text-sm text-cyan-400 mt-2">
+                <p className="text-sm text-white/40 mt-3 font-light">
                   {rating} star{rating !== 1 ? "s" : ""} selected
                 </p>
               )}
@@ -182,8 +184,8 @@ export default function FeedbackSection() {
 
             {/* Feedback Text */}
             <div>
-              <label htmlFor="feedback" className="block text-sm text-slate-300 mb-2 font-medium">
-                Your feedback <span className="text-cyan-400">*</span>
+              <label htmlFor="feedback" className="block text-xs text-white/40 mb-3 font-light tracking-wider uppercase">
+                Your feedback <span className="text-white/60">*</span>
               </label>
               <textarea
                 id="feedback"
@@ -191,9 +193,9 @@ export default function FeedbackSection() {
                 onChange={(e) => setFeedback(e.target.value)}
                 placeholder="Share your thoughts, suggestions, or experience..."
                 rows={4}
-                className="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all resize-none"
+                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-white/30 transition-all resize-none font-light"
               />
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-white/30 mt-2 font-light">
                 Minimum 5 characters
               </p>
             </div>
@@ -201,10 +203,10 @@ export default function FeedbackSection() {
             {/* Status Message */}
             {submitStatus && (
               <div
-                className={`p-4 rounded-xl text-sm ${
+                className={`p-4 rounded-xl text-sm font-light ${
                   submitStatus.type === "success"
-                    ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                    : "bg-red-500/10 text-red-400 border border-red-500/20"
+                    ? "bg-emerald-500/10 text-emerald-400/80 border border-emerald-500/20"
+                    : "bg-red-500/10 text-red-400/80 border border-red-500/20"
                 }`}
               >
                 {submitStatus.message}
@@ -212,14 +214,23 @@ export default function FeedbackSection() {
             )}
 
             {/* Submit Button */}
-            <Button
+            <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white px-8 py-6 text-base font-medium rounded-xl shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300 disabled:opacity-50"
+              className="group w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-white text-[#0f1419] rounded-full font-medium hover:bg-white/90 transition-all duration-300 disabled:opacity-50 text-sm tracking-wide"
             >
-              <MessageSquare className="mr-2 h-5 w-5" />
-              {isSubmitting ? "Submitting..." : "Submit Feedback"}
-            </Button>
+              {isSubmitting ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-[#0f1419]/30 border-t-[#0f1419] rounded-full animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                <>
+                  Submit Feedback
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </>
+              )}
+            </button>
           </form>
         </div>
       </div>

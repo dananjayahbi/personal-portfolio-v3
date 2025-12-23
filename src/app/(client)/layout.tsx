@@ -8,18 +8,18 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-[#0a192f] relative overflow-x-hidden">
-      {/* Deep blue gradient background */}
-      <div className="fixed inset-0 bg-gradient-to-br from-[#0a192f] via-[#112240] to-[#0a192f]" />
+    <div className="min-h-screen bg-[#0f1419] relative overflow-x-hidden">
+      {/* Premium dark background */}
+      <div className="fixed inset-0 bg-gradient-to-b from-[#0f1419] via-[#131920] to-[#0f1419]" />
       
-      {/* Subtle glow effects */}
-      <div className="fixed top-0 right-0 w-[800px] h-[800px] bg-cyan-500/5 rounded-full blur-[150px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-      <div className="fixed bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/3 pointer-events-none" />
+      {/* Subtle ambient lighting - very muted for premium feel */}
+      <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-amber-900/5 rounded-full blur-[200px] pointer-events-none" />
+      <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] bg-emerald-900/5 rounded-full blur-[180px] pointer-events-none" />
       
       <div className="relative z-10">
         <ViewTracker />
         <ClientNav />
-        <main className="pt-16">{children}</main>
+        <main>{children}</main>
         <ClientFooter />
       </div>
     </div>

@@ -85,8 +85,8 @@ export default function FeaturedFeedbackSection() {
       <section className="py-24 md:py-32">
         <div className="container mx-auto px-6 sm:px-8 lg:px-12">
           <div className="flex items-center gap-3">
-            <div className="w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
-            <p className="text-slate-400">Loading testimonials...</p>
+            <div className="w-5 h-5 border border-white/20 border-t-white/60 rounded-full animate-spin" />
+            <p className="text-white/40 font-light">Loading testimonials...</p>
           </div>
         </div>
       </section>
@@ -107,15 +107,15 @@ export default function FeaturedFeedbackSection() {
           return (
             <div key={star} className="relative">
               <Star
-                className={`w-4 h-4 ${
+                className={`w-3.5 h-3.5 ${
                   isFullStar
-                    ? "fill-amber-400 text-amber-400"
-                    : "text-slate-600"
+                    ? "fill-amber-400/80 text-amber-400/80"
+                    : "text-white/20"
                 }`}
               />
               {isHalfStar && (
                 <Star
-                  className="w-4 h-4 absolute top-0 left-0 fill-amber-400 text-amber-400"
+                  className="w-3.5 h-3.5 absolute top-0 left-0 fill-amber-400/80 text-amber-400/80"
                   style={{ clipPath: "polygon(0 0, 50% 0, 50% 100%, 0 100%)" }}
                 />
               )}
@@ -127,17 +127,20 @@ export default function FeaturedFeedbackSection() {
   };
 
   return (
-    <section className="py-24 md:py-32">
-      <div className="container mx-auto px-6 sm:px-8 lg:px-12">
-        {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <span className="inline-block text-cyan-400 text-sm font-medium tracking-wider uppercase mb-4">
+    <section className="py-24 md:py-32 relative">
+      {/* Subtle background accent */}
+      <div className="absolute top-1/2 right-0 w-80 h-80 bg-purple-900/5 rounded-full blur-[180px] -translate-y-1/2 pointer-events-none" />
+      
+      <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
+        {/* Section Header - Premium Typography */}
+        <div className="max-w-3xl mx-auto text-center mb-20">
+          <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
             Kind Words
           </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-8">
             What People Say
           </h2>
-          <p className="text-slate-400 text-lg">
+          <p className="text-white/50 text-lg font-light">
             Feedback from those I've had the pleasure to work with
           </p>
         </div>
@@ -158,21 +161,21 @@ export default function FeaturedFeedbackSection() {
               {featuredFeedback.map((item) => (
                 <article
                   key={`${item.id}-1`}
-                  className="w-[320px] md:w-[380px] p-6 flex-shrink-0 rounded-2xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm pointer-events-none relative overflow-hidden group"
+                  className="w-[320px] md:w-[380px] p-8 flex-shrink-0 rounded-2xl glass-dark pointer-events-none relative overflow-hidden"
                 >
                   {/* Quote icon */}
-                  <Quote className="absolute top-4 right-4 w-8 h-8 text-cyan-500/10" />
+                  <Quote className="absolute top-6 right-6 w-8 h-8 text-white/5" />
                   
-                  <div className="flex items-center gap-3 mb-4">
+                  <div className="flex items-center gap-4 mb-6">
                     {/* Avatar placeholder */}
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white font-semibold text-sm">
+                    <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 font-light text-sm">
                       {(item.isAnonymous ? "A" : (item.name?.[0] || "A")).toUpperCase()}
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-white block">
+                      <span className="text-sm font-light text-white block tracking-wide">
                         {item.isAnonymous ? "Anonymous" : item.name || "Anonymous"}
                       </span>
-                      <time className="text-xs text-slate-500">
+                      <time className="text-xs text-white/30 font-light">
                         {new Date(item.createdAt).toLocaleDateString("en-US", {
                           month: "short",
                           year: "numeric",
@@ -183,7 +186,7 @@ export default function FeaturedFeedbackSection() {
                       {renderStars(item.rating)}
                     </div>
                   </div>
-                  <p className="text-sm text-slate-300 leading-relaxed line-clamp-4">
+                  <p className="text-sm text-white/50 leading-relaxed line-clamp-4 font-light italic">
                     "{item.feedback}"
                   </p>
                 </article>
@@ -192,21 +195,21 @@ export default function FeaturedFeedbackSection() {
               {featuredFeedback.map((item) => (
                 <article
                   key={`${item.id}-2`}
-                  className="w-[320px] md:w-[380px] p-6 flex-shrink-0 rounded-2xl bg-slate-800/30 border border-slate-700/50 backdrop-blur-sm pointer-events-none relative overflow-hidden group"
+                  className="w-[320px] md:w-[380px] p-8 flex-shrink-0 rounded-2xl glass-dark pointer-events-none relative overflow-hidden"
                 >
                   {/* Quote icon */}
-                  <Quote className="absolute top-4 right-4 w-8 h-8 text-cyan-500/10" />
+                  <Quote className="absolute top-6 right-6 w-8 h-8 text-white/5" />
                   
-                  <div className="flex items-center gap-3 mb-4">
+                  <div className="flex items-center gap-4 mb-6">
                     {/* Avatar placeholder */}
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white font-semibold text-sm">
+                    <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 font-light text-sm">
                       {(item.isAnonymous ? "A" : (item.name?.[0] || "A")).toUpperCase()}
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-white block">
+                      <span className="text-sm font-light text-white block tracking-wide">
                         {item.isAnonymous ? "Anonymous" : item.name || "Anonymous"}
                       </span>
-                      <time className="text-xs text-slate-500">
+                      <time className="text-xs text-white/30 font-light">
                         {new Date(item.createdAt).toLocaleDateString("en-US", {
                           month: "short",
                           year: "numeric",
@@ -217,7 +220,7 @@ export default function FeaturedFeedbackSection() {
                       {renderStars(item.rating)}
                     </div>
                   </div>
-                  <p className="text-sm text-slate-300 leading-relaxed line-clamp-4">
+                  <p className="text-sm text-white/50 leading-relaxed line-clamp-4 font-light italic">
                     "{item.feedback}"
                   </p>
                 </article>
