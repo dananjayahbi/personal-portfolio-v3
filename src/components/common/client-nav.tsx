@@ -32,8 +32,8 @@ export function ClientNav() {
     <nav
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled
-          ? "bg-slate-950/95 backdrop-blur-lg border-b border-slate-800/50 shadow-xl"
+        isScrolled || isOpen
+          ? "bg-[#0a192f]/98 backdrop-blur-lg border-b border-cyan-500/10 shadow-xl shadow-cyan-500/5"
           : "bg-transparent"
       )}
     >
@@ -81,7 +81,7 @@ export function ClientNav() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden pb-4 space-y-1">
+          <div className="md:hidden pb-4 space-y-1 border-t border-cyan-500/10 pt-4 mt-2">
             {navItems.map((item) => {
               const isActive = pathname === item.path || (item.path !== "/" && pathname.startsWith(item.path));
               return (
@@ -90,10 +90,10 @@ export function ClientNav() {
                   href={item.path}
                   onClick={() => setIsOpen(false)}
                   className={cn(
-                    "block px-4 py-2 rounded-lg text-sm font-medium transition-all",
+                    "block px-4 py-3 rounded-lg text-sm font-medium transition-all",
                     isActive
-                      ? "bg-cyan-500/10 text-cyan-400"
-                      : "text-slate-300 hover:text-white hover:bg-slate-800/50"
+                      ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
+                      : "text-slate-300 hover:text-cyan-400 hover:bg-cyan-500/10"
                   )}
                 >
                   {item.name}
