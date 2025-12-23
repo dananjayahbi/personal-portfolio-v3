@@ -1,10 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ExternalLink, Github, Calendar, Tag, Clock, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, ExternalLink, Github, Calendar, Tag, Sparkles } from "lucide-react";
 import { getExperimentBySlug, getRelatedExperiments } from "@/services/experiment.service";
 import { formatDate } from "@/lib/utils";
 import { GallerySection } from "../components/gallery-section";
@@ -46,244 +43,214 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
   const gallery = experiment.gallery as any;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
-      {/* Hero Section with Background Image */}
-      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
-        {/* Background Image with Overlay */}
+    <div className="min-h-screen pt-28 pb-20 relative overflow-hidden">
+      {/* Subtle background accents */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-900/5 rounded-full blur-[200px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-900/5 rounded-full blur-[180px] translate-y-1/2 -translate-x-1/3 pointer-events-none" />
+
+      <div className="container relative z-10 mx-auto px-6 sm:px-8 lg:px-12">
+        {/* Back Button */}
+        <Link 
+          href="/experiments" 
+          className="inline-flex items-center gap-2 text-white/40 hover:text-amber-400/80 transition-colors text-sm font-light tracking-wide mb-12"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Experiments
+        </Link>
+
+        {/* Hero Section */}
+        <div className="max-w-4xl mb-16">
+          {/* Featured Badge */}
+          {experiment.isFeatured && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-400/80 text-xs font-light tracking-wide mb-6">
+              <Sparkles className="w-3 h-3" />
+              Featured
+            </span>
+          )}
+
+          {/* Title */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-6 leading-tight">
+            {experiment.title}
+          </h1>
+
+          {/* Summary */}
+          <p className="text-lg text-white/50 mb-8 max-w-2xl leading-relaxed font-light">
+            {experiment.summary}
+          </p>
+
+          {/* Meta Row */}
+          <div className="flex flex-wrap items-center gap-6 mb-8 text-sm text-white/40 font-light">
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-amber-400/50" />
+              <span>{formatDate(experiment.createdAt)}</span>
+            </div>
+            {experiment.tags.length > 0 && (
+              <div className="flex items-center gap-2">
+                <Tag className="h-4 w-4 text-amber-400/50" />
+                <span>{experiment.tags.slice(0, 2).join(", ")}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-4">
+            {experiment.liveUrl && (
+              <a 
+                href={experiment.liveUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500/50 transition-all duration-300 text-sm font-light tracking-wide"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Live Demo
+              </a>
+            )}
+            {experiment.sourceUrl && (
+              <a 
+                href={experiment.sourceUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-white/[0.03] border border-white/[0.08] text-white/60 hover:text-white hover:border-white/20 transition-all duration-300 text-sm font-light tracking-wide"
+              >
+                <Github className="h-4 w-4" />
+                Source Code
+              </a>
+            )}
+          </div>
+        </div>
+
+        {/* Hero Image */}
         {experiment.heroImage && (
-          <div className="absolute inset-0 z-0">
+          <div className="relative aspect-[21/9] w-full overflow-hidden mb-16">
             <Image
               src={experiment.heroImage}
               alt={experiment.title}
               fill
-              className="object-cover opacity-80"
+              sizes="100vw"
+              className="object-cover"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/90 to-slate-950" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-transparent to-transparent opacity-40" />
           </div>
         )}
 
-        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 mt-[-120px]">
-          {/* Back Button */}
-          <Button asChild variant="ghost" className="mb-8 text-slate-400 hover:text-white hover:bg-slate-800/50">
-            <Link href="/experiments">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Experiments
-            </Link>
-          </Button>
-
-          <div className="max-w-5xl mx-auto text-center">
-            {/* Featured Badge */}
-            {experiment.isFeatured && (
-              <div className="mb-6 flex justify-center">
-                <Badge className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-1.5 text-sm font-medium">
-                  <Sparkles className="w-4 h-4 mr-1.5" />
-                  Featured Experiment
-                </Badge>
+        {/* Main Content Grid */}
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-12">
+          {/* Main Content - Left */}
+          <div className="lg:col-span-3 space-y-16">
+            {/* Description */}
+            {experiment.description && (
+              <div className="p-8 md:p-12 bg-white/[0.02] border border-white/[0.06]">
+                <h2 className="text-2xl md:text-3xl font-serif text-white mb-8 flex items-center gap-4">
+                  <div className="h-px w-12 bg-gradient-to-r from-amber-500/50 to-transparent"></div>
+                  About This Experiment
+                </h2>
+                <div
+                  className="prose prose-invert prose-lg max-w-none text-white/60 leading-relaxed font-light [&_p]:mb-4 [&_h3]:text-white [&_h3]:font-serif [&_h3]:mb-3 [&_h3]:mt-8 [&_ul]:list-disc [&_ul]:ml-6 [&_li]:mb-2 [&_a]:text-amber-400/80 [&_a]:hover:text-amber-400"
+                  dangerouslySetInnerHTML={{ __html: experiment.description }}
+                />
               </div>
             )}
 
-            {/* Title with Gradient */}
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-black bg-gradient-to-r from-white via-cyan-100 to-blue-200 bg-clip-text text-transparent leading-tight">
-              {experiment.title}
-            </h1>
+            {/* Gallery */}
+            <GallerySection images={gallery || []} title={experiment.title} type="experiment" />
+          </div>
 
-            {/* Summary */}
-            <p className="text-xl sm:text-2xl text-slate-300 mb-10 max-w-3xl mx-auto font-light leading-relaxed">
-              {experiment.summary}
-            </p>
-
-            {/* Meta Info */}
-            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400 mb-10">
-              <div className="flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-full">
-                <Calendar className="h-4 w-4 text-cyan-400" />
-                <span>{formatDate(experiment.createdAt)}</span>
+          {/* Sidebar - Right */}
+          <div className="space-y-8">
+            {/* Technologies */}
+            <div className="p-6 bg-white/[0.02] border border-white/[0.06]">
+              <h3 className="text-sm font-light text-white/40 uppercase tracking-[0.2em] mb-4">Technologies</h3>
+              <div className="flex flex-wrap gap-2">
+                {experiment.technologies.map((tech) => (
+                  <span
+                    key={tech}
+                    className="px-3 py-1.5 text-xs text-white/60 bg-white/[0.03] border border-white/[0.08] font-light"
+                  >
+                    {tech}
+                  </span>
+                ))}
               </div>
-              <div className="flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-full">
-                <Clock className="h-4 w-4 text-cyan-400" />
-                <span>Updated {formatDate(experiment.updatedAt)}</span>
-              </div>
-              {experiment.tags.length > 0 && (
-                <div className="flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-full">
-                  <Tag className="h-4 w-4 text-cyan-400" />
-                  <span>{experiment.tags.slice(0, 3).join(" • ")}</span>
-                </div>
-              )}
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-wrap gap-4 justify-center mb-[-100px]">
-              {experiment.liveUrl && (
-                <Button asChild size="lg" className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg shadow-cyan-500/20 px-8">
-                  <a href={experiment.liveUrl} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="mr-2 h-5 w-5" />
-                    View Live Demo
-                  </a>
-                </Button>
-              )}
-              {experiment.sourceUrl && (
-                <Button asChild size="lg" variant="outline" className="border-slate-600 hover:border-cyan-400 hover:bg-slate-800/50 text-slate-800 hover:text-slate-200 px-8">
-                  <a href={experiment.sourceUrl} target="_blank" rel="noopener noreferrer">
-                    <Github className="mr-2 h-5 w-5" />
-                    View Source Code
-                  </a>
-                </Button>
-              )}
+            {/* Tags */}
+            {experiment.tags.length > 0 && (
+              <div className="p-6 bg-white/[0.02] border border-white/[0.06]">
+                <h3 className="text-sm font-light text-white/40 uppercase tracking-[0.2em] mb-4">Tags</h3>
+                <div className="flex flex-wrap gap-2">
+                  {experiment.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-xs text-white/40 font-light"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Experiment Info */}
+            <div className="p-6 bg-white/[0.02] border border-white/[0.06]">
+              <h3 className="text-sm font-light text-white/40 uppercase tracking-[0.2em] mb-4">Experiment Info</h3>
+              <div className="space-y-4 text-sm">
+                <div className="flex justify-between items-center py-3 border-b border-white/[0.06]">
+                  <span className="text-white/40 font-light">Status</span>
+                  <span className="text-emerald-400/80 text-xs font-light">{experiment.status}</span>
+                </div>
+                <div className="flex justify-between items-center py-3 border-b border-white/[0.06]">
+                  <span className="text-white/40 font-light">Created</span>
+                  <span className="text-white/60 font-light">{formatDate(experiment.createdAt)}</span>
+                </div>
+                <div className="flex justify-between items-center py-3">
+                  <span className="text-white/40 font-light">Updated</span>
+                  <span className="text-white/60 font-light">{formatDate(experiment.updatedAt)}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Main Content */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-12">
-            {/* Main Content - Left */}
-            <div className="lg:col-span-3 space-y-16">
-              {/* Description */}
-              {experiment.description && (
-                <div className="bg-slate-800/30 rounded-2xl p-8 sm:p-12 border border-slate-700/50 backdrop-blur-sm">
-                  <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-                    <div className="h-1 w-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"></div>
-                    About This Experiment
-                  </h2>
-                  <div
-                    className="prose prose-invert prose-lg max-w-none text-slate-300 leading-relaxed [&_p]:mb-4 [&_h3]:text-white [&_h3]:font-bold [&_h3]:mb-3 [&_h3]:mt-8 [&_ul]:list-disc [&_ul]:ml-6 [&_li]:mb-2"
-                    dangerouslySetInnerHTML={{ __html: experiment.description }}
-                  />
-                </div>
-              )}
-
-              {/* Gallery */}
-              <GallerySection images={gallery || []} title={experiment.title} type="experiment" />
-            </div>
-
-            {/* Sidebar - Right */}
-            <div className="space-y-6">
-              {/* Technologies */}
-              <Card className="bg-gradient-to-br from-slate-800/50 to-slate-800/30 border-slate-700/50 backdrop-blur-sm hover:border-cyan-500/30 transition-colors">
-                <CardHeader>
-                  <CardTitle className="text-white text-lg flex items-center gap-2">
-                    <div className="h-8 w-1 bg-gradient-to-b from-cyan-500 to-blue-500 rounded-full"></div>
-                    Technologies
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {experiment.technologies.map((tech) => (
-                      <Badge
-                        key={tech}
-                        className="bg-gradient-to-r from-slate-700 to-slate-600 text-slate-200 hover:from-cyan-500/20 hover:to-blue-500/20 hover:text-cyan-300 border border-slate-600 hover:border-cyan-500/50 transition-all cursor-default"
-                      >
-                        {tech}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Tags */}
-              {experiment.tags.length > 0 && (
-                <Card className="bg-gradient-to-br from-slate-800/50 to-slate-800/30 border-slate-700/50 backdrop-blur-sm hover:border-cyan-500/30 transition-colors">
-                  <CardHeader>
-                    <CardTitle className="text-white text-lg flex items-center gap-2">
-                      <div className="h-8 w-1 bg-gradient-to-b from-cyan-500 to-blue-500 rounded-full"></div>
-                      Tags
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {experiment.tags.map((tag) => (
-                        <Badge
-                          key={tag}
-                          variant="outline"
-                          className="border-slate-600 text-slate-400 hover:border-cyan-400 hover:text-cyan-300 transition-all cursor-default"
-                        >
-                          #{tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Experiment Info */}
-              <Card className="bg-gradient-to-br from-slate-800/50 to-slate-800/30 border-slate-700/50 backdrop-blur-sm hover:border-cyan-500/30 transition-colors">
-                <CardHeader>
-                  <CardTitle className="text-white text-lg flex items-center gap-2">
-                    <div className="h-8 w-1 bg-gradient-to-b from-cyan-500 to-blue-500 rounded-full"></div>
-                    Experiment Info
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4 text-sm">
-                  <div className="flex justify-between items-center py-2 border-b border-slate-700/50">
-                    <span className="text-slate-400">Status</span>
-                    <Badge variant="outline" className="border-green-500/50 text-green-400">
-                      {experiment.status}
-                    </Badge>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-slate-700/50">
-                    <span className="text-slate-400">Created</span>
-                    <span className="text-slate-200">{formatDate(experiment.createdAt)}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2">
-                    <span className="text-slate-400">Last Updated</span>
-                    <span className="text-slate-200">{formatDate(experiment.updatedAt)}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
+      </div>
 
       {/* Related Experiments */}
       {relatedExperiments.length > 0 && (
-        <section className="py-20 bg-slate-900/50 border-t border-slate-800/50">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-4xl font-bold text-white mb-12 text-center flex items-center justify-center gap-4">
-              <div className="h-1 w-16 bg-gradient-to-r from-transparent to-cyan-500 rounded-full"></div>
+        <section className="mt-24 pt-16 border-t border-white/[0.06]">
+          <div className="container mx-auto px-6 sm:px-8 lg:px-12">
+            <h2 className="text-3xl font-serif text-white mb-12 text-center">
               Related Experiments
-              <div className="h-1 w-16 bg-gradient-to-l from-transparent to-cyan-500 rounded-full"></div>
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
               {relatedExperiments.map((relatedExperiment) => (
-                <Link key={relatedExperiment.id} href={`/experiment-detail/${relatedExperiment.slug}`}>
-                  <Card className="group h-full bg-slate-800/30 border-slate-700/50 hover:border-cyan-500/50 hover:bg-slate-800/50 transition-all duration-300 overflow-hidden backdrop-blur-sm shadow-lg hover:shadow-cyan-500/20">
+                <Link key={relatedExperiment.id} href={`/experiment-detail/${relatedExperiment.slug}`} className="group block">
+                  <article className="h-full bg-white/[0.02] border border-white/[0.06] overflow-hidden transition-all duration-500 hover:border-white/20">
                     {relatedExperiment.heroImage && (
-                      <div className="relative h-48 w-full overflow-hidden bg-slate-900">
+                      <div className="relative aspect-[16/10] w-full overflow-hidden">
                         <Image
                           src={relatedExperiment.heroImage}
                           alt={relatedExperiment.title}
                           fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-500"
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="object-cover transition-transform duration-700 group-hover:scale-105"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-transparent to-transparent opacity-60" />
                       </div>
                     )}
-                    <CardHeader>
-                      <CardTitle className="text-white group-hover:text-cyan-400 transition-colors line-clamp-1">
+                    <div className="p-6">
+                      <h3 className="text-lg font-serif text-white group-hover:text-amber-400/90 transition-colors line-clamp-1 mb-2">
                         {relatedExperiment.title}
-                      </CardTitle>
-                      <CardDescription className="text-slate-400 line-clamp-2">
+                      </h3>
+                      <p className="text-white/40 text-sm font-light line-clamp-2 mb-4">
                         {relatedExperiment.summary}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
+                      </p>
                       <div className="flex flex-wrap gap-2">
                         {relatedExperiment.technologies.slice(0, 3).map((tech) => (
-                          <Badge key={tech} variant="secondary" className="text-xs bg-slate-700/50 text-slate-300">
+                          <span key={tech} className="text-xs text-white/30 font-light border-b border-white/10">
                             {tech}
-                          </Badge>
+                          </span>
                         ))}
-                        {relatedExperiment.technologies.length > 3 && (
-                          <Badge variant="secondary" className="text-xs bg-slate-700/50 text-slate-300">
-                            +{relatedExperiment.technologies.length - 3}
-                          </Badge>
-                        )}
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </article>
                 </Link>
               ))}
             </div>

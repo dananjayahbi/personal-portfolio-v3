@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
+import { uploadBufferToCloudinary, deleteFromCloudinary } from "@/lib/cloudinary";
 
 const contentSchema = z.object({
   heroEyebrow: z.string().trim().min(2, "Add a short pre-header"),
@@ -146,4 +147,84 @@ export async function saveDashboardContent(_: ContentState, formData: FormData):
   revalidatePath('/client-dashboard-content');
 
   return { status: 'success', message: 'Dashboard content saved successfully' };
+}
+
+export type GitHubGraphState = {
+  status: 'idle' | 'success' | 'error';
+  message?: string;
+};
+
+export async function uploadGitHubGraph(_: GitHubGraphState, formData: FormData): Promise<GitHubGraphState> {
+  try {
+    const file = formData.get('graphImage') as File;
+    
+    if (!file) {
+      return { status: 'error', message: 'No file provided' };
+    }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      return { status: 'error', message: 'File must be an image' };
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      return { status: 'error', message: 'File size must be less than 5MB' };
+    }
+
+    // Get current settings to check for existing GitHub graph
+    let settings = await prisma.siteSettings.findFirst();
+    
+    if (!settings) {
+      // Create settings if they don't exist
+      settings = await prisma.siteSettings.create({
+        data: {},
+      });
+    }
+
+    // Delete old GitHub graph from Cloudinary if it exists
+    if (settings.githubGraphPublicId) {
+      try {
+        await deleteFromCloudinary(settings.githubGraphPublicId, "image");
+        console.log("[GitHub Graph] Deleted old graph:", settings.githubGraphPublicId);
+      } catch (error) {
+        console.error("[GitHub Graph] Error deleting old graph:", error);
+        // Continue with upload even if delete fails
+      }
+    }
+
+    // Read file as buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Upload to Cloudinary
+    const uploadResult = await uploadBufferToCloudinary(buffer, {
+      folder: "portfolio/assets",
+      publicId: "github-status-graph",
+      resourceType: "image",
+      overwrite: true,
+      invalidate: true,
+    });
+
+    console.log("[GitHub Graph] Uploaded new graph:", uploadResult.public_id);
+
+    // Update database with new Cloudinary URL and public ID
+    await prisma.siteSettings.update({
+      where: { id: settings.id },
+      data: {
+        githubGraphUrl: uploadResult.secure_url,
+        githubGraphPublicId: uploadResult.public_id,
+      },
+    });
+
+    // Revalidate paths that display the graph
+    revalidatePath('/');
+    revalidatePath('/about');
+    revalidatePath('/client-dashboard-content');
+
+    return { status: 'success', message: 'GitHub graph updated successfully' };
+  } catch (error) {
+    console.error('Error uploading GitHub graph:', error);
+    return { status: 'error', message: 'Failed to upload graph. Please try again.' };
+  }
 }

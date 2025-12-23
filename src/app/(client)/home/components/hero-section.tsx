@@ -1,6 +1,10 @@
+"use client";
+
+import { useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import { ArrowRight, Download, Github, Linkedin, Mail, Twitter, Facebook, Instagram } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { ArrowRight, Download, Github, Linkedin, Mail, Twitter, Facebook, Instagram, ChevronDown } from "lucide-react";
+// import hero from "/images/internal-images/hero.webp";
 
 interface HeroSectionProps {
   content?: {
@@ -21,6 +25,7 @@ interface HeroSectionProps {
   };
   settings?: {
     resumeUrl?: string;
+    resumeCloudinaryUrl?: string;
     socialLinks?: Array<{
       platform?: string;
       url?: string;
@@ -38,6 +43,10 @@ const SOCIAL_ICONS: Record<string, any> = {
 };
 
 export function HeroSection({ content, callToActions, settings }: HeroSectionProps) {
+  const heroRef = useRef<HTMLElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
+  const rafId = useRef<number | null>(null);
+
   const eyebrow = content?.eyebrow;
   const headline = content?.headline;
   const subheadline = content?.subheadline;
@@ -45,133 +54,225 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
   
   const primaryCta = callToActions?.primary;
   const secondaryCta = callToActions?.secondary;
-
-  // Parse social links from settings
   const socialLinks = settings?.socialLinks || [];
 
-  // Only show section if there's content
+  // Smooth parallax effect for hero background
+  const updateParallax = useCallback(() => {
+    if (!heroRef.current || !bgRef.current) return;
+
+    const scrollY = window.scrollY;
+    const heroHeight = heroRef.current.offsetHeight;
+    
+    // Only apply parallax when hero is in view
+    if (scrollY < heroHeight) {
+      // Background moves at 40% of scroll speed for subtle depth effect
+      const offset = scrollY * 0.4;
+      bgRef.current.style.transform = `translate3d(0, ${offset}px, 0)`;
+    }
+  }, []);
+
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        rafId.current = requestAnimationFrame(() => {
+          updateParallax();
+          ticking = false;
+        });
+      }
+    };
+
+    // Initial update
+    updateParallax();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+    };
+  }, [updateParallax]);
+
   if (!headline && !eyebrow) {
     return null;
   }
 
   return (
-    <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:60px_60px]" />
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+    <section 
+      ref={heroRef}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+    >
+      {/* Parallax Background with extended bounds */}
+      <div 
+        ref={bgRef}
+        className="absolute bg-cover bg-center will-change-transform"
+        style={{
+          backgroundImage: `url(/images/internal-images/hero.webp)`,
+          // Extend beyond container to hide edges during parallax movement
+          top: '-30%',
+          bottom: '-30%',
+          left: '-5%',
+          right: '-5%',
+        }}
+        role="img"
+        aria-label="Hero background"
+      />
+
+      {/* Gradient overlays */}
+      <div className="absolute inset-0 z-[1]">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#4B505500]/95 via-[#0f1419]/70 to-[#0f1419]/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-transparent to-[#0f1419]/30" />
       </div>
 
-      {/* Content */}
-      <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          {/* Greeting */}
-          <div className="space-y-2 animate-fade-in">
-            {eyebrow && (
-              <p className="text-sm sm:text-base text-cyan-400 font-mono tracking-wider">
-                {eyebrow}
+      {/* Decorative geometric elements */}
+      <div className="absolute bottom-32 left-10 w-32 h-32 border border-white/10 rounded-full pointer-events-none z-[2]" />
+      <div className="absolute top-1/4 right-16 w-24 h-24 border border-amber-500/15 rotate-45 pointer-events-none z-[2]" />
+      <div className="absolute bottom-1/4 right-1/3 w-16 h-16 border border-white/5 rounded-full pointer-events-none z-[2]" />
+
+      {/* Glassmorphism card effect */}
+      <div className="absolute inset-x-4 md:inset-x-12 lg:inset-x-24 top-1/2 -translate-y-1/2 h-[70vh] rounded-3xl overflow-hidden z-[3] pointer-events-none">
+        <div className="absolute inset-0 bg-white/[0.02] backdrop-blur-[2px] border border-white/[0.05] rounded-3xl" />
+      </div>
+
+      {/* Content Container */}
+      <div className="container relative z-10 mx-auto px-6 sm:px-8 lg:px-12 py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center min-h-[calc(100vh-10rem)]">
+          {/* Left Column - Main Content */}
+          <div className="space-y-8 lg:space-y-10">
+            {/* Tagline/Motto - Premium styling inspired by reference */}
+            <div className="space-y-2">
+              <p className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-medium text-white leading-[1.1] tracking-tight">
+                Work fast.
               </p>
+              <p className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-medium text-white leading-[1.1] tracking-tight">
+                Live slow.
+              </p>
+            </div>
+
+            {/* Domain/Brand Identifier */}
+            {eyebrow && (
+              <div className="flex items-center gap-3 text-white/60">
+                <span className="text-sm tracking-[0.3em] uppercase font-light">{eyebrow}</span>
+              </div>
             )}
+
+            {/* Services/Highlights Row */}
+            {highlights.length > 0 && (
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2">
+                {highlights.map((highlight, index) => (
+                  <span key={index} className="flex items-center gap-2">
+                    <span className="text-sm text-white/70 font-light tracking-wide">{highlight}</span>
+                    {index < highlights.length - 1 && (
+                      <span className="text-white/30 text-lg">+</span>
+                    )}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right Column - CTA Section */}
+          <div className="lg:text-right space-y-8">
+            {/* Profile Image */}
+            <div className="flex justify-center lg:justify-end mb-6">
+              <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
+                <Image
+                  src="/images/internal-images/me.png"
+                  alt="Profile"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            </div>
+
+            {/* Headline */}
             {headline && (
-              <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-medium text-white leading-tight">
                 {headline}
               </h1>
             )}
+
+            {/* Subheadline */}
             {subheadline && (
-              <p className="text-xl sm:text-2xl md:text-3xl text-slate-300 font-light">
+              <p className="text-lg text-white/60 leading-relaxed font-light max-w-md lg:ml-auto">
                 {subheadline}
               </p>
             )}
-          </div>
 
-          {/* Highlights */}
-          {highlights.length > 0 && (
-            <div className="flex flex-wrap justify-center gap-4 pt-4">
-              {highlights.map((highlight, index) => (
-                <div
-                  key={index}
-                  className="px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 text-sm text-slate-300"
+            {/* CTA Button - Premium outlined style */}
+            <div className="flex flex-col sm:flex-row lg:justify-end items-start sm:items-center gap-4">
+              {primaryCta?.label && primaryCta?.url && (
+                <Link
+                  href={primaryCta.url}
+                  className="group inline-flex items-center gap-3 px-8 py-4 border border-white/30 rounded-full text-white hover:bg-white hover:text-[#0f1419] transition-all duration-500 text-sm tracking-wide"
                 >
-                  {highlight}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            {primaryCta?.label && primaryCta?.url && (
-              <Button
-                asChild
-                size="lg"
-                className="group bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-6 text-base shadow-lg shadow-cyan-500/20"
-              >
-                <Link href={primaryCta.url}>
                   {primaryCta.label}
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
-              </Button>
-            )}
-            {secondaryCta?.label && secondaryCta?.url && (
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="border-slate-700 hover:border-cyan-500 text-black px-8 py-6 text-base"
-              >
-                <Link href={secondaryCta.url}>
+              )}
+              {secondaryCta?.label && secondaryCta?.url && (
+                <Link
+                  href={secondaryCta.url}
+                  className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm tracking-wide"
+                >
                   {secondaryCta.label}
                 </Link>
-              </Button>
+              )}
+            </div>
+
+            {/* Social Links */}
+            {socialLinks.length > 0 && (
+              <div className="flex lg:justify-end gap-4 pt-4">
+                {socialLinks.map((link, index) => {
+                  const platform = link.platform?.toLowerCase() || '';
+                  const Icon = SOCIAL_ICONS[platform] || Mail;
+                  
+                  return (
+                    <a
+                      key={index}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 text-white/40 hover:text-white transition-colors duration-300"
+                      aria-label={link.platform}
+                    >
+                      <Icon className="h-5 w-5" />
+                    </a>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Resume Download */}
+            {(settings?.resumeCloudinaryUrl || settings?.resumeUrl) && (
+              <div className="lg:text-right">
+                <a
+                  href={settings.resumeCloudinaryUrl || settings.resumeUrl!}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors"
+                >
+                  <Download className="h-4 w-4" />
+                  <span className="font-light tracking-wide">Download Resume</span>
+                </a>
+              </div>
             )}
           </div>
-
-          {/* Social Links */}
-          {socialLinks.length > 0 && (
-            <div className="flex items-center justify-center gap-4 pt-8">
-              {socialLinks.map((link, index) => {
-                const platform = link.platform?.toLowerCase() || '';
-                const Icon = SOCIAL_ICONS[platform] || Mail;
-                
-                return (
-                  <a
-                    key={index}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 rounded-lg bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-800 transition-all hover:scale-110"
-                    aria-label={link.platform}
-                  >
-                    <Icon className="h-5 w-5" />
-                  </a>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Resume Download */}
-          {settings?.resumeUrl && (
-            <div className="pt-4">
-              <a
-                href={settings.resumeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-cyan-400 transition-colors"
-              >
-                <Download className="h-4 w-4" />
-                Download Resume
-              </a>
-            </div>
-          )}
         </div>
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 rounded-full border-2 border-slate-600 flex items-start justify-center p-2">
-          <div className="w-1 h-2 rounded-full bg-slate-600" />
-        </div>
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+        <button 
+          onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+          className="flex flex-col items-center gap-2 text-white/40 hover:text-white/60 transition-colors cursor-pointer"
+          aria-label="Scroll down"
+        >
+          <span className="text-xs tracking-[0.2em] uppercase font-light">Scroll</span>
+          <ChevronDown className="h-5 w-5 animate-bounce" />
+        </button>
       </div>
     </section>
   );

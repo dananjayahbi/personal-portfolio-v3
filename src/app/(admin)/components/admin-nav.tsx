@@ -15,6 +15,7 @@ import {
   Inbox,
   BarChart3,
   FlaskConical,
+  MessageSquareText,
 } from "lucide-react";
 
 type NavItem = {
@@ -38,6 +39,11 @@ const NAV_ITEMS: NavItem[] = [
     href: "/inbox",
     label: "Inbox",
     icon: Inbox,
+  },
+  {
+    href: "/feedback",
+    label: "User Feedback",
+    icon: MessageSquareText,
   },
   {
     href: "/client-dashboard-content",

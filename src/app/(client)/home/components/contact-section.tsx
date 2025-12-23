@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, MapPin, Phone, Send } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import Image from "next/image";
+import { Mail, MapPin, Phone, Send, ArrowRight } from "lucide-react";
+import { AnimateOnScroll } from "@/components/common/animate-on-scroll";
 
 interface ContactSectionProps {
   settings?: {
@@ -63,80 +63,101 @@ export function ContactSection({ settings }: ContactSectionProps) {
   };
 
   return (
-    <section id="contact" className="py-20 bg-slate-950 scroll-mt-16">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-            Let's Work Together
-          </h2>
-          <p className="text-lg text-slate-400">
-            Have a project in mind? Let's discuss how I can help bring your ideas to life.
-          </p>
-        </div>
+    <section id="contact" className="py-24 md:py-32 scroll-mt-16 relative overflow-hidden">
+      {/* Floating geometric decorations */}
+      <div className="absolute right-1/4 top-20 w-20 h-20 border-2 border-amber-400/20 rounded-full pointer-events-none animate-float" />
+      <div className="absolute left-1/3 bottom-40 w-16 h-16 border-2 border-white/12 rotate-45 pointer-events-none animate-float-reverse" />
+      <div className="absolute right-10 bottom-1/3 w-12 h-12 border border-emerald-400/15 rounded-full pointer-events-none animate-float-subtle" />
+      <div className="absolute top-0 right-1/4 w-80 h-80 bg-blue-900/8 rounded-full blur-[150px] pointer-events-none" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {/* Contact Info */}
-          <div className="space-y-6">
-            {settings?.contactEmail && (
-              <Card className="p-6 bg-slate-800/50 border-slate-700 hover:border-cyan-500/50 transition-all">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-cyan-500/10 text-cyan-400">
-                    <Mail className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-white mb-1">Email</h3>
-                    <a
-                      href={`mailto:${settings.contactEmail}`}
-                      className="text-slate-400 hover:text-cyan-400 transition-colors text-sm"
-                    >
-                      {settings.contactEmail}
-                    </a>
-                  </div>
-                </div>
-              </Card>
-            )}
-
-            {settings?.contactPhone && (
-              <Card className="p-6 bg-slate-800/50 border-slate-700 hover:border-cyan-500/50 transition-all">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-cyan-500/10 text-cyan-400">
-                    <Phone className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-white mb-1">Phone</h3>
-                    <a
-                      href={`tel:${settings.contactPhone}`}
-                      className="text-slate-400 hover:text-cyan-400 transition-colors text-sm"
-                    >
-                      {settings.contactPhone}
-                    </a>
-                  </div>
-                </div>
-              </Card>
-            )}
-
-            {settings?.location && (
-              <Card className="p-6 bg-slate-800/50 border-slate-700 hover:border-cyan-500/50 transition-all">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-cyan-500/10 text-cyan-400">
-                    <MapPin className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-white mb-1">Location</h3>
-                    <p className="text-slate-400 text-sm">{settings.location}</p>
-                  </div>
-                </div>
-              </Card>
-            )}
+      <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
+        {/* Section Header - Premium Typography */}
+        <AnimateOnScroll animation="fade-up" duration={800}>
+          <div className="max-w-3xl mx-auto text-center mb-20">
+            <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
+              Let's Connect
+            </span>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-8">
+              Get in Touch
+            </h2>
+            <p className="text-white/50 text-lg font-light">
+              Have a project in mind? Let's discuss how I can help bring your ideas to life.
+            </p>
           </div>
+        </AnimateOnScroll>
+
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 max-w-6xl mx-auto">
+          {/* Contact Info */}
+          <AnimateOnScroll animation="fade-right" delay={100} duration={700} className="lg:col-span-2">
+            <div className="space-y-6">
+              <div className="p-8 md:p-10 rounded-2xl glass-dark">
+              <h3 className="text-lg font-light text-white mb-8 tracking-wide">
+                Contact Information
+              </h3>
+              
+              <div className="space-y-8">
+                {settings?.contactEmail && (
+                  <div className="flex items-start gap-4 group">
+                    <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:border-white/20 transition-colors">
+                      <Mail className="h-5 w-5 text-white/40" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-light text-white/40 mb-2 tracking-wider uppercase">
+                        Email
+                      </h4>
+                      <a
+                        href={`mailto:${settings.contactEmail}`}
+                        className="text-white/70 hover:text-white transition-colors font-light"
+                      >
+                        {settings.contactEmail}
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                {settings?.contactPhone && (
+                  <div className="flex items-start gap-4 group">
+                    <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:border-white/20 transition-colors">
+                      <Phone className="h-5 w-5 text-white/40" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-light text-white/40 mb-2 tracking-wider uppercase">
+                        Phone
+                      </h4>
+                      <a
+                        href={`tel:${settings.contactPhone}`}
+                        className="text-white/70 hover:text-white transition-colors font-light"
+                      >
+                        {settings.contactPhone}
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                {settings?.location && (
+                  <div className="flex items-start gap-4 group">
+                    <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:border-white/20 transition-colors">
+                      <MapPin className="h-5 w-5 text-white/40" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-light text-white/40 mb-2 tracking-wider uppercase">
+                        Location
+                      </h4>
+                      <p className="text-white/70 font-light">{settings.location}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              </div>
+            </div>
+          </AnimateOnScroll>
 
           {/* Contact Form */}
-          <Card className="lg:col-span-2 p-8 bg-slate-800/50 border-slate-700">
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <AnimateOnScroll animation="fade-left" delay={150} duration={700} className="lg:col-span-3">
+            <form onSubmit={handleSubmit} className="p-8 md:p-10 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] space-y-6 hover:bg-white/[0.05] transition-all duration-500">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-slate-300 mb-2">
+                  <label htmlFor="name" className="block text-xs text-white/40 mb-3 font-light tracking-wider uppercase">
                     Name
                   </label>
                   <input
@@ -146,12 +167,12 @@ export function ContactSection({ settings }: ContactSectionProps) {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
-                    placeholder="John Doe"
+                    className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-white/30 transition-all font-light"
+                    placeholder="Your name"
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
+                  <label htmlFor="email" className="block text-xs text-white/40 mb-3 font-light tracking-wider uppercase">
                     Email
                   </label>
                   <input
@@ -161,14 +182,14 @@ export function ContactSection({ settings }: ContactSectionProps) {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
-                    placeholder="john@example.com"
+                    className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-white/30 transition-all font-light"
+                    placeholder="you@example.com"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-slate-300 mb-2">
+                <label htmlFor="subject" className="block text-xs text-white/40 mb-3 font-light tracking-wider uppercase">
                   Subject
                 </label>
                 <input
@@ -178,13 +199,13 @@ export function ContactSection({ settings }: ContactSectionProps) {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
-                  placeholder="Project Inquiry"
+                  className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-white/30 transition-all font-light"
+                  placeholder="Project inquiry"
                 />
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-slate-300 mb-2">
+                <label htmlFor="message" className="block text-xs text-white/40 mb-3 font-light tracking-wider uppercase">
                   Message
                 </label>
                 <textarea
@@ -193,30 +214,40 @@ export function ContactSection({ settings }: ContactSectionProps) {
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  rows={6}
-                  className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all resize-none"
+                  rows={5}
+                  className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-white/30 transition-all resize-none font-light"
                   placeholder="Tell me about your project..."
                 />
               </div>
 
-              <Button
-                type="submit"
-                size="lg"
-                disabled={isSubmitting}
-                className="w-full sm:w-auto bg-cyan-500 hover:bg-cyan-600 text-white"
-              >
-                {isSubmitting ? "Sending..." : "Send Message"}
-                <Send className="ml-2 h-5 w-5" />
-              </Button>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 pt-4">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-white text-[#0f1419] rounded-full font-medium hover:bg-white/90 transition-all duration-300 disabled:opacity-50 text-sm tracking-wide"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-[#0f1419]/30 border-t-[#0f1419] rounded-full animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      Send Message
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </>
+                  )}
+                </button>
 
-              {submitStatus === "success" && (
-                <p className="text-green-400 text-sm">Message sent successfully! I'll get back to you soon.</p>
-              )}
-              {submitStatus === "error" && (
-                <p className="text-red-400 text-sm">Failed to send message. Please try again.</p>
-              )}
+                {submitStatus === "success" && (
+                  <p className="text-emerald-400/80 text-sm font-light">✓ Message sent successfully!</p>
+                )}
+                {submitStatus === "error" && (
+                  <p className="text-red-400/80 text-sm font-light">✕ Failed to send. Please try again.</p>
+                )}
+              </div>
             </form>
-          </Card>
+          </AnimateOnScroll>
         </div>
       </div>
     </section>

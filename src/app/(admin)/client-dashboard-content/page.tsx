@@ -23,7 +23,10 @@ function toExperiencesArray(value: unknown) {
 }
 
 export default async function ClientDashboardContentPage() {
-  const content = await prisma.portfolioContent.findFirst();
+  const [content, settings] = await Promise.all([
+    prisma.portfolioContent.findFirst(),
+    prisma.siteSettings.findFirst(),
+  ]);
 
   const hero = (content?.hero as Record<string, unknown> | null) ?? null;
   const ctas = (content?.callToActions as Record<string, unknown> | null) ?? null;
@@ -42,6 +45,7 @@ export default async function ClientDashboardContentPage() {
     aboutSummary: toText(about?.summary),
     aboutNarrative: toText(about?.narrative),
     experiences: toExperiencesArray(content?.experiences),
+    githubGraphUrl: settings?.githubGraphUrl,
   };
 
   return (

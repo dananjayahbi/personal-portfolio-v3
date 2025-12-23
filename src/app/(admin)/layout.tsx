@@ -22,7 +22,7 @@ export default async function AdminLayout({ children }: Props) {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(34,197,94,0.16),_transparent_55%),radial-gradient(circle_at_15%_60%,_rgba(59,130,246,0.2),_transparent_60%),radial-gradient(circle_at_85%_35%,_rgba(147,51,234,0.18),_transparent_65%)]" />
       <div className="relative z-10 flex min-h-screen">
         <aside className="hidden w-72 flex-shrink-0 flex-col border-r border-white/10 bg-slate-950/80 backdrop-blur-xl md:flex">
-          <div className="border-b border-white/10 px-6 py-8">
+          <div className="border-b border-white/10 px-6 py-5">
             <div className="flex items-center gap-4">
               <div className="relative h-12 w-12 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-indigo-500 via-purple-500 to-sky-500">
                 {admin.avatarUrl ? (
@@ -66,9 +66,6 @@ export default async function AdminLayout({ children }: Props) {
               <div>
                 <p className="text-xs uppercase tracking-[0.4em] text-white/40">Portfolio studio</p>
                 <h1 className="text-2xl font-semibold text-white">Welcome back, {admin.name.split(' ')[0] ?? 'Admin'}</h1>
-                <p className="mt-1 text-sm text-white/55">
-                  Review performance, update content, and publish new work without leaving your command center.
-                </p>
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <Link

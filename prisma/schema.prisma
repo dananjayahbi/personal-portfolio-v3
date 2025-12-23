@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -24,7 +24,7 @@ enum ProjectStatus {
 }
 
 model Admin {
-  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  id           String         @id @default(cuid())
   name         String
   email        String         @unique
   passwordHash String
@@ -38,9 +38,9 @@ model Admin {
 }
 
 model AdminSession {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  id         String   @id @default(cuid())
   token      String   @unique
-  adminId    String   @db.ObjectId
+  adminId    String
   createdAt  DateTime @default(now())
   expiresAt  DateTime
   userAgent  String?
@@ -53,11 +53,11 @@ model AdminSession {
 }
 
 model Project {
-  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  id             String         @id @default(cuid())
   title          String
   slug           String         @unique
   summary        String
-  description    String?
+  description    String?        @db.Text
   heroImage      String?
   gallery        Json?
   technologies   String[]       @default([])
@@ -76,11 +76,11 @@ model Project {
 }
 
 model Experiment {
-  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  id             String         @id @default(cuid())
   title          String
   slug           String         @unique
   summary        String
-  description    String?
+  description    String?        @db.Text
   heroImage      String?
   gallery        Json?
   technologies   String[]       @default([])
@@ -99,7 +99,7 @@ model Experiment {
 }
 
 model PortfolioContent {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  id                String   @id @default(cuid())
   hero              Json?
   about             Json?
   personalDetails   Json?
@@ -114,7 +114,7 @@ model PortfolioContent {
 }
 
 model Technology {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(cuid())
   name      String
   icon      String?
   category  String
@@ -126,27 +126,31 @@ model Technology {
 }
 
 model SiteSettings {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  contactEmail  String?
-  contactPhone  String?
-  location      String?
-  availability  String?
-  resumeUrl     String?
-  socialLinks   Json?
-  seo           Json?
-  theme         Json?
-  notifications Json?
-  footerNote    String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                   String   @id @default(cuid())
+  contactEmail         String?
+  contactPhone         String?
+  location             String?
+  availability         String?
+  resumeUrl            String?
+  resumeCloudinaryUrl  String?
+  resumePublicId       String?
+  githubGraphUrl       String?
+  githubGraphPublicId  String?
+  socialLinks          Json?
+  seo                  Json?
+  theme                Json?
+  notifications        Json?
+  footerNote           String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
 
 model ContactMessage {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(cuid())
   name      String
   email     String
   subject   String?
-  message   String
+  message   String   @db.Text
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -155,7 +159,7 @@ model ContactMessage {
 }
 
 model PageView {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  id         String   @id @default(cuid())
   ip         String   @unique
   userAgent  String?
   country    String?
@@ -170,9 +174,26 @@ model PageView {
 }
 
 model IgnoredIP {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(cuid())
   ip          String   @unique
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Feedback {
+  id          String   @id @default(cuid())
+  name        String?
+  isAnonymous Boolean  @default(false)
+  rating      Float
+  feedback    String   @db.Text
+  isDisabled  Boolean  @default(false)
+  isFeatured  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([rating, createdAt])
+  @@index([isAnonymous, createdAt])
+  @@index([isDisabled])
+  @@index([isFeatured])
 }

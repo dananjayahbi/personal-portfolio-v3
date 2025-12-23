@@ -1,8 +1,8 @@
 import { Metadata } from "next";
-import { User, Briefcase, Download, ArrowLeft } from "lucide-react";
+import { User, Briefcase, Download, ArrowLeft, Award } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { getPortfolioContent, getSiteSettings } from "@/services/content.service";
+import { GitHubGraph } from "@/components/common/github-graph";
 
 export const revalidate = 60;
 
@@ -34,78 +34,102 @@ export default async function AboutPage() {
     period: string;
     description?: string;
   }>) || [];
+  const githubGraphUrl = siteSettings?.githubGraphUrl as string | null | undefined;
 
   const title = aboutContent?.title || "About Me";
   const summary = aboutContent?.summary;
   const narrative = aboutContent?.narrative;
 
   return (
-    <div className="min-h-screen bg-slate-950">
-      {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-b from-slate-900 to-slate-950">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Back Button */}
-          <Button asChild variant="ghost" className="mb-8 text-slate-400 hover:text-white">
-            <Link href="/">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Home
-            </Link>
-          </Button>
+    <div className="min-h-screen pt-28 pb-20 relative overflow-hidden">
+      {/* Subtle background accents */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-900/5 rounded-full blur-[200px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-900/5 rounded-full blur-[180px] translate-y-1/2 -translate-x-1/3 pointer-events-none" />
 
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
-              {title}
-            </h1>
-            {summary && (
-              <p className="text-xl text-slate-300">
-                {summary}
-              </p>
-            )}
-          </div>
+      <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
+        {/* Back Button */}
+        <Link 
+          href="/" 
+          className="inline-flex items-center gap-2 text-white/40 hover:text-amber-400/80 transition-colors text-sm font-light tracking-wide mb-12"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Home
+        </Link>
+
+        {/* Page Header */}
+        <div className="max-w-4xl mb-16">
+          <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-4">
+            Get to Know Me
+          </span>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-6">
+            {title}
+          </h1>
+          {summary && (
+            <p className="text-lg text-white/50 leading-relaxed max-w-2xl font-light">
+              {summary}
+            </p>
+          )}
         </div>
-      </section>
 
-      {/* Main Content */}
-      <section className="py-20 bg-slate-900/50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-6xl mx-auto space-y-12">
-            {/* About Content */}
-            {narrative && (
-              <div className="p-8 rounded-xl bg-slate-800/50 border border-slate-700">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-400">
-                    <User className="h-6 w-6" />
-                  </div>
-                  <h2 className="text-2xl font-semibold text-white">Background</h2>
+        <div className="max-w-5xl mx-auto space-y-16">
+          {/* About Content */}
+          {narrative && (
+            <div className="p-8 md:p-12 bg-white/[0.02] border border-white/[0.06]">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center">
+                  <User className="h-5 w-5 text-amber-400/70" />
                 </div>
-                <div className="prose prose-invert prose-slate max-w-none">
-                  <p className="text-slate-300 leading-relaxed whitespace-pre-line text-lg">
-                    {narrative}
-                  </p>
-                </div>
+                <h2 className="text-2xl md:text-3xl font-serif text-white">Background</h2>
               </div>
-            )}
+              <div className="prose prose-invert max-w-none">
+                <p className="text-white/60 leading-relaxed whitespace-pre-line text-lg font-light">
+                  {narrative}
+                </p>
+              </div>
+            </div>
+          )}
 
-            {/* Experience Timeline */}
-            {experiences.length > 0 && (
-              <div className="p-8 rounded-xl bg-slate-800/50 border border-slate-700">
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-400">
-                    <Briefcase className="h-6 w-6" />
-                  </div>
-                  <h2 className="text-2xl font-semibold text-white">Professional Experience</h2>
+          {/* GitHub Contributions Graph */}
+          <div className="p-8 md:p-12 bg-white/[0.02] border border-white/[0.06]">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center">
+                <Award className="h-5 w-5 text-amber-400/70" />
+              </div>
+              <h2 className="text-2xl md:text-3xl font-serif text-white">GitHub Activity</h2>
+            </div>
+            <GitHubGraph graphUrl={githubGraphUrl} />
+          </div>
+
+          {/* Experience Timeline */}
+          {experiences.length > 0 && (
+            <div className="p-8 md:p-12 bg-white/[0.02] border border-white/[0.06]">
+              <div className="flex items-center gap-4 mb-12">
+                <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center">
+                  <Briefcase className="h-5 w-5 text-amber-400/70" />
                 </div>
+                <h2 className="text-2xl md:text-3xl font-serif text-white">Professional Experience</h2>
+              </div>
 
-                <div className="space-y-8">
+              <div className="relative">
+                {/* Timeline line */}
+                <div className="absolute left-4 top-2 bottom-2 w-px bg-gradient-to-b from-amber-500/40 via-white/10 to-transparent" />
+                
+                <div className="space-y-12">
                   {experiences.map((exp, index) => (
-                    <div key={index} className="relative pl-8 border-l-2 border-slate-700">
-                      <div className={`absolute -left-[9px] top-0 w-4 h-4 rounded-full ${index === 0 ? 'bg-cyan-500' : 'bg-slate-600'}`} />
-                      <div className="space-y-2">
-                        <h3 className="text-xl font-semibold text-white">{exp.role}</h3>
-                        <p className="text-cyan-400 font-medium">{exp.company}</p>
-                        <p className="text-slate-400">{exp.period}</p>
+                    <div key={index} className="relative pl-14">
+                      {/* Timeline dot */}
+                      <div className="absolute left-0 top-1 w-8 h-8 rounded-full bg-[#0f1419] border border-white/10 flex items-center justify-center">
+                        <div className="w-2 h-2 rounded-full bg-amber-400/70" />
+                      </div>
+                      
+                      <div className="p-6 bg-white/[0.02] border border-white/[0.06] hover:border-white/10 transition-colors">
+                        <span className="inline-block text-xs text-amber-400/70 font-light tracking-[0.15em] uppercase mb-3">
+                          {exp.period}
+                        </span>
+                        <h3 className="text-xl font-serif text-white mb-1">{exp.role}</h3>
+                        <p className="text-amber-400/60 text-sm font-light">{exp.company}</p>
                         {exp.description && (
-                          <p className="text-slate-300 mt-3 leading-relaxed">
+                          <p className="text-white/50 mt-4 leading-relaxed font-light">
                             {exp.description}
                           </p>
                         )}
@@ -114,22 +138,25 @@ export default async function AboutPage() {
                   ))}
                 </div>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Download CV */}
-            {siteSettings?.resumeUrl && (
-              <div className="text-center py-8">
-                <Button asChild size="lg" className="bg-cyan-500 hover:bg-cyan-600">
-                  <a href={siteSettings.resumeUrl} target="_blank" rel="noopener noreferrer">
-                    <Download className="mr-2 h-5 w-5" />
-                    Download CV
-                  </a>
-                </Button>
-              </div>
-            )}
-          </div>
+          {/* Download CV */}
+          {(siteSettings?.resumeCloudinaryUrl || siteSettings?.resumeUrl) && (
+            <div className="text-center py-8">
+              <a 
+                href={siteSettings.resumeCloudinaryUrl || siteSettings.resumeUrl!} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 px-10 py-4 bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500/50 transition-all duration-300 text-sm font-light tracking-wide"
+              >
+                <Download className="h-4 w-4" />
+                Download Resume
+              </a>
+            </div>
+          )}
         </div>
-      </section>
+      </div>
     </div>
   );
 }
