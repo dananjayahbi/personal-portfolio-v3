@@ -152,7 +152,7 @@ export function SiteSettingsForm({ defaults }: { defaults: SettingsDefaults }) {
 
   return (
     <>
-    <form action={formAction} className="space-y-8">\
+    <form action={formAction} className="space-y-8">
       <Section title="Contact & availability" description="Keep inquiries flowing with current and clear contact details.">
         <TextInput
           label="Primary email"

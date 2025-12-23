@@ -3,6 +3,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { ArrowRight, Download, Github, Linkedin, Mail, Twitter, Facebook, Instagram, ChevronDown } from "lucide-react";
+// import hero from "/images/internal-images/hero.webp";
 
 interface HeroSectionProps {
   content?: {
@@ -106,7 +107,7 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
         ref={bgRef}
         className="absolute bg-cover bg-center will-change-transform"
         style={{
-          backgroundImage: `url(https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80)`,
+          backgroundImage: `url(/images/internal-images/hero.webp)`,
           // Extend beyond container to hide edges during parallax movement
           top: '-30%',
           bottom: '-30%',
@@ -119,7 +120,7 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
 
       {/* Gradient overlays */}
       <div className="absolute inset-0 z-[1]">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0f1419]/95 via-[#0f1419]/70 to-[#0f1419]/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#4B505500]/95 via-[#0f1419]/70 to-[#0f1419]/40" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-transparent to-[#0f1419]/30" />
       </div>
 

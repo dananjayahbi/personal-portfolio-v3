@@ -48,7 +48,7 @@ export default async function ClientHomePage() {
       
       {/* First parallax background wrapper - covers About and Skills sections */}
       <ParallaxBackgroundWrapper
-        imageUrl="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=75"
+        imageUrl="/images/internal-images/sec2.webp"
         overlayType="gradient"
         id="about-skills-parallax"
       >
@@ -58,7 +58,7 @@ export default async function ClientHomePage() {
       
       {/* Second parallax background wrapper - covers Projects section */}
       <ParallaxBackgroundWrapper
-        imageUrl="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&q=75"
+        imageUrl="/images/internal-images/code5.webp"
         overlayType="dark"
         id="projects-parallax"
       >
@@ -67,7 +67,7 @@ export default async function ClientHomePage() {
       
       {/* Third parallax background wrapper - covers Feedback sections */}
       <ParallaxBackgroundWrapper
-        imageUrl="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&q=75"
+        imageUrl="/images/internal-images/sec3.2.webp"
         overlayType="gradient"
         id="feedback-parallax"
       >
@@ -77,7 +77,7 @@ export default async function ClientHomePage() {
       
       {/* Contact section with its own subtle background */}
       <ParallaxBackgroundWrapper
-        imageUrl="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=1920&q=75"
+        imageUrl="/images/internal-images/code2.webp"
         overlayType="dark"
         id="contact-parallax"
       >

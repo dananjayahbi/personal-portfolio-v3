@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 const navItems = [
   { name: "Home", path: "/" },
@@ -42,8 +43,12 @@ export function ClientNav() {
           {/* Logo - Minimal Circle Icon */}
           <Link href="/" className="flex items-center gap-3 group">
             <div className="relative w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover:border-white/40 transition-colors">
-              <div className="w-4 h-[1px] bg-white/60 group-hover:bg-white transition-colors" />
-              <div className="absolute w-[1px] h-4 bg-white/60 group-hover:bg-white transition-colors" />
+              <Image
+                src="/images/internal-images/me.png"
+                alt="Logo"
+                fill
+                className="object-cover rounded-full"
+              />
             </div>
           </Link>
 

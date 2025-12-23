@@ -1,6 +1,16 @@
 import Link from "next/link";
-import { Github, Linkedin, Mail, Twitter, Facebook, Instagram, ExternalLink, ArrowUpRight } from "lucide-react";
+import {
+  Github,
+  Linkedin,
+  Mail,
+  Twitter,
+  Facebook,
+  Instagram,
+  ExternalLink,
+  ArrowUpRight,
+} from "lucide-react";
 import { getSiteSettings } from "@/services/content.service";
+import Image from "next/image";
 
 const SOCIAL_ICONS: Record<string, any> = {
   github: Github,
@@ -12,7 +22,8 @@ const SOCIAL_ICONS: Record<string, any> = {
 
 export async function ClientFooter() {
   const settings = await getSiteSettings();
-  const socialLinks = (settings?.socialLinks as Array<{ platform?: string; url?: string }>) || [];
+  const socialLinks =
+    (settings?.socialLinks as Array<{ platform?: string; url?: string }>) || [];
 
   const currentYear = new Date().getFullYear();
 
@@ -23,41 +34,60 @@ export async function ClientFooter() {
           {/* Brand Section */}
           <div className="space-y-6">
             {/* Logo - Minimal Circle Icon */}
-            <Link href="/" className="inline-flex items-center gap-3 group">
+            <Link href="/" className="flex items-center gap-3 group">
               <div className="relative w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover:border-white/40 transition-colors">
-                <div className="w-4 h-[1px] bg-white/60 group-hover:bg-white transition-colors" />
-                <div className="absolute w-[1px] h-4 bg-white/60 group-hover:bg-white transition-colors" />
+                <Image
+                  src="/images/internal-images/me.png"
+                  alt="Logo"
+                  fill
+                  className="object-cover rounded-full"
+                />
               </div>
             </Link>
             <p className="text-white/40 text-sm font-light leading-relaxed max-w-xs">
-              {settings?.footerNote || "Building innovative software solutions with modern technologies."}
+              {settings?.footerNote ||
+                "Building innovative software solutions with modern technologies."}
             </p>
           </div>
 
           {/* Quick Links */}
           <div className="space-y-6">
-            <h4 className="text-xs font-light text-white/60 uppercase tracking-[0.2em]">Navigation</h4>
+            <h4 className="text-xs font-light text-white/60 uppercase tracking-[0.2em]">
+              Navigation
+            </h4>
             <ul className="space-y-3">
               <li>
-                <Link href="/" className="text-white/40 hover:text-white text-sm font-light transition-colors inline-flex items-center gap-1 group">
+                <Link
+                  href="/"
+                  className="text-white/40 hover:text-white text-sm font-light transition-colors inline-flex items-center gap-1 group"
+                >
                   Home
                   <ArrowUpRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </Link>
               </li>
               <li>
-                <Link href="/projects" className="text-white/40 hover:text-white text-sm font-light transition-colors inline-flex items-center gap-1 group">
+                <Link
+                  href="/projects"
+                  className="text-white/40 hover:text-white text-sm font-light transition-colors inline-flex items-center gap-1 group"
+                >
                   Projects
                   <ArrowUpRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-white/40 hover:text-white text-sm font-light transition-colors inline-flex items-center gap-1 group">
+                <Link
+                  href="/about"
+                  className="text-white/40 hover:text-white text-sm font-light transition-colors inline-flex items-center gap-1 group"
+                >
                   About
                   <ArrowUpRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </Link>
               </li>
               <li>
-                <Link href="/#contact" className="text-white/40 hover:text-white text-sm font-light transition-colors inline-flex items-center gap-1 group">
+                <Link
+                  href="/#contact"
+                  className="text-white/40 hover:text-white text-sm font-light transition-colors inline-flex items-center gap-1 group"
+                >
                   Contact
                   <ArrowUpRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </Link>
@@ -67,13 +97,15 @@ export async function ClientFooter() {
 
           {/* Connect */}
           <div className="space-y-6">
-            <h4 className="text-xs font-light text-white/60 uppercase tracking-[0.2em]">Connect</h4>
+            <h4 className="text-xs font-light text-white/60 uppercase tracking-[0.2em]">
+              Connect
+            </h4>
             {socialLinks.length > 0 && (
               <div className="flex gap-3">
                 {socialLinks.map((link, index) => {
-                  const platform = link.platform?.toLowerCase() || '';
+                  const platform = link.platform?.toLowerCase() || "";
                   const Icon = SOCIAL_ICONS[platform] || Mail;
-                  
+
                   return (
                     <a
                       key={index}
@@ -98,7 +130,9 @@ export async function ClientFooter() {
               </a>
             )}
             {settings?.location && (
-              <p className="text-white/30 text-sm font-light">{settings.location}</p>
+              <p className="text-white/30 text-sm font-light">
+                {settings.location}
+              </p>
             )}
           </div>
         </div>

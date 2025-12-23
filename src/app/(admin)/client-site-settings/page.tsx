@@ -61,7 +61,6 @@ export default async function ClientSiteSettingsPage() {
           Configure how prospects connect, how search engines discover you, and how the portfolio looks under different ambient lighting.
         </p>
       </header>
-
       <SiteSettingsForm defaults={defaults} />
     </div>
   );
