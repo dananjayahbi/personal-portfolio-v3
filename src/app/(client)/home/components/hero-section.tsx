@@ -77,15 +77,15 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
       ref={heroRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Background Image with Parallax Effect */}
+      {/* Background Image with Strong Parallax Effect */}
       <div 
         className="absolute inset-0 z-0"
         style={{
-          transform: `translateY(${scrollY * 0.5}px)`,
+          transform: `translateY(${scrollY * 0.4}px) scale(1.1)`,
         }}
       >
         <Image
-          src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80"
+          src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=85"
           alt="Hero background"
           fill
           priority
@@ -93,9 +93,19 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
           sizes="100vw"
         />
         {/* Gradient Overlays for Premium Dark Look */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0f1419]/95 via-[#0f1419]/70 to-[#0f1419]/40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-transparent to-[#0f1419]/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0f1419]/90 via-[#0f1419]/60 to-[#0f1419]/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-transparent to-[#0f1419]/20" />
       </div>
+
+      {/* Additional decorative parallax elements */}
+      <div 
+        className="absolute bottom-20 left-10 w-32 h-32 border-2 border-white/10 rounded-full pointer-events-none z-[1]"
+        style={{ transform: `translateY(${scrollY * -0.15}px)` }}
+      />
+      <div 
+        className="absolute top-1/3 right-10 w-24 h-24 border-2 border-amber-500/15 rotate-45 pointer-events-none z-[1]"
+        style={{ transform: `rotate(45deg) translateY(${scrollY * 0.12}px)` }}
+      />
 
       {/* Content Container */}
       <div className="container relative z-10 mx-auto px-6 sm:px-8 lg:px-12 py-20">

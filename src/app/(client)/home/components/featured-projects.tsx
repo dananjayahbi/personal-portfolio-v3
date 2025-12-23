@@ -14,9 +14,43 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
   }
 
   return (
-    <section className="py-24 md:py-32 relative">
-      {/* Subtle background accent */}
-      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-blue-900/5 rounded-full blur-[200px] pointer-events-none" />
+    <section className="py-24 md:py-32 relative overflow-hidden">
+      {/* Large decorative image - right side */}
+      <div className="absolute -right-20 top-20 w-[400px] h-[520px] opacity-[0.35] pointer-events-none hidden lg:block animate-float-slow">
+        <div className="relative w-full h-full decorative-frame">
+          <Image
+            src="https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=800&q=90"
+            alt=""
+            fill
+            className="object-cover"
+            aria-hidden="true"
+          />
+          <div className="absolute inset-0 bg-gradient-to-l from-[#0f1419]/80 via-[#0f1419]/30 to-transparent" />
+        </div>
+      </div>
+
+      {/* Secondary decorative image - left side */}
+      <div className="absolute -left-16 bottom-32 w-[320px] h-[380px] opacity-[0.28] pointer-events-none hidden lg:block animate-float-reverse">
+        <div className="relative w-full h-full decorative-frame">
+          <Image
+            src="https://images.unsplash.com/photo-1484417894907-623942c8ee29?w=800&q=85"
+            alt=""
+            fill
+            className="object-cover"
+            aria-hidden="true"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0f1419]/80 via-[#0f1419]/30 to-transparent" />
+        </div>
+      </div>
+
+      {/* Floating geometric decorations */}
+      <div className="absolute left-1/4 top-32 w-20 h-20 border-2 border-amber-400/20 rotate-45 pointer-events-none animate-float" />
+      <div className="absolute right-1/3 bottom-40 w-16 h-16 border-2 border-blue-400/15 rounded-full pointer-events-none animate-float-reverse" />
+      <div className="absolute left-10 bottom-1/3 w-12 h-12 border border-white/10 rounded-full pointer-events-none animate-float-subtle" />
+
+      {/* Ambient glow effects */}
+      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-blue-900/10 rounded-full blur-[200px] pointer-events-none" />
+      <div className="absolute top-1/3 right-0 w-80 h-80 bg-amber-900/10 rounded-full blur-[150px] pointer-events-none" />
       
       <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         {/* Section Header */}

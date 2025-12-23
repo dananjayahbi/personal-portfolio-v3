@@ -5,18 +5,28 @@ import { usePathname } from "next/navigation";
 
 export function PageLoader() {
   const [isLoading, setIsLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
 
+  // Only show loader after component mounts (prevents SSR mismatch)
   useEffect(() => {
-    // Show loader on initial page load
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    
+    // Show loader on route change
     setIsLoading(true);
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 800);
 
     return () => clearTimeout(timer);
-  }, [pathname]);
+  }, [pathname, mounted]);
 
+  // Don't render anything until mounted to prevent hydration issues
+  if (!mounted) return null;
   if (!isLoading) return null;
 
   return (
