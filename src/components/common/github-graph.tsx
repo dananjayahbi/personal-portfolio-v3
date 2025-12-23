@@ -1,12 +1,17 @@
 import Image from "next/image";
-import { getSiteSettings } from "@/services/content.service";
 
-export async function GitHubGraph({ className }: { className?: string }) {
-  const settings = await getSiteSettings();
-  
-  // Only use Cloudinary URL - no fallback to local assets
-  const graphUrl = settings?.githubGraphUrl;
+interface GitHubGraphProps {
+  className?: string;
+  graphUrl?: string | null;
+}
 
+/**
+ * GitHubGraph component - displays the GitHub contribution graph.
+ * 
+ * This is now a client-friendly component that receives the graphUrl as a prop
+ * from a server component, avoiding Prisma calls in the browser.
+ */
+export function GitHubGraph({ className, graphUrl }: GitHubGraphProps) {
   // If no graph URL, show a placeholder message
   if (!graphUrl) {
     return (

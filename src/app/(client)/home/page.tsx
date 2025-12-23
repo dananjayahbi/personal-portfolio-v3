@@ -40,6 +40,7 @@ export default async function ClientHomePage() {
   const callToActions = portfolioContent?.callToActions as any;
   const aboutContent = portfolioContent?.about as any;
   const experiences = portfolioContent?.experiences as any;
+  const githubGraphUrl = siteSettings?.githubGraphUrl as string | null | undefined;
 
   return (
     <div className="min-h-screen">
@@ -49,10 +50,9 @@ export default async function ClientHomePage() {
       <ParallaxBackgroundWrapper
         imageUrl="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=75"
         overlayType="gradient"
-        speed={0.5}
         id="about-skills-parallax"
       >
-        <AboutSection content={aboutContent} experiences={experiences} />
+        <AboutSection content={aboutContent} experiences={experiences} githubGraphUrl={githubGraphUrl} />
         <SkillsSection technologies={technologies} />
       </ParallaxBackgroundWrapper>
       
@@ -60,7 +60,6 @@ export default async function ClientHomePage() {
       <ParallaxBackgroundWrapper
         imageUrl="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&q=75"
         overlayType="dark"
-        speed={0.4}
         id="projects-parallax"
       >
         <FeaturedProjects projects={featuredProjects} />
@@ -70,7 +69,6 @@ export default async function ClientHomePage() {
       <ParallaxBackgroundWrapper
         imageUrl="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&q=75"
         overlayType="gradient"
-        speed={0.5}
         id="feedback-parallax"
       >
         <FeaturedFeedbackSection />
@@ -81,7 +79,6 @@ export default async function ClientHomePage() {
       <ParallaxBackgroundWrapper
         imageUrl="https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=1920&q=75"
         overlayType="dark"
-        speed={0.35}
         id="contact-parallax"
       >
         <ContactSection settings={siteSettings as any} />

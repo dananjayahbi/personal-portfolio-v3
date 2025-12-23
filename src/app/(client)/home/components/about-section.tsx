@@ -17,9 +17,10 @@ interface AboutSectionProps {
     period: string;
     description?: string;
   }>;
+  githubGraphUrl?: string | null;
 }
 
-export function AboutSection({ content, experiences }: AboutSectionProps) {
+export function AboutSection({ content, experiences, githubGraphUrl }: AboutSectionProps) {
   const title = content?.title || "About Me";
   const summary = content?.summary;
   const narrative = content?.narrative;
@@ -80,7 +81,7 @@ export function AboutSection({ content, experiences }: AboutSectionProps) {
               <h3 className="text-lg font-light text-white mb-8 tracking-wide">
                 GitHub Activity
               </h3>
-              <GitHubGraph />
+              <GitHubGraph graphUrl={githubGraphUrl} />
             </div>
           </div>
 

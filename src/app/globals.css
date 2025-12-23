@@ -138,7 +138,44 @@ html {
   scroll-behavior: smooth;
 }
 
-/* CSS Parallax Container */
+/* ============================================
+   CSS-ONLY PARALLAX EFFECT
+   Memory-efficient parallax using background-attachment: fixed
+   No JavaScript required - GPU accelerated by browser
+   ============================================ */
+
+/* Parallax section container */
+.parallax-section {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Parallax background layer - uses fixed attachment for parallax effect */
+.parallax-bg {
+  background-attachment: fixed;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* Fallback for mobile devices where background-attachment: fixed 
+   can cause performance issues or isn't supported properly */
+@supports (-webkit-touch-callout: none) {
+  .parallax-bg {
+    background-attachment: scroll;
+    background-position: center top;
+  }
+}
+
+/* Additional mobile fallback using media query */
+@media (max-width: 768px), (hover: none) {
+  .parallax-bg {
+    background-attachment: scroll;
+    background-position: center top;
+  }
+}
+
+/* Legacy parallax classes (kept for backward compatibility) */
 .parallax-container {
   perspective: 1px;
   height: 100vh;
@@ -146,17 +183,14 @@ html {
   overflow-y: auto;
 }
 
-/* Slow parallax layer - moves slower than scroll */
 .parallax-slow {
   transform: translateZ(-2px) scale(3);
 }
 
-/* Medium parallax layer */
 .parallax-medium {
   transform: translateZ(-1px) scale(2);
 }
 
-/* Fast parallax layer - moves at scroll speed */
 .parallax-fast {
   transform: translateZ(0);
 }
@@ -374,26 +408,6 @@ html {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Parallax container */
-.parallax-container {
-  perspective: 1px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  height: 100vh;
-}
-
-.parallax-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.parallax-back {
-  transform: translateZ(-1px) scale(2);
 }
 
 /* Premium text gradient */

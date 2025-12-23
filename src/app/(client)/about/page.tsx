@@ -34,6 +34,7 @@ export default async function AboutPage() {
     period: string;
     description?: string;
   }>) || [];
+  const githubGraphUrl = siteSettings?.githubGraphUrl as string | null | undefined;
 
   const title = aboutContent?.title || "About Me";
   const summary = aboutContent?.summary;
@@ -96,7 +97,7 @@ export default async function AboutPage() {
               </div>
               <h2 className="text-2xl md:text-3xl font-serif text-white">GitHub Activity</h2>
             </div>
-            <GitHubGraph />
+            <GitHubGraph graphUrl={githubGraphUrl} />
           </div>
 
           {/* Experience Timeline */}

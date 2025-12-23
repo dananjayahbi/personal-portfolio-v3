@@ -1,14 +1,10 @@
-"use client";
-
 import { ReactNode } from "react";
 
 interface ParallaxBackgroundWrapperProps {
-  /** URL of the vertical image to use as background */
+  /** URL of the image to use as background */
   imageUrl: string;
-  /** Alt text for accessibility - not used but kept for consistency */
+  /** Alt text for accessibility (for screen readers) */
   alt?: string;
-  /** Speed factor - not used in CSS parallax but kept for API consistency */
-  speed?: number;
   /** Overlay gradient type */
   overlayType?: "dark" | "light" | "gradient" | "none";
   /** Additional CSS classes for the container */
@@ -19,10 +15,16 @@ interface ParallaxBackgroundWrapperProps {
   id?: string;
 }
 
+/**
+ * CSS-only Parallax Background Wrapper
+ * 
+ * Uses `background-attachment: fixed` for a simple, memory-efficient parallax effect.
+ * This approach doesn't require JavaScript scroll listeners and is GPU-accelerated
+ * natively by the browser.
+ */
 export function ParallaxBackgroundWrapper({
   imageUrl,
   alt = "Section background",
-  speed = 0.4,
   overlayType = "dark",
   className = "",
   children,
@@ -36,34 +38,35 @@ export function ParallaxBackgroundWrapper({
   };
 
   return (
-    <div 
-      className={`relative ${className}`}
+    <section 
+      className={`parallax-section relative ${className}`}
       id={id}
+      aria-label={alt}
     >
-      {/* CSS Parallax Background using background-attachment: fixed */}
+      {/* CSS-only Parallax Background - uses background-attachment: fixed */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-fixed"
+        className="parallax-bg absolute inset-0"
         style={{
           backgroundImage: `url(${imageUrl})`,
         }}
-        role="img"
-        aria-label={alt}
       />
 
       {/* Gradient Overlay */}
-      <div className={`absolute inset-0 ${overlayStyles[overlayType]} z-[1]`} />
+      {overlayType !== "none" && (
+        <div className={`absolute inset-0 ${overlayStyles[overlayType]} z-[1]`} />
+      )}
 
-      {/* Subtle vignette effect */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(15,20,25,0.25)_100%)] z-[2] pointer-events-none" />
+      {/* Subtle vignette effect for premium look */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(15,20,25,0.3)_100%)] z-[2] pointer-events-none" />
 
       {/* Content Container */}
       <div className="relative z-10">
         {children}
       </div>
 
-      {/* Top and bottom fade for seamless transitions */}
-      <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#0f1419] to-transparent z-[4] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#0f1419] to-transparent z-[4] pointer-events-none" />
-    </div>
+      {/* Top and bottom fade for seamless transitions between sections */}
+      <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#0f1419] to-transparent z-[3] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#0f1419] to-transparent z-[3] pointer-events-none" />
+    </section>
   );
 }
