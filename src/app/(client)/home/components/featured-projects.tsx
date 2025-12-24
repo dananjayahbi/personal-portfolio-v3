@@ -172,17 +172,14 @@ export function FeaturedProjects({ projects, backgroundImage }: FeaturedProjects
                         <h3 className="text-xl font-heading font-semibold text-white group-hover:text-blue-400 transition-colors">
                           {project.title}
                         </h3>
-                        {project.category && (
-                          <span className="text-xs text-white/40 uppercase tracking-wider">{project.category}</span>
-                        )}
                       </div>
                     </div>
 
                     {/* Links */}
                     <div className="flex gap-2">
-                      {project.githubUrl && (
+                      {project.sourceUrl && (
                         <a
-                          href={project.githubUrl}
+                          href={project.sourceUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-2 rounded-lg border border-white/10 text-white/40 hover:text-white hover:border-white/30 transition-all"
@@ -208,9 +205,9 @@ export function FeaturedProjects({ projects, backgroundImage }: FeaturedProjects
                   </div>
 
                   {/* Description */}
-                  {project.shortDescription && (
+                  {project.summary && (
                     <p className="text-white/50 text-sm leading-relaxed line-clamp-2">
-                      {project.shortDescription}
+                      {project.summary}
                     </p>
                   )}
 

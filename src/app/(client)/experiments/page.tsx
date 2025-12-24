@@ -1,7 +1,7 @@
 import { ExperimentsGrid } from "./components/experiments-grid";
 import { getPublishedExperiments, getAllTechnologies, getAllTags } from "@/services/experiment.service";
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default async function ClientExperimentsPage() {
   const [experiments, technologies, tags] = await Promise.all([

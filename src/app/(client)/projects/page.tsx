@@ -1,7 +1,7 @@
 import { ProjectsGrid } from "./components/projects-grid";
 import { getPublishedProjects, getAllTechnologies, getAllTags } from "@/services/project.service";
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default async function ClientProjectsPage() {
   const [projects, technologies, tags] = await Promise.all([

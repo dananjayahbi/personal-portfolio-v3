@@ -6,7 +6,7 @@ import { getExperimentBySlug, getRelatedExperiments } from "@/services/experimen
 import { formatDate } from "@/lib/utils";
 import { GallerySection } from "../components/gallery-section";
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
