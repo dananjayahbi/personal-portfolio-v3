@@ -160,13 +160,62 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
           transition: "transform 0.3s ease-out",
         }}
       >
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center min-h-[calc(100vh-10rem)]">
-          {/* Left Column */}
-          <div className="space-y-8 lg:space-y-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20 items-center min-h-[calc(100vh-10rem)]">
+          {/* Profile Image - Shows first on mobile, second on desktop */}
+          <div 
+            className={"order-first lg:order-last lg:text-right space-y-6 lg:space-y-8 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0 lg:translate-y-0 lg:translate-x-0" : "opacity-0 translate-y-8 lg:translate-y-0 lg:translate-x-12")} 
+            style={{ transitionDelay: "200ms" }}
+          >
+            <div className="flex justify-center lg:justify-end mb-4 lg:mb-8">
+              <div className="relative group" style={{ transform: imageTransform, transition: "transform 0.3s ease-out" }}>
+                <div className="absolute -inset-4 bg-blue-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative w-40 h-40 sm:w-48 sm:h-48 lg:w-72 lg:h-72 rounded-full overflow-hidden border-2 border-white/10 group-hover:border-blue-500/30 transition-all duration-500 ring-4 ring-blue-500/5 ring-offset-4 ring-offset-[#030014]">
+                  <Image src="/images/internal-images/me.png" alt="Profile" fill className="object-cover transition-transform duration-700 group-hover:scale-110" priority />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#030014]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                </div>
+              </div>
+            </div>
+
+            {/* Headline & Subheadline - Hidden on mobile, shown on desktop */}
+            <div className="hidden lg:block">
+              {headline && (
+                <h2 
+                  className={"text-2xl sm:text-3xl md:text-4xl font-heading font-semibold text-white leading-tight transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
+                  style={{ transitionDelay: "600ms" }}
+                >
+                  {headline}
+                </h2>
+              )}
+
+              {subheadline && (
+                <p 
+                  className={"text-lg text-white/50 leading-relaxed font-light max-w-md lg:ml-auto mt-4 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
+                  style={{ transitionDelay: "800ms" }}
+                >
+                  {subheadline}
+                </p>
+              )}
+
+              {(settings?.resumeCloudinaryUrl || settings?.resumeUrl) && (
+                <div 
+                  className={"mt-6 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
+                  style={{ transitionDelay: "1000ms" }}
+                >
+                  <a href={settings.resumeCloudinaryUrl || settings.resumeUrl!} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-3 px-6 py-3 text-sm text-white/60 hover:text-white transition-colors border border-white/10 rounded-full hover:border-white/20">
+                    <Download className="h-4 w-4" />
+                    Download Resume
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Text Content - Shows second on mobile, first on desktop */}
+          <div className="order-last lg:order-first space-y-6 lg:space-y-10 text-center lg:text-left">
             {eyebrow && (
               <div 
-                className={"flex items-center gap-3 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4")} 
-                style={{ transitionDelay: "200ms" }}
+                className={"flex items-center justify-center lg:justify-start gap-3 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4")} 
+                style={{ transitionDelay: "400ms" }}
               >
                 <div className="w-12 h-[1px] bg-blue-500" />
                 <span className="text-sm tracking-[0.3em] uppercase font-light text-blue-400">{eyebrow}</span>
@@ -175,47 +224,81 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
 
             <div 
               className={"space-y-2 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
-              style={{ transitionDelay: "400ms" }}
+              style={{ transitionDelay: "500ms" }}
             >
-              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-heading font-bold leading-[0.9] tracking-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-heading font-bold leading-[0.9] tracking-tight">
                 <span className="block text-white">Work fast.</span>
                 <span className="block text-blue-400">Live slow.</span>
               </h1>
             </div>
 
+            {/* Headline & Subheadline - Shown on mobile only */}
+            <div className="lg:hidden space-y-3">
+              {headline && (
+                <h2 
+                  className={"text-xl sm:text-2xl font-heading font-semibold text-white leading-tight transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
+                  style={{ transitionDelay: "550ms" }}
+                >
+                  {headline}
+                </h2>
+              )}
+
+              {subheadline && (
+                <p 
+                  className={"text-base text-white/50 leading-relaxed font-light max-w-sm mx-auto transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
+                  style={{ transitionDelay: "600ms" }}
+                >
+                  {subheadline}
+                </p>
+              )}
+            </div>
+
             {highlights.length > 0 && (
               <div 
-                className={"flex flex-wrap items-center gap-3 pt-4 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
-                style={{ transitionDelay: "600ms" }}
+                className={"flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-3 pt-2 lg:pt-4 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
+                style={{ transitionDelay: "650ms" }}
               >
                 {highlights.map((highlight, index) => (
-                  <span key={index} className="px-4 py-2 text-sm text-white/80 font-light tracking-wide bg-white/5 backdrop-blur-sm border border-white/10 rounded-full hover:border-white/20 transition-all duration-300">{highlight}</span>
+                  <span key={index} className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-white/80 font-light tracking-wide bg-white/5 backdrop-blur-sm border border-white/10 rounded-full hover:border-white/20 transition-all duration-300">{highlight}</span>
                 ))}
               </div>
             )}
 
             <div 
-              className={"flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-4 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
-              style={{ transitionDelay: "800ms" }}
+              className={"flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-2 lg:pt-4 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
+              style={{ transitionDelay: "750ms" }}
             >
               {primaryCta?.label && primaryCta?.url && (
-                <Link href={primaryCta.url} className="group inline-flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-500 rounded-full text-white text-sm font-medium tracking-wide transition-colors duration-300">
+                <Link href={primaryCta.url} className="group inline-flex items-center gap-3 px-6 py-3 sm:px-8 sm:py-4 bg-blue-600 hover:bg-blue-500 rounded-full text-white text-sm font-medium tracking-wide transition-colors duration-300">
                   <span>{primaryCta.label}</span>
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               )}
               {secondaryCta?.label && secondaryCta?.url && (
-                <Link href={secondaryCta.url} className="group inline-flex items-center gap-2 px-6 py-4 text-white/60 hover:text-white transition-colors text-sm tracking-wide border border-white/20 rounded-full hover:border-white/40">
+                <Link href={secondaryCta.url} className="group inline-flex items-center gap-2 px-5 py-3 sm:px-6 sm:py-4 text-white/60 hover:text-white transition-colors text-sm tracking-wide border border-white/20 rounded-full hover:border-white/40">
                   {secondaryCta.label}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               )}
             </div>
 
+            {/* Resume Download - Mobile only */}
+            {(settings?.resumeCloudinaryUrl || settings?.resumeUrl) && (
+              <div 
+                className={"lg:hidden transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
+                style={{ transitionDelay: "850ms" }}
+              >
+                <a href={settings.resumeCloudinaryUrl || settings.resumeUrl!} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-3 px-5 py-2.5 text-sm text-white/60 hover:text-white transition-colors border border-white/10 rounded-full hover:border-white/20">
+                  <Download className="h-4 w-4" />
+                  Download Resume
+                </a>
+              </div>
+            )}
+
             {socialLinks.length > 0 && (
               <div 
-                className={"flex gap-3 pt-4 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
-                style={{ transitionDelay: "1000ms" }}
+                className={"flex gap-3 pt-2 lg:pt-4 justify-center lg:justify-start transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
+                style={{ transitionDelay: "900ms" }}
               >
                 {socialLinks.map((link, index) => {
                   const platform = link.platform?.toLowerCase() || "";
@@ -226,54 +309,6 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
                     </a>
                   );
                 })}
-              </div>
-            )}
-          </div>
-
-          {/* Right Column */}
-          <div 
-            className={"lg:text-right space-y-8 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12")} 
-            style={{ transitionDelay: "400ms" }}
-          >
-            <div className="flex justify-center lg:justify-end mb-8">
-              <div className="relative group" style={{ transform: imageTransform, transition: "transform 0.3s ease-out" }}>
-                <div className="absolute -inset-4 bg-blue-500/10 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative w-56 h-56 sm:w-64 sm:h-64 lg:w-72 lg:h-72 rounded-2xl overflow-hidden border-2 border-white/10 group-hover:border-blue-500/30 transition-all duration-500">
-                  <Image src="/images/internal-images/me.png" alt="Profile" fill className="object-cover transition-transform duration-700 group-hover:scale-110" priority />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#030014]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                </div>
-                <div className="absolute -top-3 -right-3 w-6 h-6 border-t-2 border-r-2 border-blue-500/30" />
-                <div className="absolute -bottom-3 -left-3 w-6 h-6 border-b-2 border-l-2 border-cyan-500/30" />
-              </div>
-            </div>
-
-            {headline && (
-              <h2 
-                className={"text-2xl sm:text-3xl md:text-4xl font-heading font-semibold text-white leading-tight transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
-                style={{ transitionDelay: "600ms" }}
-              >
-                {headline}
-              </h2>
-            )}
-
-            {subheadline && (
-              <p 
-                className={"text-lg text-white/50 leading-relaxed font-light max-w-md lg:ml-auto transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
-                style={{ transitionDelay: "800ms" }}
-              >
-                {subheadline}
-              </p>
-            )}
-
-            {(settings?.resumeCloudinaryUrl || settings?.resumeUrl) && (
-              <div 
-                className={"transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
-                style={{ transitionDelay: "1000ms" }}
-              >
-                <a href={settings.resumeCloudinaryUrl || settings.resumeUrl!} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-3 px-6 py-3 text-sm text-white/60 hover:text-white transition-colors border border-white/10 rounded-full hover:border-white/20">
-                  <Download className="h-4 w-4" />
-                  Download Resume
-                </a>
               </div>
             )}
           </div>
