@@ -125,7 +125,6 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
           left: "-5%",
           right: "-5%",
           transform: bgTransform,
-          transition: "transform 0.3s ease-out",
         }}
       />
 
