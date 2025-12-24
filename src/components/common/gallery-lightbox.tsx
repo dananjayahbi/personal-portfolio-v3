@@ -177,7 +177,10 @@ export function GalleryLightbox({ images, initialIndex, open, onClose, title }: 
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-[95vw] w-full h-[95vh] bg-slate-950/95 border-slate-800 p-0">
+      <DialogContent 
+        className="!max-w-[98vw] lg:!max-w-[95vw] !w-full h-[95vh] bg-slate-950/98 border-slate-800 p-0"
+        showCloseButton={false}
+      >
         {/* Visually hidden title for accessibility */}
         <DialogTitle className="sr-only">{title} - Gallery</DialogTitle>
         
@@ -223,7 +226,7 @@ export function GalleryLightbox({ images, initialIndex, open, onClose, title }: 
         <div className="absolute inset-0 flex items-center justify-center pt-16 sm:pt-20 pb-16 overflow-hidden">
           <div 
             ref={imageContainerRef}
-            className="relative w-full h-full flex items-center justify-center p-4 overflow-hidden"
+            className="relative w-full h-full flex items-center justify-center p-4 lg:p-8 overflow-hidden"
             onDoubleClick={handleDoubleClick}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -237,10 +240,11 @@ export function GalleryLightbox({ images, initialIndex, open, onClose, title }: 
             }}
           >
             <div 
-              className="relative w-full h-full transition-transform duration-300"
+              className="relative w-full h-full will-change-transform"
               style={{ 
-                transform: `scale(${currentZoom}) translate(${currentPan.x}px, ${currentPan.y}px)`,
-                transformOrigin: 'center center'
+                transform: `scale(${currentZoom}) translate(${currentPan.x / currentZoom}px, ${currentPan.y / currentZoom}px)`,
+                transformOrigin: 'center center',
+                transition: isDragging ? 'none' : 'transform 0.15s ease-out'
               }}
             >
               <Image
@@ -248,8 +252,9 @@ export function GalleryLightbox({ images, initialIndex, open, onClose, title }: 
                 alt={currentImage.alt || `Image ${currentIndex + 1}`}
                 fill
                 className="object-contain"
-                sizes="95vw"
+                sizes="(max-width: 768px) 95vw, (max-width: 1200px) 90vw, 95vw"
                 draggable={false}
+                priority
               />
             </div>
           </div>
