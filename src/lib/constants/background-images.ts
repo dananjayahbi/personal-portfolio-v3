@@ -6,13 +6,13 @@ const IMAGES_BASE_PATH = "/images/internal-images";
  * Use these constants to easily switch between different backgrounds
  */
 export const BACKGROUND_IMAGES = {
-  hero: `${IMAGES_BASE_PATH}/tests/4.png`,
-  about: `${IMAGES_BASE_PATH}/tests/5.jpg`,
-  skills: `${IMAGES_BASE_PATH}/tests/2.jpg`,
-  featuredProjects: `${IMAGES_BASE_PATH}/tests/3.jpg`,
-  featuredFeedback: `${IMAGES_BASE_PATH}/tests/7.jpg`,
-  feedback: `${IMAGES_BASE_PATH}/tests/1.jpg`,
-  contact: `${IMAGES_BASE_PATH}/tests/5.jpg`,
+  hero: `${IMAGES_BASE_PATH}/4.webp`,
+  about: `${IMAGES_BASE_PATH}/5.webp`,
+  skills: `${IMAGES_BASE_PATH}/2.webp`,
+  featuredProjects: `${IMAGES_BASE_PATH}/3.webp`,
+  featuredFeedback: `${IMAGES_BASE_PATH}/7.webp`,
+  feedback: `${IMAGES_BASE_PATH}/1.webp`,
+  contact: `${IMAGES_BASE_PATH}/5.webp`,
 } as const;
 
 
