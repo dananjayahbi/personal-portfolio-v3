@@ -8,6 +8,7 @@ import FeaturedFeedbackSection from "./components/featured-feedback-section";
 import { getFeaturedProjects } from "@/services/project.service";
 import { getPortfolioContent, getSiteSettings } from "@/services/content.service";
 import { getAllTechnologies } from "@/services/technology.service";
+import { SECTION_BACKGROUNDS } from "@/lib/constants/background-images";
 import { Metadata } from "next";
 
 export const revalidate = 60;
@@ -45,30 +46,30 @@ export default async function ClientHomePage() {
     <div className="min-h-screen">
       <HeroSection content={heroContent} callToActions={callToActions} settings={siteSettings as Record<string, unknown> | undefined} />
       
-      {/* Each section now has its own parallax background */}
+      {/* Section backgrounds are configured in @/lib/constants/background-images.ts */}
       <AboutSection 
         content={aboutContent} 
         experiences={experiences} 
         githubGraphUrl={githubGraphUrl}
-        backgroundImage="/images/internal-images/sec2.webp"
+        backgroundImage={SECTION_BACKGROUNDS.about}
       />
       
       <SkillsSection 
         technologies={technologies}
-        backgroundImage="/images/internal-images/code5.webp"
+        backgroundImage={SECTION_BACKGROUNDS.skills}
       />
       
       <FeaturedProjects 
         projects={featuredProjects}
-        backgroundImage="/images/internal-images/code5.webp"
+        backgroundImage={SECTION_BACKGROUNDS.featuredProjects}
       />
       
-      <FeaturedFeedbackSection backgroundImage="/images/internal-images/sec3.2.webp" />
-      <FeedbackSection backgroundImage="/images/internal-images/sec3.2.webp" />
+      <FeaturedFeedbackSection backgroundImage={SECTION_BACKGROUNDS.featuredFeedback} />
+      <FeedbackSection backgroundImage={SECTION_BACKGROUNDS.feedback} />
       
       <ContactSection 
         settings={siteSettings as Record<string, unknown> | undefined}
-        backgroundImage="/images/internal-images/code2.webp"
+        backgroundImage={SECTION_BACKGROUNDS.contact}
       />
     </div>
   );

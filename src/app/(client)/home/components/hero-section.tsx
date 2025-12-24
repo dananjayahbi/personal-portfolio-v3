@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Download, Github, Linkedin, Mail, Twitter, Facebook, Instagram, ChevronDown } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { SECTION_BACKGROUNDS } from "@/lib/constants/background-images";
 
 interface HeroSectionProps {
   content?: {
@@ -119,7 +120,7 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
         ref={bgRef}
         className="absolute bg-cover bg-center will-change-transform"
         style={{
-          backgroundImage: "url(/images/internal-images/hero.webp)",
+          backgroundImage: `url(${SECTION_BACKGROUNDS.hero})`,
           top: "-20%",
           bottom: "-20%",
           left: "-5%",

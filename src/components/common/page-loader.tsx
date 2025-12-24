@@ -30,7 +30,7 @@ export function PageLoader() {
   if (!isLoading) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0f1419]">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#030014]">
       {/* Elegant loading animation */}
       <div className="relative flex flex-col items-center gap-8">
         {/* Logo/Brand mark */}
@@ -38,9 +38,9 @@ export function PageLoader() {
           Portfolio
         </div>
         
-        {/* Minimal loading bar */}
-        <div className="relative w-48 h-px bg-white/10 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-400/70 to-transparent animate-shimmer" />
+        {/* Minimal loading bar with halo effect */}
+        <div className="relative w-48 h-[2px] bg-white/10 overflow-hidden rounded-full">
+          <div className="absolute inset-0 animate-page-loader-shimmer" />
         </div>
         
         {/* Loading text */}
@@ -48,20 +48,6 @@ export function PageLoader() {
           Loading
         </span>
       </div>
-      
-      <style jsx>{`
-        @keyframes shimmer {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
-        }
-        .animate-shimmer {
-          animation: shimmer 1.5s ease-in-out infinite;
-        }
-      `}</style>
     </div>
   );
 }

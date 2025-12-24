@@ -138,11 +138,35 @@ export type ResumeUploadState = {
 
 export async function uploadResume(_: ResumeUploadState, formData: FormData): Promise<ResumeUploadState> {
   try {
-    const file = formData.get('resumeFile') as File;
+    const file = formData.get('resumeFile');
+    
+    console.log('[uploadResume] FormData entries:', [...formData.entries()].map(([k, v]) => ({
+      key: k,
+      type: v instanceof File ? 'File' : typeof v,
+      value: v instanceof File ? { name: v.name, size: v.size, type: v.type } : v,
+    })));
     
     if (!file) {
       return { status: 'error', message: 'No file provided' };
     }
+
+    // Check if it's actually a File object
+    if (!(file instanceof File)) {
+      console.error('[uploadResume] Received non-File object:', typeof file, file);
+      return { status: 'error', message: 'Invalid file format received' };
+    }
+
+    // Check for empty file (size = 0)
+    if (file.size === 0) {
+      console.error('[uploadResume] File is empty:', { name: file.name, size: file.size, type: file.type });
+      return { status: 'error', message: 'File appears to be empty. Please select a valid PDF file.' };
+    }
+
+    console.log('[uploadResume] File received:', {
+      name: file.name,
+      size: file.size,
+      type: file.type,
+    });
 
     // Validate file type (PDF ONLY)
     if (file.type !== 'application/pdf') {

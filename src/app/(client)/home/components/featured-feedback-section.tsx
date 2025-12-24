@@ -195,15 +195,27 @@ export default function FeaturedFeedbackSection({ backgroundImage }: FeaturedFee
               left: "-10%",
               right: "-10%",
               transformOrigin: "center center",
+              maskImage: "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)",
             }}
           />
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-[#030014]/90 via-[#030014]/75 to-[#030014]/90 z-[1]" />
           <div className="absolute inset-0 bg-gradient-to-r from-purple-900/15 via-transparent to-amber-900/15 z-[1]" />
           
-          {/* Soft edge fades for seamless transitions */}
-          <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#030014] via-[#030014]/80 to-transparent z-[2]" />
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#030014] via-[#030014]/80 to-transparent z-[2]" />
+          {/* Enhanced edge transitions with blur */}
+          <div 
+            className="absolute top-0 left-0 right-0 h-48 z-[2] pointer-events-none"
+            style={{
+              background: "linear-gradient(to bottom, #030014 0%, rgba(3, 0, 20, 0.95) 20%, rgba(3, 0, 20, 0.7) 50%, rgba(3, 0, 20, 0.3) 80%, transparent 100%)",
+            }}
+          />
+          <div 
+            className="absolute bottom-0 left-0 right-0 h-48 z-[2] pointer-events-none"
+            style={{
+              background: "linear-gradient(to top, #030014 0%, rgba(3, 0, 20, 0.95) 20%, rgba(3, 0, 20, 0.7) 50%, rgba(3, 0, 20, 0.3) 80%, transparent 100%)",
+            }}
+          />
         </>
       )}
 

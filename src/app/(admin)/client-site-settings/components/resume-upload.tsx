@@ -1,44 +1,110 @@
 'use client';
 
-import { useState, useActionState, useEffect } from "react";
-import { Upload, FileText, Trash2, ExternalLink } from "lucide-react";
+import { useState, useRef } from "react";
+import { Upload, FileText, Trash2, ExternalLink, Loader2 } from "lucide-react";
 import { uploadResume, deleteResume, type ResumeUploadState } from "../actions";
-
-const initialState: ResumeUploadState = { status: 'idle' };
 
 interface ResumeUploadProps {
   currentResumeUrl?: string | null;
   legacyResumeUrl?: string | null;
 }
 
+interface SelectedFileInfo {
+  name: string;
+  size: number;
+  type: string;
+}
+
 export function ResumeUpload({ currentResumeUrl, legacyResumeUrl }: ResumeUploadProps) {
-  const [uploadState, uploadAction] = useActionState(uploadResume, initialState);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadState, setUploadState] = useState<ResumeUploadState>({ status: 'idle' });
+  const [selectedFileInfo, setSelectedFileInfo] = useState<SelectedFileInfo | null>(null);
   const [success, setSuccess] = useState<string | undefined>();
   const [deleting, setDeleting] = useState(false);
-
-  useEffect(() => {
-    if (uploadState.status === 'success' && uploadState.message) {
-      setSuccess(uploadState.message);
-      setSelectedFile(null);
-      const timeout = setTimeout(() => setSuccess(undefined), 4000);
-      return () => clearTimeout(timeout);
-    }
-    if (uploadState.status === 'error') {
-      setSuccess(undefined);
-    }
-  }, [uploadState]);
+  const [uploading, setUploading] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      console.log('[ResumeUpload] File selected:', {
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        lastModified: file.lastModified,
+      });
+      
       // Validate file type on client side as well
       if (file.type !== 'application/pdf') {
         alert('Please select a PDF file only');
         e.target.value = ''; // Reset file input
         return;
       }
-      setSelectedFile(file);
+      
+      // Store file info separately (not the File object itself)
+      setSelectedFileInfo({
+        name: file.name,
+        size: file.size,
+        type: file.type,
+      });
+      setUploadState({ status: 'idle' });
+      setSuccess(undefined);
+    } else {
+      setSelectedFileInfo(null);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    // Get file directly from input element to avoid any state serialization issues
+    const inputFile = fileInputRef.current?.files?.[0];
+    
+    if (!inputFile) {
+      setUploadState({ status: 'error', message: 'Please select a file first' });
+      return;
+    }
+
+    console.log('[ResumeUpload] Submitting file:', {
+      name: inputFile.name,
+      size: inputFile.size,
+      type: inputFile.type,
+      lastModified: inputFile.lastModified,
+    });
+
+    if (inputFile.size === 0) {
+      setUploadState({ status: 'error', message: 'File appears to be empty. Please re-select the file.' });
+      return;
+    }
+
+    setUploading(true);
+    setUploadState({ status: 'idle' });
+
+    try {
+      const formData = new FormData();
+      formData.append('resumeFile', inputFile);
+      
+      console.log('[ResumeUpload] FormData created with file');
+
+      const result = await uploadResume({ status: 'idle' }, formData);
+      
+      console.log('[ResumeUpload] Upload result:', result);
+      setUploadState(result);
+      
+      if (result.status === 'success') {
+        setSuccess(result.message);
+        setSelectedFileInfo(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+        setTimeout(() => setSuccess(undefined), 4000);
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      setUploadState({ status: 'error', message: 'Failed to upload resume. Please try again.' });
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -117,7 +183,7 @@ export function ResumeUpload({ currentResumeUrl, legacyResumeUrl }: ResumeUpload
       )}
 
       {/* Upload Form */}
-      <form action={uploadAction} className="space-y-4">
+      <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
         <div className="rounded-xl border border-white/10 bg-white/5 p-4">
           <label className="block">
             <span className="text-sm font-medium text-white mb-2 block">
@@ -128,31 +194,34 @@ export function ResumeUpload({ currentResumeUrl, legacyResumeUrl }: ResumeUpload
             </p>
             <div className="relative">
               <input
+                ref={fileInputRef}
                 type="file"
                 name="resumeFile"
                 accept=".pdf,application/pdf"
                 onChange={handleFileChange}
+                disabled={uploading}
                 className="block w-full text-sm text-white/70
                   file:mr-4 file:py-2 file:px-4
                   file:rounded-full file:border-0
                   file:text-sm file:font-semibold
                   file:bg-cyan-500/10 file:text-cyan-400
                   hover:file:bg-cyan-500/20
-                  file:cursor-pointer cursor-pointer"
+                  file:cursor-pointer cursor-pointer
+                  disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
           </label>
 
           {/* Preview of selected file */}
-          {selectedFile && (
+          {selectedFileInfo && (
             <div className="mt-4">
               <p className="text-xs text-white/60 mb-2">Selected PDF</p>
               <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10">
                 <FileText className="h-6 w-6 text-cyan-400" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-white font-medium truncate">{selectedFile.name}</p>
+                  <p className="text-sm text-white font-medium truncate">{selectedFileInfo.name}</p>
                   <p className="text-xs text-white/60">
-                    {(selectedFile.size / 1024 / 1024).toFixed(2)} MB · PDF Document
+                    {(selectedFileInfo.size / 1024 / 1024).toFixed(2)} MB · PDF Document
                   </p>
                 </div>
               </div>
@@ -176,11 +245,20 @@ export function ResumeUpload({ currentResumeUrl, legacyResumeUrl }: ResumeUpload
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={!selectedFile}
+          disabled={!selectedFileInfo || uploading}
           className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/30 transition hover:shadow-blue-500/50 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <Upload className="h-4 w-4" />
-          Upload Resume
+          {uploading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Uploading...
+            </>
+          ) : (
+            <>
+              <Upload className="h-4 w-4" />
+              Upload Resume
+            </>
+          )}
         </button>
       </form>
 
