@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Mail, Send, MapPin, Clock, CheckCircle2, AlertCircle, MessageSquare } from "lucide-react";
 import { AnimateOnScroll } from "@/components/common/animate-on-scroll";
 
@@ -10,9 +10,14 @@ interface ContactSectionProps {
     location?: string;
     availability?: string;
   };
+  backgroundImage?: string;
 }
 
-export function ContactSection({ settings }: ContactSectionProps) {
+export function ContactSection({ settings, backgroundImage }: ContactSectionProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
+  const rafId = useRef<number | null>(null);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -21,6 +26,51 @@ export function ContactSection({ settings }: ContactSectionProps) {
   });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+
+  // Enhanced 3D parallax scroll effect
+  const updateParallax = useCallback(() => {
+    if (!sectionRef.current || !bgRef.current) return;
+
+    const rect = sectionRef.current.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const sectionHeight = sectionRef.current.offsetHeight;
+    
+    const isInView = rect.bottom > 0 && rect.top < windowHeight;
+    
+    if (isInView) {
+      const scrollProgress = (windowHeight - rect.top) / (windowHeight + sectionHeight);
+      const yOffset = (scrollProgress - 0.5) * sectionHeight * 0.7;
+      const rotateX = (scrollProgress - 0.5) * 5;
+      
+      bgRef.current.style.transform = "perspective(1000px) translate3d(0, " + yOffset + "px, 80px) rotateX(" + rotateX + "deg) scale(1.25)";
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!backgroundImage) return;
+
+    let ticking = false;
+    
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        rafId.current = requestAnimationFrame(() => {
+          updateParallax();
+          ticking = false;
+        });
+      }
+    };
+
+    updateParallax();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", updateParallax, { passive: true });
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", updateParallax);
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+    };
+  }, [updateParallax, backgroundImage]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,10 +98,35 @@ export function ContactSection({ settings }: ContactSectionProps) {
   };
 
   return (
-    <section id="contact" className="py-24 md:py-32 scroll-mt-16 relative overflow-hidden">
+    <section ref={sectionRef} id="contact" className="py-24 md:py-32 scroll-mt-16 relative overflow-hidden">
+      {/* Parallax Background */}
+      {backgroundImage && (
+        <>
+          <div
+            ref={bgRef}
+            className="absolute bg-cover bg-center will-change-transform pointer-events-none"
+            style={{
+              backgroundImage: "url(" + backgroundImage + ")",
+              top: "-20%",
+              bottom: "-20%",
+              left: "-10%",
+              right: "-10%",
+              transformOrigin: "center center",
+            }}
+          />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#030014]/90 via-[#030014]/75 to-[#030014]/90 z-[1]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-900/15 via-transparent to-blue-900/15 z-[1]" />
+          
+          {/* Soft edge fades for seamless transitions */}
+          <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#030014] via-[#030014]/80 to-transparent z-[2]" />
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#030014] via-[#030014]/80 to-transparent z-[2]" />
+        </>
+      )}
+
       {/* Simple background accent */}
       <div 
-        className="absolute w-[500px] h-[500px] rounded-full pointer-events-none opacity-15"
+        className="absolute w-[500px] h-[500px] rounded-full pointer-events-none opacity-15 z-[3]"
         style={{
           bottom: "0%",
           right: "-10%",

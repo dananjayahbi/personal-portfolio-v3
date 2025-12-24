@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Star, Quote } from "lucide-react";
 import { AnimateOnScroll } from "@/components/common/animate-on-scroll";
 
@@ -13,7 +13,11 @@ interface FeaturedFeedback {
   createdAt: string;
 }
 
-export default function FeaturedFeedbackSection() {
+interface FeaturedFeedbackSectionProps {
+  backgroundImage?: string;
+}
+
+export default function FeaturedFeedbackSection({ backgroundImage }: FeaturedFeedbackSectionProps) {
   const [featuredFeedback, setFeaturedFeedback] = useState<FeaturedFeedback[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [shouldMount, setShouldMount] = useState(false);
@@ -21,6 +25,55 @@ export default function FeaturedFeedbackSection() {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+
+  const sectionRef = useRef<HTMLElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
+  const rafId = useRef<number | null>(null);
+
+  // Parallax scroll effect
+  const updateParallax = useCallback(() => {
+    if (!sectionRef.current || !bgRef.current) return;
+
+    const rect = sectionRef.current.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const sectionHeight = sectionRef.current.offsetHeight;
+    
+    const isInView = rect.bottom > 0 && rect.top < windowHeight;
+    
+    if (isInView) {
+      const scrollProgress = (windowHeight - rect.top) / (windowHeight + sectionHeight);
+      const yOffset = (scrollProgress - 0.5) * sectionHeight * 0.7;
+      const rotateX = (scrollProgress - 0.5) * 5;
+      
+      bgRef.current.style.transform = "perspective(1000px) translate3d(0, " + yOffset + "px, 80px) rotateX(" + rotateX + "deg) scale(1.25)";
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!backgroundImage) return;
+
+    let ticking = false;
+    
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        rafId.current = requestAnimationFrame(() => {
+          updateParallax();
+          ticking = false;
+        });
+      }
+    };
+
+    updateParallax();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", updateParallax, { passive: true });
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", updateParallax);
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+    };
+  }, [updateParallax, backgroundImage]);
 
   useEffect(() => {
     async function checkAndFetchFeaturedFeedback() {
@@ -128,22 +181,47 @@ export default function FeaturedFeedbackSection() {
   };
 
   return (
-    <section className="py-24 md:py-32 relative overflow-hidden">
+    <section ref={sectionRef} className="py-24 md:py-32 relative overflow-hidden">
+      {/* Parallax Background */}
+      {backgroundImage && (
+        <>
+          <div
+            ref={bgRef}
+            className="absolute bg-cover bg-center will-change-transform pointer-events-none"
+            style={{
+              backgroundImage: "url(" + backgroundImage + ")",
+              top: "-20%",
+              bottom: "-20%",
+              left: "-10%",
+              right: "-10%",
+              transformOrigin: "center center",
+            }}
+          />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#030014]/90 via-[#030014]/75 to-[#030014]/90 z-[1]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-900/15 via-transparent to-amber-900/15 z-[1]" />
+          
+          {/* Soft edge fades for seamless transitions */}
+          <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#030014] via-[#030014]/80 to-transparent z-[2]" />
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#030014] via-[#030014]/80 to-transparent z-[2]" />
+        </>
+      )}
+
       {/* Large decorative quote mark - right side */}
-      <div className="absolute right-10 top-20 opacity-[0.15] pointer-events-none animate-float">
+      <div className="absolute right-10 top-20 opacity-[0.15] pointer-events-none animate-float z-[3]">
         <Quote className="w-72 h-72 text-amber-400/50" />
       </div>
 
       {/* Secondary quote mark - left side */}
-      <div className="absolute left-20 bottom-1/3 opacity-[0.08] pointer-events-none rotate-180 animate-float-reverse">
+      <div className="absolute left-20 bottom-1/3 opacity-[0.08] pointer-events-none rotate-180 animate-float-reverse z-[3]">
         <Quote className="w-40 h-40 text-white" />
       </div>
 
       {/* Floating geometric decorations */}
-      <div className="absolute right-1/4 bottom-32 w-20 h-20 border-2 border-purple-400/20 rounded-full pointer-events-none animate-float" />
-      <div className="absolute left-1/3 top-1/3 w-14 h-14 border-2 border-amber-400/15 rotate-45 pointer-events-none animate-float-subtle" />
-      <div className="absolute top-1/2 right-0 w-96 h-96 bg-purple-900/10 rounded-full blur-[180px] -translate-y-1/2 pointer-events-none" />
-      <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-amber-900/10 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute right-1/4 bottom-32 w-20 h-20 border-2 border-purple-400/20 rounded-full pointer-events-none animate-float z-[3]" />
+      <div className="absolute left-1/3 top-1/3 w-14 h-14 border-2 border-amber-400/15 rotate-45 pointer-events-none animate-float-subtle z-[3]" />
+      <div className="absolute top-1/2 right-0 w-96 h-96 bg-purple-900/10 rounded-full blur-[180px] -translate-y-1/2 pointer-events-none z-[3]" />
+      <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-amber-900/10 rounded-full blur-[150px] pointer-events-none z-[3]" />
       
       <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         {/* Section Header - Premium Typography */}

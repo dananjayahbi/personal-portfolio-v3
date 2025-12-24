@@ -5,7 +5,6 @@ import { AboutSection } from "./components/about-section";
 import { ContactSection } from "./components/contact-section";
 import FeedbackSection from "./components/feedback-section";
 import FeaturedFeedbackSection from "./components/featured-feedback-section";
-import { ParallaxBackgroundWrapper } from "./components/parallax-background-wrapper";
 import { getFeaturedProjects } from "@/services/project.service";
 import { getPortfolioContent, getSiteSettings } from "@/services/content.service";
 import { getAllTechnologies } from "@/services/technology.service";
@@ -46,43 +45,31 @@ export default async function ClientHomePage() {
     <div className="min-h-screen">
       <HeroSection content={heroContent} callToActions={callToActions} settings={siteSettings as Record<string, unknown> | undefined} />
       
-      {/* First parallax background wrapper - covers About and Skills sections */}
-      <ParallaxBackgroundWrapper
-        imageUrl="/images/internal-images/sec2.webp"
-        overlayType="purple"
-        id="about-skills-parallax"
-      >
-        <AboutSection content={aboutContent} experiences={experiences} githubGraphUrl={githubGraphUrl} />
-        <SkillsSection technologies={technologies} />
-      </ParallaxBackgroundWrapper>
+      {/* Each section now has its own parallax background */}
+      <AboutSection 
+        content={aboutContent} 
+        experiences={experiences} 
+        githubGraphUrl={githubGraphUrl}
+        backgroundImage="/images/internal-images/sec2.webp"
+      />
       
-      {/* Second parallax background wrapper - covers Projects section */}
-      <ParallaxBackgroundWrapper
-        imageUrl="/images/internal-images/code5.webp"
-        overlayType="cyan"
-        id="projects-parallax"
-      >
-        <FeaturedProjects projects={featuredProjects} />
-      </ParallaxBackgroundWrapper>
+      <SkillsSection 
+        technologies={technologies}
+        backgroundImage="/images/internal-images/code5.webp"
+      />
       
-      {/* Third parallax background wrapper - covers Feedback sections */}
-      <ParallaxBackgroundWrapper
-        imageUrl="/images/internal-images/sec3.2.webp"
-        overlayType="purple"
-        id="feedback-parallax"
-      >
-        <FeaturedFeedbackSection />
-        <FeedbackSection />
-      </ParallaxBackgroundWrapper>
+      <FeaturedProjects 
+        projects={featuredProjects}
+        backgroundImage="/images/internal-images/code5.webp"
+      />
       
-      {/* Contact section with its own subtle background */}
-      <ParallaxBackgroundWrapper
-        imageUrl="/images/internal-images/code2.webp"
-        overlayType="gradient"
-        id="contact-parallax"
-      >
-        <ContactSection settings={siteSettings as Record<string, unknown> | undefined} />
-      </ParallaxBackgroundWrapper>
+      <FeaturedFeedbackSection backgroundImage="/images/internal-images/sec3.2.webp" />
+      <FeedbackSection backgroundImage="/images/internal-images/sec3.2.webp" />
+      
+      <ContactSection 
+        settings={siteSettings as Record<string, unknown> | undefined}
+        backgroundImage="/images/internal-images/code2.webp"
+      />
     </div>
   );
 }

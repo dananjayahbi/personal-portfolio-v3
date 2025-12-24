@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { ArrowRight, Briefcase, Calendar, Code2 } from "lucide-react";
 import { GitHubGraph } from "@/components/common/github-graph";
@@ -18,22 +19,101 @@ interface AboutSectionProps {
     description?: string;
   }>;
   githubGraphUrl?: string | null;
+  backgroundImage?: string;
 }
 
-export function AboutSection({ content, experiences, githubGraphUrl }: AboutSectionProps) {
+export function AboutSection({ content, experiences, githubGraphUrl, backgroundImage }: AboutSectionProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
+  const rafId = useRef<number | null>(null);
+
   const title = content?.title || "About Me";
   const summary = content?.summary;
   const narrative = content?.narrative;
+
+  // Enhanced 3D parallax scroll effect
+  const updateParallax = useCallback(() => {
+    if (!sectionRef.current || !bgRef.current) return;
+
+    const rect = sectionRef.current.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const sectionHeight = sectionRef.current.offsetHeight;
+    
+    // Check if section is in view
+    const isInView = rect.bottom > 0 && rect.top < windowHeight;
+    
+    if (isInView) {
+      // Calculate parallax offset based on scroll position - aggressive
+      const scrollProgress = (windowHeight - rect.top) / (windowHeight + sectionHeight);
+      const yOffset = (scrollProgress - 0.5) * sectionHeight * 0.7; // More aggressive movement
+      
+      // Add rotation for 3D effect
+      const rotateX = (scrollProgress - 0.5) * 5; // Stronger 3D rotation
+      
+      bgRef.current.style.transform = "perspective(1000px) translate3d(0, " + yOffset + "px, 80px) rotateX(" + rotateX + "deg) scale(1.25)";
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!backgroundImage) return;
+
+    let ticking = false;
+    
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        rafId.current = requestAnimationFrame(() => {
+          updateParallax();
+          ticking = false;
+        });
+      }
+    };
+
+    updateParallax();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", updateParallax, { passive: true });
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", updateParallax);
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+    };
+  }, [updateParallax, backgroundImage]);
 
   if (!summary && !narrative && (!experiences || experiences.length === 0)) {
     return null;
   }
 
   return (
-    <section id="about" className="py-24 md:py-32 scroll-mt-16 relative overflow-hidden">
+    <section ref={sectionRef} id="about" className="py-24 md:py-32 scroll-mt-16 relative overflow-hidden">
+      {/* Parallax Background */}
+      {backgroundImage && (
+        <>
+          <div
+            ref={bgRef}
+            className="absolute bg-cover bg-center will-change-transform pointer-events-none"
+            style={{
+              backgroundImage: "url(" + backgroundImage + ")",
+              top: "-20%",
+              bottom: "-20%",
+              left: "-10%",
+              right: "-10%",
+              transformOrigin: "center center",
+            }}
+          />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#030014]/90 via-[#030014]/75 to-[#030014]/90 z-[1]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-900/15 via-transparent to-cyan-900/15 z-[1]" />
+          
+          {/* Soft edge fades for seamless transitions */}
+          <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#030014] via-[#030014]/80 to-transparent z-[2]" />
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#030014] via-[#030014]/80 to-transparent z-[2]" />
+        </>
+      )}
+
       {/* Simple background accent */}
       <div 
-        className="absolute w-[500px] h-[500px] rounded-full pointer-events-none opacity-20"
+        className="absolute w-[500px] h-[500px] rounded-full pointer-events-none opacity-20 z-[2]"
         style={{
           top: "10%",
           left: "-10%",
@@ -71,7 +151,7 @@ export function AboutSection({ content, experiences, githubGraphUrl }: AboutSect
                     <h3 className="text-xl font-heading font-semibold text-white">My Story</h3>
                   </div>
                   
-                  <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/10">
+                  <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/10 backdrop-blur-sm">
                     <p className="text-white/60 leading-relaxed font-light whitespace-pre-line">{narrative}</p>
                   </div>
                 </div>
@@ -84,7 +164,7 @@ export function AboutSection({ content, experiences, githubGraphUrl }: AboutSect
                     <span className="text-sm font-light text-white/50">GitHub Activity</span>
                     <div className="flex-1 h-[1px] bg-white/5" />
                   </div>
-                  <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10">
+                  <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10 backdrop-blur-sm">
                     <GitHubGraph graphUrl={githubGraphUrl} />
                   </div>
                 </div>
@@ -126,7 +206,7 @@ export function AboutSection({ content, experiences, githubGraphUrl }: AboutSect
                         {/* Timeline dot */}
                         <div className="absolute left-1.5 top-2 w-3 h-3 rounded-full bg-[#030014] border-2 border-white/20 group-hover:border-blue-500/50 transition-colors" />
                         
-                        <div className="p-5 rounded-xl bg-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-300">
+                        <div className="p-5 rounded-xl bg-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-300 backdrop-blur-sm">
                           <div className="flex flex-wrap items-center gap-3 mb-2">
                             <h4 className="text-lg font-heading font-semibold text-white">{exp.role}</h4>
                           </div>
