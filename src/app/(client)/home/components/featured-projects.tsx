@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, ExternalLink, Github, Folder } from "lucide-react";
+import { ArrowRight, ExternalLink, Github, Folder, Layers } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Project } from "@prisma/client";
 import { AnimateOnScroll } from "@/components/common/animate-on-scroll";
@@ -18,29 +18,36 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
 
   return (
     <section className="py-24 md:py-32 relative overflow-hidden">
-      {/* Floating geometric decorations */}
-      <div className="absolute left-1/4 top-32 w-20 h-20 border-2 border-amber-400/20 rotate-45 pointer-events-none animate-float" />
-      <div className="absolute right-1/3 bottom-40 w-16 h-16 border-2 border-blue-400/15 rounded-full pointer-events-none animate-float-reverse" />
-      <div className="absolute left-10 bottom-1/3 w-12 h-12 border border-white/10 rounded-full pointer-events-none animate-float-subtle" />
-      
+      {/* Simple background accent */}
+      <div 
+        className="absolute w-[600px] h-[600px] rounded-full pointer-events-none opacity-20"
+        style={{
+          top: "0%",
+          left: "-15%",
+          background: "radial-gradient(circle, rgba(6, 182, 212, 0.3) 0%, transparent 70%)",
+          filter: "blur(100px)",
+        }}
+      />
+
       <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         {/* Section Header */}
-        <AnimateOnScroll animation="fade-up" duration={800}>
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8 mb-20">
-            <div className="max-w-xl">
-              <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
-                My Work
-              </span>
-              <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-6">
-                Featured Projects
-              </h2>
-              <p className="text-white/50 text-lg font-light">
-                A selection of projects that showcase my expertise
-              </p>
+        <AnimateOnScroll animation="fade-up">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                <Layers className="h-6 w-6 text-cyan-400" />
+              </div>
+              <div>
+                <h2 className="text-3xl md:text-4xl font-heading font-bold text-white">
+                  Featured Projects
+                </h2>
+                <p className="text-white/50 text-sm mt-1">Recent work and experiments</p>
+              </div>
             </div>
+            
             <Link
               href="/projects"
-              className="group inline-flex items-center gap-3 px-6 py-3 border border-white/20 rounded-full text-white/60 hover:text-white hover:border-white/40 transition-all duration-300 text-sm tracking-wide font-light w-fit"
+              className="inline-flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 font-medium tracking-wide group transition-colors"
             >
               View all projects
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -49,85 +56,115 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
         </AnimateOnScroll>
 
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {projects.slice(0, 6).map((project, index) => (
-            <AnimateOnScroll key={project.id} animation="fade-up" delay={index * 100} duration={700}>
-              <ProjectCard project={project} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {projects.map((project, index) => (
+            <AnimateOnScroll key={project.id} animation="fade-up" delay={index * 100}>
+              <article className="group relative p-6 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-300">
+                {/* Project Image */}
+                {project.heroImage && (
+                  <div className="relative aspect-video mb-6 rounded-xl overflow-hidden bg-white/5">
+                    <Image
+                      src={project.heroImage}
+                      alt={project.title}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#030014]/50 to-transparent" />
+                  </div>
+                )}
+
+                {/* Content */}
+                <div className="space-y-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                        <Folder className="h-4 w-4 text-blue-400" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-heading font-semibold text-white group-hover:text-blue-400 transition-colors">
+                          {project.title}
+                        </h3>
+                        {project.category && (
+                          <span className="text-xs text-white/40 uppercase tracking-wider">{project.category}</span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Links */}
+                    <div className="flex gap-2">
+                      {project.githubUrl && (
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-lg border border-white/10 text-white/40 hover:text-white hover:border-white/30 transition-all"
+                          aria-label="GitHub repository"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Github className="h-4 w-4" />
+                        </a>
+                      )}
+                      {project.liveUrl && (
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-lg border border-white/10 text-white/40 hover:text-white hover:border-white/30 transition-all"
+                          aria-label="Live demo"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  {project.shortDescription && (
+                    <p className="text-white/50 text-sm leading-relaxed line-clamp-2">
+                      {project.shortDescription}
+                    </p>
+                  )}
+
+                  {/* Technologies */}
+                  {project.technologies && (project.technologies as string[]).length > 0 && (
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {(project.technologies as string[]).slice(0, 4).map((tech, i) => (
+                        <Badge
+                          key={i}
+                          variant="secondary"
+                          className="bg-white/5 hover:bg-white/10 text-white/60 border-white/10 text-xs font-light"
+                        >
+                          {tech}
+                        </Badge>
+                      ))}
+                      {(project.technologies as string[]).length > 4 && (
+                        <Badge
+                          variant="secondary"
+                          className="bg-white/5 text-white/40 border-white/10 text-xs font-light"
+                        >
+                          +{(project.technologies as string[]).length - 4}
+                        </Badge>
+                      )}
+                    </div>
+                  )}
+
+                  {/* View Project Link */}
+                  <div className="pt-4 border-t border-white/5">
+                    <Link
+                      href={"/project-detail/" + project.slug}
+                      className="inline-flex items-center gap-2 text-sm text-white/60 hover:text-blue-400 transition-colors group/link"
+                    >
+                      View Project
+                      <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-1" />
+                    </Link>
+                  </div>
+                </div>
+              </article>
             </AnimateOnScroll>
           ))}
         </div>
       </div>
     </section>
-  );
-}
-
-function ProjectCard({ project }: { project: Project }) {
-  return (
-    <Link 
-      href={`/project-detail/${project.slug}`}
-      className="group block"
-    >
-      <article className="h-full rounded-2xl overflow-hidden bg-white/[0.03] backdrop-blur-md border border-white/[0.08] hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-500 hover:scale-[1.02]">
-        {/* Project Image */}
-        {project.heroImage ? (
-          <div className="relative aspect-[16/10] w-full overflow-hidden">
-            <Image
-              src={project.heroImage}
-              alt={project.title}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-transparent to-transparent" />
-          </div>
-        ) : (
-          <div className="relative aspect-[16/10] w-full bg-white/5 flex items-center justify-center">
-            <Folder className="w-12 h-12 text-white/20" />
-          </div>
-        )}
-
-        {/* Project Info */}
-        <div className="p-6 space-y-4">
-          <h3 className="text-lg font-medium text-white group-hover:text-white/80 transition-colors duration-300 line-clamp-1 tracking-wide">
-            {project.title}
-          </h3>
-
-          {/* Technologies */}
-          <div className="flex flex-wrap gap-2">
-            {project.technologies.slice(0, 3).map((tech) => (
-              <Badge 
-                key={tech} 
-                className="text-xs bg-white/5 text-white/50 hover:bg-white/10 border border-white/10 font-light"
-              >
-                {tech}
-              </Badge>
-            ))}
-            {project.technologies.length > 3 && (
-              <Badge 
-                className="text-xs bg-white/5 text-white/40 hover:bg-white/10 border border-white/10 font-light"
-              >
-                +{project.technologies.length - 3}
-              </Badge>
-            )}
-          </div>
-
-          {/* Links */}
-          <div className="flex items-center justify-between pt-2">
-            <span className="text-sm text-white/40 group-hover:text-white/60 transition-colors inline-flex items-center gap-2 font-light">
-              View details
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </span>
-            <div className="flex items-center gap-2">
-              {project.liveUrl && (
-                <ExternalLink className="h-4 w-4 text-white/30 group-hover:text-white/50 transition-colors" />
-              )}
-              {project.sourceUrl && (
-                <Github className="h-4 w-4 text-white/30 group-hover:text-white/50 transition-colors" />
-              )}
-            </div>
-          </div>
-        </div>
-      </article>
-    </Link>
   );
 }

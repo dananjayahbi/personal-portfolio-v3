@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, MapPin, Phone, ArrowRight } from "lucide-react";
+import { Mail, Send, MapPin, Clock, CheckCircle2, AlertCircle, MessageSquare } from "lucide-react";
 import { AnimateOnScroll } from "@/components/common/animate-on-scroll";
 
 interface ContactSectionProps {
   settings?: {
     contactEmail?: string;
-    contactPhone?: string;
     location?: string;
+    availability?: string;
   };
 }
 
@@ -19,234 +19,205 @@ export function ContactSection({ settings }: ContactSectionProps) {
     subject: "",
     message: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus("idle");
-    
+    setStatus("loading");
+    setErrorMessage("");
+
     try {
       const response = await fetch("/api/contact-messages", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
-        setSubmitStatus("success");
-        setFormData({ name: "", email: "", subject: "", message: "" });
-        
-        setTimeout(() => setSubmitStatus("idle"), 5000);
-      } else {
-        setSubmitStatus("error");
-        setTimeout(() => setSubmitStatus("idle"), 5000);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to send message");
       }
-    } catch (error) {
-      console.error("Error submitting contact form:", error);
-      setSubmitStatus("error");
-      setTimeout(() => setSubmitStatus("idle"), 5000);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+      setStatus("success");
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (error) {
+      setStatus("error");
+      setErrorMessage(error instanceof Error ? error.message : "Something went wrong");
+    }
   };
 
   return (
     <section id="contact" className="py-24 md:py-32 scroll-mt-16 relative overflow-hidden">
-      {/* Floating geometric decorations */}
-      <div className="absolute right-1/4 top-20 w-20 h-20 border-2 border-amber-400/20 rounded-full pointer-events-none animate-float" />
-      <div className="absolute left-1/3 bottom-40 w-16 h-16 border-2 border-white/12 rotate-45 pointer-events-none animate-float-reverse" />
-      <div className="absolute right-10 bottom-1/3 w-12 h-12 border border-emerald-400/15 rounded-full pointer-events-none animate-float-subtle" />
-      <div className="absolute top-0 right-1/4 w-80 h-80 bg-blue-900/8 rounded-full blur-[150px] pointer-events-none" />
-
+      {/* Simple background accent */}
+      <div 
+        className="absolute w-[500px] h-[500px] rounded-full pointer-events-none opacity-15"
+        style={{
+          bottom: "0%",
+          right: "-10%",
+          background: "radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, transparent 70%)",
+          filter: "blur(100px)",
+        }}
+      />
+      
       <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
-        {/* Section Header - Premium Typography */}
-        <AnimateOnScroll animation="fade-up" duration={800}>
-          <div className="max-w-3xl mx-auto text-center mb-20">
-            <span className="inline-block text-white/40 text-xs font-light tracking-[0.3em] uppercase mb-6">
-              Let&apos;s Connect
-            </span>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-medium text-white mb-8">
-              Get in Touch
-            </h2>
-            <p className="text-white/50 text-lg font-light">
-              Have a project in mind? Let&apos;s discuss how I can help bring your ideas to life.
-            </p>
+        {/* Section Header */}
+        <AnimateOnScroll animation="fade-up">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="w-12 h-[1px] bg-emerald-500/50" />
+              <span className="text-sm tracking-[0.3em] uppercase font-light text-emerald-400">Get in touch</span>
+              <div className="w-12 h-[1px] bg-emerald-500/50" />
+            </div>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold text-white mb-4">Let&apos;s Work Together</h2>
+            <p className="text-lg text-white/50 font-light">Have a project in mind? I&apos;d love to hear from you.</p>
           </div>
         </AnimateOnScroll>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
           {/* Contact Info */}
-          <AnimateOnScroll animation="fade-right" delay={100} duration={700} className="lg:col-span-2">
-            <div className="space-y-6">
-              <div className="p-8 md:p-10 rounded-2xl glass-dark">
-              <h3 className="text-lg font-light text-white mb-8 tracking-wide">
-                Contact Information
-              </h3>
-              
-              <div className="space-y-8">
-                {settings?.contactEmail && (
-                  <div className="flex items-start gap-4 group">
-                    <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:border-white/20 transition-colors">
-                      <Mail className="h-5 w-5 text-white/40" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-light text-white/40 mb-2 tracking-wider uppercase">
-                        Email
-                      </h4>
-                      <a
-                        href={`mailto:${settings.contactEmail}`}
-                        className="text-white/70 hover:text-white transition-colors font-light"
-                      >
-                        {settings.contactEmail}
-                      </a>
-                    </div>
+          <div className="lg:col-span-2 space-y-6">
+            <AnimateOnScroll animation="fade-up" delay={100}>
+              <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/10">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <MessageSquare className="h-5 w-5 text-emerald-400" />
                   </div>
-                )}
-
-                {settings?.contactPhone && (
-                  <div className="flex items-start gap-4 group">
-                    <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:border-white/20 transition-colors">
-                      <Phone className="h-5 w-5 text-white/40" />
+                  <h3 className="text-lg font-heading font-semibold text-white">Contact Info</h3>
+                </div>
+                
+                <div className="space-y-4">
+                  {settings?.contactEmail && (
+                    <a 
+                      href={"mailto:" + settings.contactEmail}
+                      className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all group"
+                    >
+                      <div className="p-2 rounded-lg bg-white/5">
+                        <Mail className="h-4 w-4 text-blue-400" />
+                      </div>
+                      <div>
+                        <span className="text-xs text-white/40 uppercase tracking-wider block mb-0.5">Email</span>
+                        <span className="text-white/70 text-sm group-hover:text-white transition-colors">{settings.contactEmail}</span>
+                      </div>
+                    </a>
+                  )}
+                  
+                  {settings?.location && (
+                    <div className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/5">
+                      <div className="p-2 rounded-lg bg-white/5">
+                        <MapPin className="h-4 w-4 text-cyan-400" />
+                      </div>
+                      <div>
+                        <span className="text-xs text-white/40 uppercase tracking-wider block mb-0.5">Location</span>
+                        <span className="text-white/70 text-sm">{settings.location}</span>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-xs font-light text-white/40 mb-2 tracking-wider uppercase">
-                        Phone
-                      </h4>
-                      <a
-                        href={`tel:${settings.contactPhone}`}
-                        className="text-white/70 hover:text-white transition-colors font-light"
-                      >
-                        {settings.contactPhone}
-                      </a>
+                  )}
+                  
+                  {settings?.availability && (
+                    <div className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/5">
+                      <div className="p-2 rounded-lg bg-white/5">
+                        <Clock className="h-4 w-4 text-emerald-400" />
+                      </div>
+                      <div>
+                        <span className="text-xs text-white/40 uppercase tracking-wider block mb-0.5">Availability</span>
+                        <span className="text-white/70 text-sm">{settings.availability}</span>
+                      </div>
                     </div>
-                  </div>
-                )}
-
-                {settings?.location && (
-                  <div className="flex items-start gap-4 group">
-                    <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:border-white/20 transition-colors">
-                      <MapPin className="h-5 w-5 text-white/40" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-light text-white/40 mb-2 tracking-wider uppercase">
-                        Location
-                      </h4>
-                      <p className="text-white/70 font-light">{settings.location}</p>
-                    </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-              </div>
-            </div>
-          </AnimateOnScroll>
+            </AnimateOnScroll>
+          </div>
 
           {/* Contact Form */}
-          <AnimateOnScroll animation="fade-left" delay={150} duration={700} className="lg:col-span-3">
-            <form onSubmit={handleSubmit} className="p-8 md:p-10 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] space-y-6 hover:bg-white/[0.05] transition-all duration-500">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="name" className="block text-xs text-white/40 mb-3 font-light tracking-wider uppercase">
-                    Name
-                  </label>
+          <div className="lg:col-span-3">
+            <AnimateOnScroll animation="fade-up" delay={200}>
+              <form onSubmit={handleSubmit} className="p-8 rounded-2xl bg-white/[0.02] border border-white/10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                  <div className="space-y-2">
+                    <label className="text-sm text-white/50 font-light">Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:border-blue-500/50 focus:outline-none transition-colors"
+                      placeholder="Your name"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm text-white/50 font-light">Email</label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:border-blue-500/50 focus:outline-none transition-colors"
+                      placeholder="your@email.com"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2 mb-6">
+                  <label className="text-sm text-white/50 font-light">Subject</label>
                   <input
                     type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
                     required
-                    className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-white/30 transition-all font-light"
-                    placeholder="Your name"
+                    value={formData.subject}
+                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:border-blue-500/50 focus:outline-none transition-colors"
+                    placeholder="Project inquiry"
                   />
                 </div>
-                <div>
-                  <label htmlFor="email" className="block text-xs text-white/40 mb-3 font-light tracking-wider uppercase">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
+                
+                <div className="space-y-2 mb-8">
+                  <label className="text-sm text-white/50 font-light">Message</label>
+                  <textarea
                     required
-                    className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-white/30 transition-all font-light"
-                    placeholder="you@example.com"
+                    rows={5}
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:border-blue-500/50 focus:outline-none transition-colors resize-none"
+                    placeholder="Tell me about your project..."
                   />
                 </div>
-              </div>
 
-              <div>
-                <label htmlFor="subject" className="block text-xs text-white/40 mb-3 font-light tracking-wider uppercase">
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-white/30 transition-all font-light"
-                  placeholder="Project inquiry"
-                />
-              </div>
+                {/* Status Messages */}
+                {status === "success" && (
+                  <div className="flex items-center gap-3 p-4 mb-6 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                    <CheckCircle2 className="h-5 w-5" />
+                    <span className="text-sm">Message sent successfully! I&apos;ll get back to you soon.</span>
+                  </div>
+                )}
+                
+                {status === "error" && (
+                  <div className="flex items-center gap-3 p-4 mb-6 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400">
+                    <AlertCircle className="h-5 w-5" />
+                    <span className="text-sm">{errorMessage || "Something went wrong. Please try again."}</span>
+                  </div>
+                )}
 
-              <div>
-                <label htmlFor="message" className="block text-xs text-white/40 mb-3 font-light tracking-wider uppercase">
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  rows={5}
-                  className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-white/30 transition-all resize-none font-light"
-                  placeholder="Tell me about your project..."
-                />
-              </div>
-
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4 pt-4">
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-white text-[#0f1419] rounded-full font-medium hover:bg-white/90 transition-all duration-300 disabled:opacity-50 text-sm tracking-wide"
+                  disabled={status === "loading"}
+                  className="w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/50 rounded-xl text-white font-medium transition-colors duration-300"
                 >
-                  {isSubmitting ? (
+                  {status === "loading" ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-[#0f1419]/30 border-t-[#0f1419] rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                       Sending...
                     </>
                   ) : (
                     <>
+                      <Send className="h-5 w-5" />
                       Send Message
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </>
                   )}
                 </button>
-
-                {submitStatus === "success" && (
-                  <p className="text-emerald-400/80 text-sm font-light">✓ Message sent successfully!</p>
-                )}
-                {submitStatus === "error" && (
-                  <p className="text-red-400/80 text-sm font-light">✕ Failed to send. Please try again.</p>
-                )}
-              </div>
-            </form>
-          </AnimateOnScroll>
+              </form>
+            </AnimateOnScroll>
+          </div>
         </div>
       </div>
     </section>

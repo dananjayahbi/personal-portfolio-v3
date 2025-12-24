@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Download, Github, Linkedin, Mail, Twitter, Facebook, Instagram, ChevronDown } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-// import hero from "/images/internal-images/hero.webp";
 
 interface HeroSectionProps {
   content?: {
@@ -46,6 +45,8 @@ const SOCIAL_ICONS: Record<string, LucideIcon> = {
 export function HeroSection({ content, callToActions, settings }: HeroSectionProps) {
   const heroRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isLoaded, setIsLoaded] = useState(false);
   const rafId = useRef<number | null>(null);
 
   const eyebrow = content?.eyebrow;
@@ -57,24 +58,31 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
   const secondaryCta = callToActions?.secondary;
   const socialLinks = settings?.socialLinks || [];
 
-  // Smooth parallax effect for hero background
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!heroRef.current) return;
+    const rect = heroRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    setMousePosition({ x: x - 0.5, y: y - 0.5 });
+  }, []);
+
   const updateParallax = useCallback(() => {
     if (!heroRef.current || !bgRef.current) return;
-
     const scrollY = window.scrollY;
     const heroHeight = heroRef.current.offsetHeight;
-    
-    // Only apply parallax when hero is in view
     if (scrollY < heroHeight) {
-      // Background moves at 40% of scroll speed for subtle depth effect
       const offset = scrollY * 0.4;
-      bgRef.current.style.transform = `translate3d(0, ${offset}px, 0)`;
+      bgRef.current.style.transform = "translate3d(0, " + offset + "px, 0) scale(1.1)";
     }
   }, []);
 
   useEffect(() => {
     let ticking = false;
-
     const handleScroll = () => {
       if (!ticking) {
         ticking = true;
@@ -84,179 +92,188 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
         });
       }
     };
-
-    // Initial update
     updateParallax();
-
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("mousemove", handleMouseMove);
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
       if (rafId.current) cancelAnimationFrame(rafId.current);
     };
-  }, [updateParallax]);
+  }, [updateParallax, handleMouseMove]);
 
   if (!headline && !eyebrow) {
     return null;
   }
 
+  const bgTransform = "translate3d(" + (mousePosition.x * 20) + "px, " + (mousePosition.y * 20) + "px, 0) scale(1.1)";
+  const contentTransform = "translate3d(" + (mousePosition.x * 10) + "px, " + (mousePosition.y * 10) + "px, 0)";
+  const floatTransform1 = "translate3d(" + (mousePosition.x * -40) + "px, " + (mousePosition.y * -40) + "px, 0)";
+  const floatTransform2 = "translate3d(" + (mousePosition.x * -30) + "px, " + (mousePosition.y * -30) + "px, 0) rotate(45deg)";
+  const imageTransform = "perspective(1000px) rotateY(" + (mousePosition.x * 5) + "deg) rotateX(" + (-mousePosition.y * 5) + "deg)";
+
   return (
-    <section 
-      ref={heroRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
-    >
-      {/* Parallax Background with extended bounds */}
-      <div 
+    <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Parallax Background */}
+      <div
         ref={bgRef}
         className="absolute bg-cover bg-center will-change-transform"
         style={{
-          backgroundImage: `url(/images/internal-images/hero.webp)`,
-          // Extend beyond container to hide edges during parallax movement
-          top: '-30%',
-          bottom: '-30%',
-          left: '-5%',
-          right: '-5%',
+          backgroundImage: "url(/images/internal-images/hero.webp)",
+          top: "-20%",
+          bottom: "-20%",
+          left: "-5%",
+          right: "-5%",
+          transform: bgTransform,
+          transition: "transform 0.3s ease-out",
         }}
-        role="img"
-        aria-label="Hero background"
       />
 
-      {/* Gradient overlays */}
+      {/* Gradient overlay */}
       <div className="absolute inset-0 z-[1]">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#4B505500]/95 via-[#0f1419]/70 to-[#0f1419]/40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-transparent to-[#0f1419]/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#030014]/95 via-[#030014]/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#030014] via-transparent to-[#030014]/50" />
       </div>
 
-      {/* Decorative geometric elements */}
-      <div className="absolute bottom-32 left-10 w-32 h-32 border border-white/10 rounded-full pointer-events-none z-[2]" />
-      <div className="absolute top-1/4 right-16 w-24 h-24 border border-amber-500/15 rotate-45 pointer-events-none z-[2]" />
-      <div className="absolute bottom-1/4 right-1/3 w-16 h-16 border border-white/5 rounded-full pointer-events-none z-[2]" />
+      {/* Subtle floating elements */}
+      <div
+        className="absolute w-64 h-64 border border-blue-500/10 rounded-full pointer-events-none z-[2]"
+        style={{
+          top: "20%", right: "10%",
+          transform: floatTransform1,
+          transition: "transform 0.5s ease-out",
+        }}
+      />
+      <div
+        className="absolute w-32 h-32 border border-cyan-500/10 pointer-events-none z-[2]"
+        style={{
+          bottom: "30%", left: "15%",
+          transform: floatTransform2,
+          transition: "transform 0.5s ease-out",
+        }}
+      />
 
-      {/* Glassmorphism card effect */}
-      <div className="absolute inset-x-4 md:inset-x-12 lg:inset-x-24 top-1/2 -translate-y-1/2 h-[70vh] rounded-3xl overflow-hidden z-[3] pointer-events-none">
-        <div className="absolute inset-0 bg-white/[0.02] backdrop-blur-[2px] border border-white/[0.05] rounded-3xl" />
-      </div>
-
-      {/* Content Container */}
-      <div className="container relative z-10 mx-auto px-6 sm:px-8 lg:px-12 py-20">
+      {/* Content */}
+      <div
+        className="container relative z-10 mx-auto px-6 sm:px-8 lg:px-12 py-20"
+        style={{
+          transform: contentTransform,
+          transition: "transform 0.3s ease-out",
+        }}
+      >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center min-h-[calc(100vh-10rem)]">
-          {/* Left Column - Main Content */}
+          {/* Left Column */}
           <div className="space-y-8 lg:space-y-10">
-            {/* Tagline/Motto - Premium styling inspired by reference */}
-            <div className="space-y-2">
-              <p className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-medium text-white leading-[1.1] tracking-tight">
-                Work fast.
-              </p>
-              <p className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-medium text-white leading-[1.1] tracking-tight">
-                Live slow.
-              </p>
-            </div>
-
-            {/* Domain/Brand Identifier */}
             {eyebrow && (
-              <div className="flex items-center gap-3 text-white/60">
-                <span className="text-sm tracking-[0.3em] uppercase font-light">{eyebrow}</span>
+              <div 
+                className={"flex items-center gap-3 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4")} 
+                style={{ transitionDelay: "200ms" }}
+              >
+                <div className="w-12 h-[1px] bg-blue-500" />
+                <span className="text-sm tracking-[0.3em] uppercase font-light text-blue-400">{eyebrow}</span>
               </div>
             )}
 
-            {/* Services/Highlights Row */}
+            <div 
+              className={"space-y-2 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
+              style={{ transitionDelay: "400ms" }}
+            >
+              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-heading font-bold leading-[0.9] tracking-tight">
+                <span className="block text-white">Work fast.</span>
+                <span className="block text-blue-400">Live slow.</span>
+              </h1>
+            </div>
+
             {highlights.length > 0 && (
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2">
+              <div 
+                className={"flex flex-wrap items-center gap-3 pt-4 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
+                style={{ transitionDelay: "600ms" }}
+              >
                 {highlights.map((highlight, index) => (
-                  <span key={index} className="flex items-center gap-2">
-                    <span className="text-sm text-white/70 font-light tracking-wide">{highlight}</span>
-                    {index < highlights.length - 1 && (
-                      <span className="text-white/30 text-lg">+</span>
-                    )}
-                  </span>
+                  <span key={index} className="px-4 py-2 text-sm text-white/80 font-light tracking-wide bg-white/5 backdrop-blur-sm border border-white/10 rounded-full hover:border-white/20 transition-all duration-300">{highlight}</span>
                 ))}
               </div>
             )}
-          </div>
 
-          {/* Right Column - CTA Section */}
-          <div className="lg:text-right space-y-8">
-            {/* Profile Image */}
-            <div className="flex justify-center lg:justify-end mb-6">
-              <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
-                <Image
-                  src="/images/internal-images/me.png"
-                  alt="Profile"
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              </div>
-            </div>
-
-            {/* Headline */}
-            {headline && (
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-medium text-white leading-tight">
-                {headline}
-              </h1>
-            )}
-
-            {/* Subheadline */}
-            {subheadline && (
-              <p className="text-lg text-white/60 leading-relaxed font-light max-w-md lg:ml-auto">
-                {subheadline}
-              </p>
-            )}
-
-            {/* CTA Button - Premium outlined style */}
-            <div className="flex flex-col sm:flex-row lg:justify-end items-start sm:items-center gap-4">
+            <div 
+              className={"flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-4 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
+              style={{ transitionDelay: "800ms" }}
+            >
               {primaryCta?.label && primaryCta?.url && (
-                <Link
-                  href={primaryCta.url}
-                  className="group inline-flex items-center gap-3 px-8 py-4 border border-white/30 rounded-full text-white hover:bg-white hover:text-[#0f1419] transition-all duration-500 text-sm tracking-wide"
-                >
-                  {primaryCta.label}
+                <Link href={primaryCta.url} className="group inline-flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-500 rounded-full text-white text-sm font-medium tracking-wide transition-colors duration-300">
+                  <span>{primaryCta.label}</span>
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               )}
               {secondaryCta?.label && secondaryCta?.url && (
-                <Link
-                  href={secondaryCta.url}
-                  className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm tracking-wide"
-                >
+                <Link href={secondaryCta.url} className="group inline-flex items-center gap-2 px-6 py-4 text-white/60 hover:text-white transition-colors text-sm tracking-wide border border-white/20 rounded-full hover:border-white/40">
                   {secondaryCta.label}
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               )}
             </div>
 
-            {/* Social Links */}
             {socialLinks.length > 0 && (
-              <div className="flex lg:justify-end gap-4 pt-4">
+              <div 
+                className={"flex gap-3 pt-4 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
+                style={{ transitionDelay: "1000ms" }}
+              >
                 {socialLinks.map((link, index) => {
-                  const platform = link.platform?.toLowerCase() || '';
+                  const platform = link.platform?.toLowerCase() || "";
                   const Icon = SOCIAL_ICONS[platform] || Mail;
-                  
                   return (
-                    <a
-                      key={index}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 text-white/40 hover:text-white transition-colors duration-300"
-                      aria-label={link.platform}
-                    >
+                    <a key={index} href={link.url} target="_blank" rel="noopener noreferrer" className="group p-3 rounded-full border border-white/10 text-white/40 hover:text-white hover:border-white/30 hover:bg-white/5 transition-all duration-300" aria-label={link.platform}>
                       <Icon className="h-5 w-5" />
                     </a>
                   );
                 })}
               </div>
             )}
+          </div>
 
-            {/* Resume Download */}
+          {/* Right Column */}
+          <div 
+            className={"lg:text-right space-y-8 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12")} 
+            style={{ transitionDelay: "400ms" }}
+          >
+            <div className="flex justify-center lg:justify-end mb-8">
+              <div className="relative group" style={{ transform: imageTransform, transition: "transform 0.3s ease-out" }}>
+                <div className="absolute -inset-4 bg-blue-500/10 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative w-56 h-56 sm:w-64 sm:h-64 lg:w-72 lg:h-72 rounded-2xl overflow-hidden border-2 border-white/10 group-hover:border-blue-500/30 transition-all duration-500">
+                  <Image src="/images/internal-images/me.png" alt="Profile" fill className="object-cover transition-transform duration-700 group-hover:scale-110" priority />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#030014]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                </div>
+                <div className="absolute -top-3 -right-3 w-6 h-6 border-t-2 border-r-2 border-blue-500/30" />
+                <div className="absolute -bottom-3 -left-3 w-6 h-6 border-b-2 border-l-2 border-cyan-500/30" />
+              </div>
+            </div>
+
+            {headline && (
+              <h2 
+                className={"text-2xl sm:text-3xl md:text-4xl font-heading font-semibold text-white leading-tight transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
+                style={{ transitionDelay: "600ms" }}
+              >
+                {headline}
+              </h2>
+            )}
+
+            {subheadline && (
+              <p 
+                className={"text-lg text-white/50 leading-relaxed font-light max-w-md lg:ml-auto transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
+                style={{ transitionDelay: "800ms" }}
+              >
+                {subheadline}
+              </p>
+            )}
+
             {(settings?.resumeCloudinaryUrl || settings?.resumeUrl) && (
-              <div className="lg:text-right">
-                <a
-                  href={settings.resumeCloudinaryUrl || settings.resumeUrl!}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors"
-                >
+              <div 
+                className={"transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
+                style={{ transitionDelay: "1000ms" }}
+              >
+                <a href={settings.resumeCloudinaryUrl || settings.resumeUrl!} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-3 px-6 py-3 text-sm text-white/60 hover:text-white transition-colors border border-white/10 rounded-full hover:border-white/20">
                   <Download className="h-4 w-4" />
-                  <span className="font-light tracking-wide">Download Resume</span>
+                  Download Resume
                 </a>
               </div>
             )}
@@ -264,14 +281,13 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
         </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
-        <button 
-          onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
-          className="flex flex-col items-center gap-2 text-white/40 hover:text-white/60 transition-colors cursor-pointer"
-          aria-label="Scroll down"
-        >
-          <span className="text-xs tracking-[0.2em] uppercase font-light">Scroll</span>
+      {/* Scroll indicator */}
+      <div 
+        className={"absolute bottom-8 left-1/2 -translate-x-1/2 z-10 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4")} 
+        style={{ transitionDelay: "1200ms" }}
+      >
+        <button onClick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })} className="group flex flex-col items-center gap-2 text-white/40 hover:text-white transition-colors">
+          <span className="text-xs tracking-widest uppercase">Scroll</span>
           <ChevronDown className="h-5 w-5 animate-bounce" />
         </button>
       </div>

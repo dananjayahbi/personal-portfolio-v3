@@ -49,7 +49,7 @@ export default async function ClientHomePage() {
       {/* First parallax background wrapper - covers About and Skills sections */}
       <ParallaxBackgroundWrapper
         imageUrl="/images/internal-images/sec2.webp"
-        overlayType="gradient"
+        overlayType="purple"
         id="about-skills-parallax"
       >
         <AboutSection content={aboutContent} experiences={experiences} githubGraphUrl={githubGraphUrl} />
@@ -59,7 +59,7 @@ export default async function ClientHomePage() {
       {/* Second parallax background wrapper - covers Projects section */}
       <ParallaxBackgroundWrapper
         imageUrl="/images/internal-images/code5.webp"
-        overlayType="dark"
+        overlayType="cyan"
         id="projects-parallax"
       >
         <FeaturedProjects projects={featuredProjects} />
@@ -68,7 +68,7 @@ export default async function ClientHomePage() {
       {/* Third parallax background wrapper - covers Feedback sections */}
       <ParallaxBackgroundWrapper
         imageUrl="/images/internal-images/sec3.2.webp"
-        overlayType="gradient"
+        overlayType="purple"
         id="feedback-parallax"
       >
         <FeaturedFeedbackSection />
@@ -78,7 +78,7 @@ export default async function ClientHomePage() {
       {/* Contact section with its own subtle background */}
       <ParallaxBackgroundWrapper
         imageUrl="/images/internal-images/code2.webp"
-        overlayType="dark"
+        overlayType="gradient"
         id="contact-parallax"
       >
         <ContactSection settings={siteSettings as Record<string, unknown> | undefined} />
