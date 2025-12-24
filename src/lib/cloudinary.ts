@@ -71,6 +71,8 @@ type UploadOptions = {
   overwrite?: boolean;
   invalidate?: boolean;
   timeoutMs?: number;
+  format?: string;
+  filename?: string; // Add filename option to preserve original filename
 };
 
 export async function uploadFileToCloudinary(file: File, options: UploadOptions = {}) {
@@ -86,6 +88,7 @@ export async function uploadFileToCloudinary(file: File, options: UploadOptions 
     overwrite: options.overwrite,
     invalidate: options.invalidate,
     timeout: options.timeoutMs,
+    format: options.format,
   };
 
   return new Promise<UploadApiResponse>((resolve, reject) => {
@@ -177,6 +180,8 @@ export async function uploadBufferToCloudinary(
     overwrite: options.overwrite,
     invalidate: options.invalidate,
     timeout: options.timeoutMs,
+    format: options.format,
+    filename: options.filename, // Preserve original filename
   };
 
   return new Promise<UploadApiResponse>((resolve, reject) => {

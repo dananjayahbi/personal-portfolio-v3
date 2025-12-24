@@ -203,13 +203,27 @@ export async function uploadResume(_: ResumeUploadState, formData: FormData): Pr
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
+    // Generate unique public_id with .pdf extension included
+    const timestamp = Date.now();
+    
     // Upload PDF to Cloudinary as raw resource type
+    // For raw files, we must include the .pdf extension in the public_id
+    // and explicitly set format to 'pdf' to ensure proper file handling
     const uploadResult = await uploadBufferToCloudinary(buffer, {
       folder: "portfolio/assets",
-      publicId: `resume-${Date.now()}`,
+      publicId: `resume-${timestamp}.pdf`, // Include .pdf in public_id
       resourceType: "raw", // PDFs are uploaded as raw files
+      format: "pdf", // Explicitly specify PDF format
+      filename: file.name, // Preserve original filename
       overwrite: false,
       invalidate: true,
+    });
+
+    console.log("[Resume] Upload result:", {
+      public_id: uploadResult.public_id,
+      secure_url: uploadResult.secure_url,
+      format: uploadResult.format,
+      resource_type: uploadResult.resource_type,
     });
 
     console.log("[Resume] Uploaded new resume:", uploadResult.public_id);

@@ -28,29 +28,55 @@ export function ResumeUpload({ currentResumeUrl, legacyResumeUrl }: ResumeUpload
     const files = e.target.files;
     if (files && files.length > 0) {
       const file = files[0];
-      console.log('[ResumeUpload] File selected:', {
+      
+      // Log immediately to see what we get
+      console.log('[ResumeUpload] RAW File object:', file);
+      console.log('[ResumeUpload] File properties:', {
         name: file.name,
         size: file.size,
         type: file.type,
         lastModified: file.lastModified,
+        sizeInBytes: file.size,
+        sizeInKB: file.size / 1024,
+        sizeInMB: file.size / 1024 / 1024,
       });
       
       // Validate file type on client side as well
       if (file.type !== 'application/pdf') {
         alert('Please select a PDF file only');
         e.target.value = ''; // Reset file input
+        setSelectedFileInfo(null);
         return;
       }
       
-      // Store file info separately (not the File object itself)
-      setSelectedFileInfo({
+      // Validate file size
+      if (file.size === 0) {
+        alert('The selected file appears to be empty (0 bytes). Please select a valid PDF file.');
+        e.target.value = ''; // Reset file input
+        setSelectedFileInfo(null);
+        return;
+      }
+      
+      // Create file info object with additional debugging
+      const fileInfo = {
         name: file.name,
         size: file.size,
         type: file.type,
+      };
+      
+      console.log('[ResumeUpload] Setting file info state:', fileInfo);
+      console.log('[ResumeUpload] File size calculation:', {
+        bytes: fileInfo.size,
+        kb: (fileInfo.size / 1024).toFixed(2),
+        mb: (fileInfo.size / 1024 / 1024).toFixed(2),
       });
+      
+      // Store file info separately (not the File object itself)
+      setSelectedFileInfo(fileInfo);
       setUploadState({ status: 'idle' });
       setSuccess(undefined);
     } else {
+      console.log('[ResumeUpload] No files selected');
       setSelectedFileInfo(null);
     }
   };
@@ -221,7 +247,13 @@ export function ResumeUpload({ currentResumeUrl, legacyResumeUrl }: ResumeUpload
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-white font-medium truncate">{selectedFileInfo.name}</p>
                   <p className="text-xs text-white/60">
-                    {(selectedFileInfo.size / 1024 / 1024).toFixed(2)} MB · PDF Document
+                    {(() => {
+                      const bytes = selectedFileInfo.size;
+                      if (bytes === 0) return '0 bytes (file may be empty)';
+                      if (bytes < 1024) return `${bytes} bytes`;
+                      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`;
+                      return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+                    })()} · PDF Document
                   </p>
                 </div>
               </div>
