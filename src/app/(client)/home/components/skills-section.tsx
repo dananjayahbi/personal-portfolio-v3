@@ -25,8 +25,8 @@ function TechIcon({ tech }: { tech: Technology }) {
 
   if (!tech.icon || hasError) {
     return (
-      <div className="h-12 w-12 md:h-14 md:w-14 flex items-center justify-center bg-white/5 rounded-xl border border-white/10">
-        <span className="text-xl font-heading font-bold text-white/60">
+      <div className="h-12 w-12 md:h-14 md:w-14 flex items-center justify-center bg-white/10 rounded-xl border border-white/20">
+        <span className="text-xl font-heading font-bold text-white/80">
           {tech.name.charAt(0)}
         </span>
       </div>
@@ -36,14 +36,16 @@ function TechIcon({ tech }: { tech: Technology }) {
   return (
     <div className="relative h-12 w-12 md:h-14 md:w-14">
       {isLoading && (
-        <div className="absolute inset-0 bg-white/5 rounded-xl animate-pulse" />
+        <div className="absolute inset-0 bg-white/10 rounded-xl animate-pulse" />
       )}
+      {/* Icon with light background for dark icons */}
+      <div className="absolute inset-0 bg-white/90 rounded-xl shadow-lg" />
       <Image
         src={tech.icon}
         alt={tech.name}
         fill
         sizes="56px"
-        className={"object-contain transition-all duration-500 " + (isLoaded ? "opacity-70 group-hover:opacity-100 group-hover:scale-110" : "opacity-0")}
+        className={"object-contain p-2 transition-all duration-500 " + (isLoaded ? "opacity-100 group-hover:scale-110" : "opacity-0")}
         onLoad={() => setIsLoading(false)}
         onError={() => {
           setIsLoading(false);
@@ -186,33 +188,33 @@ export function SkillsSection({ technologies, backgroundImage }: SkillsSectionPr
           </div>
         </AnimateOnScroll>
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Categories Grid - Masonry Layout */}
+        <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
           {Object.entries(groupedTechnologies).map(([category, techs], categoryIndex) => (
             <AnimateOnScroll 
               key={category} 
               animation="fade-up" 
               delay={categoryIndex * 100}
             >
-              <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-300">
+              <div className="break-inside-avoid p-6 rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-white/10 hover:border-white/25 hover:bg-white/[0.05] transition-all duration-300 shadow-lg shadow-black/20">
                 {/* Category Header */}
                 <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-                  <div className="h-1.5 w-1.5 rounded-full bg-blue-400" />
+                  <div className="h-2 w-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-400 shadow-lg shadow-cyan-500/50" />
                   <h3 className="text-lg font-heading font-semibold text-white">{category}</h3>
-                  <span className="ml-auto text-xs text-white/40">{techs.length} skills</span>
+                  <span className="ml-auto text-xs text-white/50 bg-white/5 px-2 py-1 rounded-full">{techs.length}</span>
                 </div>
 
                 {/* Tech Grid */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   {techs.map((tech, techIndex) => (
                     <div
                       key={tech.id}
-                      className="group flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] hover:bg-white/5 border border-transparent hover:border-white/10 transition-all duration-300"
+                      className="group flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] hover:bg-white/10 border border-white/5 hover:border-white/20 transition-all duration-300 cursor-default"
                       style={{ animationDelay: (techIndex * 50) + "ms" }}
                     >
                       <TechIcon tech={tech} />
                       <div className="min-w-0 flex-1">
-                        <span className="text-sm text-white/70 group-hover:text-white font-medium truncate block transition-colors duration-300">
+                        <span className="text-sm text-white/80 group-hover:text-white font-medium truncate block transition-colors duration-300">
                           {tech.name}
                         </span>
                       </div>
