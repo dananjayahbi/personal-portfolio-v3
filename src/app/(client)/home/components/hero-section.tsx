@@ -202,7 +202,7 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
                   className={"mt-6 transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
                   style={{ transitionDelay: "1000ms" }}
                 >
-                  <a href={settings.resumeCloudinaryUrl || settings.resumeUrl!} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-3 px-6 py-3 text-sm text-white/60 hover:text-white transition-colors border border-white/10 rounded-full hover:border-white/20">
+                  <a href={settings.resumeCloudinaryUrl ? "/api/resume-download" : settings.resumeUrl!} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-3 px-6 py-3 text-sm text-white/60 hover:text-white transition-colors border border-white/10 rounded-full hover:border-white/20">
                     <Download className="h-4 w-4" />
                     Download Resume
                   </a>
@@ -289,7 +289,7 @@ export function HeroSection({ content, callToActions, settings }: HeroSectionPro
                 className={"lg:hidden transition-all duration-1000 " + (isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")} 
                 style={{ transitionDelay: "850ms" }}
               >
-                <a href={settings.resumeCloudinaryUrl || settings.resumeUrl!} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-3 px-5 py-2.5 text-sm text-white/60 hover:text-white transition-colors border border-white/10 rounded-full hover:border-white/20">
+                <a href={settings.resumeCloudinaryUrl ? "/api/resume-download" : settings.resumeUrl!} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-3 px-5 py-2.5 text-sm text-white/60 hover:text-white transition-colors border border-white/10 rounded-full hover:border-white/20">
                   <Download className="h-4 w-4" />
                   Download Resume
                 </a>

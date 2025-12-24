@@ -145,7 +145,7 @@ export default async function AboutPage() {
           {(siteSettings?.resumeCloudinaryUrl || siteSettings?.resumeUrl) && (
             <div className="text-center py-8">
               <a 
-                href={siteSettings.resumeCloudinaryUrl || siteSettings.resumeUrl!} 
+                href={siteSettings.resumeCloudinaryUrl ? "/api/resume-download" : siteSettings.resumeUrl!} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 px-10 py-4 bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500/50 transition-all duration-300 text-sm font-light tracking-wide"

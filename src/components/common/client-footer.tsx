@@ -161,7 +161,7 @@ export async function ClientFooter() {
             </p>
             {(settings?.resumeCloudinaryUrl || settings?.resumeUrl) && (
               <a
-                href={settings.resumeCloudinaryUrl || settings.resumeUrl!}
+                href={settings.resumeCloudinaryUrl ? "/api/resume-download" : settings.resumeUrl!}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-xs text-white/50 hover:text-blue-400 transition-colors font-light tracking-wide group"

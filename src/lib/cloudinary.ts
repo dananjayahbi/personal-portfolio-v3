@@ -196,3 +196,44 @@ export async function uploadBufferToCloudinary(
     stream.end(buffer);
   });
 }
+
+/**
+ * Generate a signed/authenticated URL for private or raw files
+ * This is necessary for accounts marked as "untrusted" or for secure file access
+ */
+export function generateAuthenticatedUrl(
+  publicId: string,
+  options: {
+    resourceType?: "image" | "raw" | "video" | "auto";
+    type?: string;
+    attachment?: boolean;
+    expiresAt?: number; // Unix timestamp
+  } = {}
+) {
+  ensureCloudinaryEnv();
+
+  const {
+    resourceType = "raw",
+    type = "upload",
+    attachment = true,
+    expiresAt,
+  } = options;
+
+  // Build transformation/flags
+  const flags: string[] = [];
+  if (attachment) {
+    flags.push("attachment");
+  }
+
+  // Use Cloudinary's url method to generate an authenticated URL
+  const url = cloudinaryClient.url(publicId, {
+    resource_type: resourceType,
+    type,
+    sign_url: true, // This creates a signed URL
+    secure: true, // Use HTTPS
+    flags: flags.length > 0 ? flags.join(",") : undefined,
+    expires_at: expiresAt,
+  });
+
+  return url;
+}
