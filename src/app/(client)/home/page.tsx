@@ -5,10 +5,10 @@ import { AboutSection } from "./components/about-section";
 import { ContactSection } from "./components/contact-section";
 import FeedbackSection from "./components/feedback-section";
 import FeaturedFeedbackSection from "./components/featured-feedback-section";
-import { ParallaxBackgroundWrapper } from "./components/parallax-background-wrapper";
 import { getFeaturedProjects } from "@/services/project.service";
 import { getPortfolioContent, getSiteSettings } from "@/services/content.service";
 import { getAllTechnologies } from "@/services/technology.service";
+import { SECTION_BACKGROUNDS } from "@/lib/constants/background-images";
 import { Metadata } from "next";
 
 export const revalidate = 60;
@@ -46,43 +46,31 @@ export default async function ClientHomePage() {
     <div className="min-h-screen">
       <HeroSection content={heroContent} callToActions={callToActions} settings={siteSettings as Record<string, unknown> | undefined} />
       
-      {/* First parallax background wrapper - covers About and Skills sections */}
-      <ParallaxBackgroundWrapper
-        imageUrl="/images/internal-images/sec2.webp"
-        overlayType="gradient"
-        id="about-skills-parallax"
-      >
-        <AboutSection content={aboutContent} experiences={experiences} githubGraphUrl={githubGraphUrl} />
-        <SkillsSection technologies={technologies} />
-      </ParallaxBackgroundWrapper>
+      {/* Section backgrounds are configured in @/lib/constants/background-images.ts */}
+      <AboutSection 
+        content={aboutContent} 
+        experiences={experiences} 
+        githubGraphUrl={githubGraphUrl}
+        backgroundImage={SECTION_BACKGROUNDS.about}
+      />
       
-      {/* Second parallax background wrapper - covers Projects section */}
-      <ParallaxBackgroundWrapper
-        imageUrl="/images/internal-images/code5.webp"
-        overlayType="dark"
-        id="projects-parallax"
-      >
-        <FeaturedProjects projects={featuredProjects} />
-      </ParallaxBackgroundWrapper>
+      <SkillsSection 
+        technologies={technologies}
+        backgroundImage={SECTION_BACKGROUNDS.skills}
+      />
       
-      {/* Third parallax background wrapper - covers Feedback sections */}
-      <ParallaxBackgroundWrapper
-        imageUrl="/images/internal-images/sec3.2.webp"
-        overlayType="gradient"
-        id="feedback-parallax"
-      >
-        <FeaturedFeedbackSection />
-        <FeedbackSection />
-      </ParallaxBackgroundWrapper>
+      <FeaturedProjects 
+        projects={featuredProjects}
+        backgroundImage={SECTION_BACKGROUNDS.featuredProjects}
+      />
       
-      {/* Contact section with its own subtle background */}
-      <ParallaxBackgroundWrapper
-        imageUrl="/images/internal-images/code2.webp"
-        overlayType="dark"
-        id="contact-parallax"
-      >
-        <ContactSection settings={siteSettings as Record<string, unknown> | undefined} />
-      </ParallaxBackgroundWrapper>
+      <FeaturedFeedbackSection backgroundImage={SECTION_BACKGROUNDS.featuredFeedback} />
+      <FeedbackSection backgroundImage={SECTION_BACKGROUNDS.feedback} />
+      
+      <ContactSection 
+        settings={siteSettings as Record<string, unknown> | undefined}
+        backgroundImage={SECTION_BACKGROUNDS.contact}
+      />
     </div>
   );
 }

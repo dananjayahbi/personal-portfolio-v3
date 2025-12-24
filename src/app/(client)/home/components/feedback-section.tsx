@@ -1,10 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Star, ArrowRight } from "lucide-react";
 import { AnimateOnScroll } from "@/components/common/animate-on-scroll";
 
-export default function FeedbackSection() {
+interface FeedbackSectionProps {
+  backgroundImage?: string;
+}
+
+export default function FeedbackSection({ backgroundImage }: FeedbackSectionProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
+  const rafId = useRef<number | null>(null);
+
   const [name, setName] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [rating, setRating] = useState(0);
@@ -15,6 +23,52 @@ export default function FeedbackSection() {
     type: "success" | "error";
     message: string;
   } | null>(null);
+
+  // Parallax scroll effect
+  // Enhanced 3D parallax scroll effect
+  const updateParallax = useCallback(() => {
+    if (!sectionRef.current || !bgRef.current) return;
+
+    const rect = sectionRef.current.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const sectionHeight = sectionRef.current.offsetHeight;
+    
+    const isInView = rect.bottom > 0 && rect.top < windowHeight;
+    
+    if (isInView) {
+      const scrollProgress = (windowHeight - rect.top) / (windowHeight + sectionHeight);
+      const yOffset = (scrollProgress - 0.5) * sectionHeight * 0.7;
+      const rotateX = (scrollProgress - 0.5) * 5;
+      
+      bgRef.current.style.transform = "perspective(1000px) translate3d(0, " + yOffset + "px, 80px) rotateX(" + rotateX + "deg) scale(1.25)";
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!backgroundImage) return;
+
+    let ticking = false;
+    
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        rafId.current = requestAnimationFrame(() => {
+          updateParallax();
+          ticking = false;
+        });
+      }
+    };
+
+    updateParallax();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", updateParallax, { passive: true });
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", updateParallax);
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+    };
+  }, [updateParallax, backgroundImage]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,11 +132,48 @@ export default function FeedbackSection() {
   };
 
   return (
-    <section className="py-24 md:py-32 relative overflow-hidden">
+    <section ref={sectionRef} className="py-24 md:py-32 relative overflow-hidden">
+      {/* Parallax Background */}
+      {backgroundImage && (
+        <>
+          <div
+            ref={bgRef}
+            className="absolute bg-cover bg-center will-change-transform pointer-events-none"
+            style={{
+              backgroundImage: "url(" + backgroundImage + ")",
+              top: "-20%",
+              bottom: "-20%",
+              left: "-10%",
+              right: "-10%",
+              transformOrigin: "center center",
+              maskImage: "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)",
+            }}
+          />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#030014]/90 via-[#030014]/75 to-[#030014]/90 z-[1]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-900/15 via-transparent to-amber-900/15 z-[1]" />
+          
+          {/* Enhanced edge transitions with blur */}
+          <div 
+            className="absolute top-0 left-0 right-0 h-48 z-[2] pointer-events-none"
+            style={{
+              background: "linear-gradient(to bottom, #030014 0%, rgba(3, 0, 20, 0.95) 20%, rgba(3, 0, 20, 0.7) 50%, rgba(3, 0, 20, 0.3) 80%, transparent 100%)",
+            }}
+          />
+          <div 
+            className="absolute bottom-0 left-0 right-0 h-48 z-[2] pointer-events-none"
+            style={{
+              background: "linear-gradient(to top, #030014 0%, rgba(3, 0, 20, 0.95) 20%, rgba(3, 0, 20, 0.7) 50%, rgba(3, 0, 20, 0.3) 80%, transparent 100%)",
+            }}
+          />
+        </>
+      )}
+
       {/* Floating geometric decorations */}
-      <div className="absolute left-1/4 top-32 w-20 h-20 border-2 border-emerald-400/20 rounded-full pointer-events-none animate-float" />
-      <div className="absolute right-1/3 bottom-40 w-16 h-16 border-2 border-white/12 rotate-45 pointer-events-none animate-float-reverse" />
-      <div className="absolute left-10 bottom-1/3 w-12 h-12 border border-amber-400/15 rounded-full pointer-events-none animate-float-subtle" />
+      <div className="absolute left-1/4 top-32 w-20 h-20 border-2 border-emerald-400/20 rounded-full pointer-events-none animate-float z-[3]" />
+      <div className="absolute right-1/3 bottom-40 w-16 h-16 border-2 border-white/12 rotate-45 pointer-events-none animate-float-reverse z-[3]" />
+      <div className="absolute left-10 bottom-1/3 w-12 h-12 border border-amber-400/15 rounded-full pointer-events-none animate-float-subtle z-[3]" />
       
       <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         <div className="max-w-2xl mx-auto">

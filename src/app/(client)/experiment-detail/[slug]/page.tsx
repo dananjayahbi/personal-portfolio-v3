@@ -121,16 +121,16 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
 
         {/* Hero Image */}
         {experiment.heroImage && (
-          <div className="relative aspect-[21/9] w-full overflow-hidden mb-16">
+          <div className="relative w-full overflow-hidden mb-16 rounded-lg border border-white/10">
             <Image
               src={experiment.heroImage}
               alt={experiment.title}
-              fill
+              width={1920}
+              height={1080}
               sizes="100vw"
-              className="object-cover"
+              className="w-full h-auto object-contain"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-transparent to-transparent opacity-40" />
           </div>
         )}
 

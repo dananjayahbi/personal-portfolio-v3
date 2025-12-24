@@ -138,11 +138,35 @@ export type ResumeUploadState = {
 
 export async function uploadResume(_: ResumeUploadState, formData: FormData): Promise<ResumeUploadState> {
   try {
-    const file = formData.get('resumeFile') as File;
+    const file = formData.get('resumeFile');
+    
+    console.log('[uploadResume] FormData entries:', [...formData.entries()].map(([k, v]) => ({
+      key: k,
+      type: v instanceof File ? 'File' : typeof v,
+      value: v instanceof File ? { name: v.name, size: v.size, type: v.type } : v,
+    })));
     
     if (!file) {
       return { status: 'error', message: 'No file provided' };
     }
+
+    // Check if it's actually a File object
+    if (!(file instanceof File)) {
+      console.error('[uploadResume] Received non-File object:', typeof file, file);
+      return { status: 'error', message: 'Invalid file format received' };
+    }
+
+    // Check for empty file (size = 0)
+    if (file.size === 0) {
+      console.error('[uploadResume] File is empty:', { name: file.name, size: file.size, type: file.type });
+      return { status: 'error', message: 'File appears to be empty. Please select a valid PDF file.' };
+    }
+
+    console.log('[uploadResume] File received:', {
+      name: file.name,
+      size: file.size,
+      type: file.type,
+    });
 
     // Validate file type (PDF ONLY)
     if (file.type !== 'application/pdf') {
@@ -179,13 +203,27 @@ export async function uploadResume(_: ResumeUploadState, formData: FormData): Pr
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
+    // Generate unique public_id with .pdf extension included
+    const timestamp = Date.now();
+    
     // Upload PDF to Cloudinary as raw resource type
+    // For raw files, we must include the .pdf extension in the public_id
+    // and explicitly set format to 'pdf' to ensure proper file handling
     const uploadResult = await uploadBufferToCloudinary(buffer, {
       folder: "portfolio/assets",
-      publicId: `resume-${Date.now()}`,
+      publicId: `resume-${timestamp}.pdf`, // Include .pdf in public_id
       resourceType: "raw", // PDFs are uploaded as raw files
+      format: "pdf", // Explicitly specify PDF format
+      filename: file.name, // Preserve original filename
       overwrite: false,
       invalidate: true,
+    });
+
+    console.log("[Resume] Upload result:", {
+      public_id: uploadResult.public_id,
+      secure_url: uploadResult.secure_url,
+      format: uploadResult.format,
+      resource_type: uploadResult.resource_type,
     });
 
     console.log("[Resume] Uploaded new resume:", uploadResult.public_id);

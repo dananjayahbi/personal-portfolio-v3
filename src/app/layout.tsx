@@ -1,20 +1,22 @@
 import type { Metadata, Viewport } from "next";
-import { Playfair_Display, Inter, JetBrains_Mono } from "next/font/google";
+import { Space_Grotesk, Sora, JetBrains_Mono } from "next/font/google";
 import { PageLoader } from "@/components/common/page-loader";
 import "./globals.css";
 
-// Premium serif font for headings - elegant and sophisticated
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+// Premium geometric sans-serif for headings - modern and bold
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-heading",
   subsets: ["latin"],
   display: "swap",
+  weight: ["300", "400", "500", "600", "700"],
 });
 
-// Clean sans-serif for body text
-const inter = Inter({
-  variable: "--font-inter",
+// Modern, elegant sans-serif for body text
+const sora = Sora({
+  variable: "--font-body",
   subsets: ["latin"],
   display: "swap",
+  weight: ["200", "300", "400", "500", "600"],
 });
 
 // Mono font for code
@@ -66,7 +68,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${playfair.variable} ${inter.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${spaceGrotesk.variable} ${sora.variable} ${jetbrainsMono.variable} antialiased`}
       >
         <PageLoader />
         {children}
