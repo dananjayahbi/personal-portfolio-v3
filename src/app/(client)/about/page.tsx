@@ -4,7 +4,7 @@ import Link from "next/link";
 import { getPortfolioContent, getSiteSettings } from "@/services/content.service";
 import { GitHubGraph } from "@/components/common/github-graph";
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteSettings = await getSiteSettings();

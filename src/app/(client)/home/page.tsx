@@ -11,7 +11,7 @@ import { getAllTechnologies } from "@/services/technology.service";
 import { SECTION_BACKGROUNDS } from "@/lib/constants/background-images";
 import { Metadata } from "next";
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteSettings = await getSiteSettings();
